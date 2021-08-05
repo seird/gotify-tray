@@ -1,0 +1,10 @@
+.idea
+.vscode
+__pycache__
+build
+dist
+inno-output
+
+config.json
+*.log
+*.exe

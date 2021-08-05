@@ -1,0 +1,6 @@
+Package: gotify-tray
+Version: 0.0.11
+Architecture: amd64
+Maintainer: k.dries@protonmail.com
+Description: gotify-tray
+ A tray notification application for receiving messages from a Gotify server.

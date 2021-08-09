@@ -1,7 +1,5 @@
 # Gotify Tray
 
-[![Build Status](https://travis-ci.com/seird/gotify-tray.svg?token=NwPpjHLfYaQgjnfyARPa&branch=master)](https://travis-ci.com/seird/gotify-tray)
-
 
 A tray notification application for receiving messages from a [Gotify server](https://github.com/gotify/server).
 

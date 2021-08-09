@@ -6,8 +6,8 @@ VSVersionInfo(
   ffi=FixedFileInfo(
     # filevers and prodvers should be always a tuple with four items: (1, 2, 3, 4)
     # Set not needed items to zero 0.
-    filevers=(0, 0, 11, 0),
-    prodvers=(0, 0, 11, 0),
+    filevers=(0, 0, 12, 0),
+    prodvers=(0, 0, 12, 0),
     # Contains a bitmask that specifies the valid bits 'flags'r
     mask=0x3f,
     # Contains a bitmask that specifies the Boolean attributes of the file.
@@ -33,12 +33,12 @@ VSVersionInfo(
         [StringStruct(u'Comments', u'Gotify Tray'),
 	StringStruct(u'CompanyName', u''),
         StringStruct(u'FileDescription', u'Gotifiy Tray'),
-        StringStruct(u'FileVersion', u'0.0.11'),
+        StringStruct(u'FileVersion', u'0.0.12'),
         StringStruct(u'InternalName', u'gotify-tray'),
         StringStruct(u'LegalCopyright', u''),
         StringStruct(u'OriginalFilename', u'gotify-tray.exe'),
         StringStruct(u'ProductName', u'Gotify Tray'),
-        StringStruct(u'ProductVersion', u'0.0.11')])
+        StringStruct(u'ProductVersion', u'0.0.12')])
       ]), 
     VarFileInfo([VarStruct(u'Translation', [0, 1200])])
   ]

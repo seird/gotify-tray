@@ -250,7 +250,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def new_message_callback(self, message: gotify.GotifyMessageModel):
         # Show a notification
-        application_item = self.application_model.itemFromId(message.appid)
+        if not (application_item := self.application_model.itemFromId(message.appid)):
+            logger.error(
+                f"MainWindow.new_message_callback: App id {message.appid} could not be found. Refreshing applications."
+            )
+            self.refresh_applications()
+            return
+
         if not self.isActiveWindow() and message.priority >= settings.value(
             "tray/notifications/priority", type=int
         ):

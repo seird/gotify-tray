@@ -18,13 +18,14 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 
 from ..__version__ import __title__
 from .ApplicationModel import (
+    ApplicationItemDataRole,
     ApplicationAllMessagesItem,
     ApplicationModel,
     ApplicationModelItem,
 )
 from .designs.widget_main import Ui_Form as Ui_Main
 from .themes import set_theme
-from .MessagesModel import MessagesModel, MessagesModelItem
+from .MessagesModel import MessageItemDataRole, MessagesModel, MessagesModelItem
 from .MessageWidget import MessageWidget
 from .SettingsDialog import SettingsDialog
 from .Tray import Tray
@@ -126,7 +127,32 @@ class MainWindow(QtWidgets.QMainWindow):
         def get_applications_callback(
             applications: List[gotify.GotifyApplicationModel],
         ):
-            for i, application in enumerate(applications):
+            stored_application_ids_order = [
+                int(x) for x in settings.value("ApplicationModel/order", type=list)
+            ]
+            fetched_application_ids = [application.id for application in applications]
+            # Remove ids from stored_application_ids that are not in fetched_application_ids
+            application_ids_order = list(
+                filter(
+                    lambda x: x in fetched_application_ids, stored_application_ids_order
+                )
+            )
+            # Add new ids to the back of the list
+            application_ids_order += list(
+                filter(
+                    lambda x: x not in stored_application_ids_order,
+                    fetched_application_ids,
+                )
+            )
+
+            for i, application_id in enumerate(application_ids_order):
+                application = list(
+                    filter(
+                        lambda application: application.id == application_id,
+                        applications,
+                    )
+                )[0]
+
                 icon = (
                     QtGui.QIcon(
                         downloader.get_filename(
@@ -139,6 +165,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.application_model.setItem(
                     i + 1, 0, ApplicationModelItem(application, icon),
                 )
+
+            self.application_model.save_order()
 
         self.get_applications_task = GetApplicationsTask(self.gotify_client)
         self.get_applications_task.success.connect(get_applications_callback)
@@ -200,10 +228,15 @@ class MainWindow(QtWidgets.QMainWindow):
                     page: gotify.GotifyPagedMessagesModel,
                 ):
                     for i, message in enumerate(page.messages):
-                        self.insert_message(i, message, item.application)
+                        self.insert_message(
+                            i,
+                            message,
+                            item.data(ApplicationItemDataRole.ApplicationRole),
+                        )
 
                 self.get_application_messages_task = GetApplicationMessagesTask(
-                    item.application.id, self.gotify_client
+                    item.data(ApplicationItemDataRole.ApplicationRole).id,
+                    self.gotify_client,
                 )
                 self.get_application_messages_task.success.connect(
                     get_application_messages_callback
@@ -215,16 +248,18 @@ class MainWindow(QtWidgets.QMainWindow):
                 def get_messages_callback(page: gotify.GotifyPagedMessagesModel):
                     for i, message in enumerate(page.messages):
                         if item := self.application_model.itemFromId(message.appid):
-                            self.insert_message(i, message, item.application)
+                            self.insert_message(
+                                i,
+                                message,
+                                item.data(ApplicationItemDataRole.ApplicationRole),
+                            )
 
                 self.get_messages_task = GetMessagesTask(self.gotify_client)
                 self.get_messages_task.success.connect(get_messages_callback)
                 self.get_messages_task.start()
 
     def refresh_callback(self):
-        self.application_model.clear()
-        self.messages_model.clear()
-
+        self.application_model.save_order()
         self.refresh_applications()
         if not self.gotify_client.listener.running:
             self.gotify_client.listener.reset_wait_time()
@@ -239,7 +274,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if isinstance(item, ApplicationModelItem):
                 self.delete_application_messages_task = DeleteApplicationMessagesTask(
-                    item.application.id, self.gotify_client
+                    item.data(ApplicationItemDataRole.ApplicationRole).id,
+                    self.gotify_client,
                 )
                 self.delete_application_messages_task.start()
             elif isinstance(item, ApplicationAllMessagesItem):
@@ -254,13 +290,14 @@ class MainWindow(QtWidgets.QMainWindow):
             logger.error(
                 f"MainWindow.new_message_callback: App id {message.appid} could not be found. Refreshing applications."
             )
+            self.application_model.save_order()
             self.refresh_applications()
             return
 
         if not self.isActiveWindow() and message.priority >= settings.value(
             "tray/notifications/priority", type=int
         ):
-            image_url = f"{self.gotify_client.url}/{application_item.application.image}"
+            image_url = f"{self.gotify_client.url}/{application_item.data(ApplicationItemDataRole.ApplicationRole).image}"
             self.tray.showMessage(
                 message.title,
                 message.message,
@@ -279,17 +316,30 @@ class MainWindow(QtWidgets.QMainWindow):
         ):
             if isinstance(selected_application_item, ApplicationModelItem):
                 # A single application is selected
-                if message.appid == selected_application_item.application.id:
-                    self.insert_message(0, message, application_item.application)
+                if (
+                    message.appid
+                    == selected_application_item.data(
+                        ApplicationItemDataRole.ApplicationRole
+                    ).id
+                ):
+                    self.insert_message(
+                        0,
+                        message,
+                        application_item.data(ApplicationItemDataRole.ApplicationRole),
+                    )
             elif isinstance(selected_application_item, ApplicationAllMessagesItem):
                 # "All messages' is selected
-                self.insert_message(0, message, application_item.application)
+                self.insert_message(
+                    0,
+                    message,
+                    application_item.data(ApplicationItemDataRole.ApplicationRole),
+                )
 
     def message_deletion_requested_callback(self, message_item: MessagesModelItem):
-        self.messages_model.removeRow(message_item.row())
         self.delete_message_task = DeleteMessageTask(
-            message_item.message.id, self.gotify_client
+            message_item.data(MessageItemDataRole.MessageRole).id, self.gotify_client
         )
+        self.messages_model.removeRow(message_item.row())
         self.delete_message_task.start()
 
     def tray_activated_callback(
@@ -392,6 +442,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def closeEvent(self, e: QtGui.QCloseEvent) -> None:
         self.save_window_state()
+        self.application_model.save_order()
 
         if settings.value("tray/show", type=bool):
             self.tray.hide()

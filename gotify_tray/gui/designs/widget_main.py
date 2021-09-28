@@ -25,6 +25,8 @@ class Ui_Form(object):
         font.setPointSize(13)
         self.listView_applications.setFont(font)
         self.listView_applications.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.listView_applications.setDragEnabled(True)
+        self.listView_applications.setDragDropMode(QtWidgets.QAbstractItemView.DragDropMode.InternalMove)
         self.listView_applications.setWordWrap(True)
         self.listView_applications.setObjectName("listView_applications")
         self.gridLayout_2.addWidget(self.listView_applications, 0, 0, 1, 1)
@@ -45,6 +47,7 @@ class Ui_Form(object):
         font.setPointSize(15)
         font.setBold(True)
         self.label_selected.setFont(font)
+        self.label_selected.setText("")
         self.label_selected.setObjectName("label_selected")
         self.gridLayout.addWidget(self.label_selected, 0, 2, 1, 1)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
@@ -81,7 +84,6 @@ class Ui_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
         self.pb_delete_all.setText(_translate("Form", "Delete All"))
-        self.label_selected.setText(_translate("Form", "TextLabel"))
         self.pb_refresh.setText(_translate("Form", "Refresh"))
 
 

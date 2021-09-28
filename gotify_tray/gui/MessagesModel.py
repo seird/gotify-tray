@@ -1,12 +1,18 @@
+import enum
+
 from typing import cast
 from PyQt6 import QtCore, QtGui, QtWidgets
 from gotify_tray import gotify
 
 
+class MessageItemDataRole(enum.IntEnum):
+    MessageRole = QtCore.Qt.ItemDataRole.UserRole + 1
+
+
 class MessagesModelItem(QtGui.QStandardItem):
     def __init__(self, message: gotify.GotifyMessageModel, *args, **kwargs):
         super(MessagesModelItem, self).__init__()
-        self.message = message
+        self.setData(message, MessageItemDataRole.MessageRole)
 
 
 class MessagesModel(QtGui.QStandardItemModel):

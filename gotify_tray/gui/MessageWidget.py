@@ -2,7 +2,7 @@ import re
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from .MessagesModel import MessagesModelItem
+from .MessagesModel import MessageItemDataRole, MessagesModelItem
 from .designs.widget_message import Ui_Form
 from gotify_tray.database import Settings
 
@@ -36,7 +36,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         self.setAutoFillBackground(True)
 
         self.message_item = message_item
-        message = self.message_item.message
+        message = message_item.data(MessageItemDataRole.MessageRole)
 
         # Fonts
         font_title = QtGui.QFont()

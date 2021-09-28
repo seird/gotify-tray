@@ -1,6 +1,17 @@
+import enum
+
 from typing import Optional, Union
 from PyQt6 import QtCore, QtGui
 from gotify_tray import gotify
+from gotify_tray.database import Settings
+
+
+settings = Settings("gotify-tray")
+
+
+class ApplicationItemDataRole(enum.IntEnum):
+    ApplicationRole = QtCore.Qt.ItemDataRole.UserRole + 1
+    IconRole = QtCore.Qt.ItemDataRole.UserRole + 2
 
 
 class ApplicationModelItem(QtGui.QStandardItem):
@@ -12,18 +23,39 @@ class ApplicationModelItem(QtGui.QStandardItem):
         **kwargs
     ):
         super(ApplicationModelItem, self).__init__(application.name)
-        self.application = application
+        self.setDropEnabled(False)
+        self.setData(application, ApplicationItemDataRole.ApplicationRole)
+        self.setData(icon, ApplicationItemDataRole.IconRole)
         if icon:
             self.setIcon(icon)
+
+    def clone(self):
+        return ApplicationModelItem(
+            self.data(ApplicationItemDataRole.ApplicationRole),
+            self.data(ApplicationItemDataRole.IconRole),
+        )
 
 
 class ApplicationAllMessagesItem(QtGui.QStandardItem):
     def __init__(self, *args, **kwargs):
         super(ApplicationAllMessagesItem, self).__init__("ALL MESSAGES")
+        self.setDropEnabled(False)
+        self.setDragEnabled(False)
 
 
 class ApplicationModel(QtGui.QStandardItemModel):
-    def setItem(self, row: int, column: int, item: Union[ApplicationModelItem, ApplicationAllMessagesItem]) -> None:
+    def __init__(self):
+        super(ApplicationModel, self).__init__()
+        self.setItemPrototype(
+            ApplicationModelItem(gotify.GotifyApplicationModel({"name": ""}), None)
+        )
+
+    def setItem(
+        self,
+        row: int,
+        column: int,
+        item: Union[ApplicationModelItem, ApplicationAllMessagesItem],
+    ) -> None:
         super(ApplicationModel, self).setItem(row, column, item)
 
     def itemFromIndex(
@@ -36,6 +68,17 @@ class ApplicationModel(QtGui.QStandardItemModel):
             item = self.item(row, 0)
             if not isinstance(item, ApplicationModelItem):
                 continue
-            if item.application.id == appid:
+            if item.data(ApplicationItemDataRole.ApplicationRole).id == appid:
                 return item
         return None
+
+    def save_order(self, *args):
+        try:
+            application_ids = [
+                self.item(i, 0).data(ApplicationItemDataRole.ApplicationRole).id
+                for i in range(1, self.rowCount())
+            ]
+        except AttributeError:
+            return
+
+        settings.setValue("ApplicationModel/order", application_ids)

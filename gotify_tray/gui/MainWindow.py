@@ -303,7 +303,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 message.message,
                 QtGui.QIcon(downloader.get_filename(image_url))
                 if settings.value("tray/notifications/icon/show", type=bool)
-                else QtWidgets.QSystemTrayIcon.Information,
+                else QtWidgets.QSystemTrayIcon.MessageIcon.Information,
                 msecs=settings.value("tray/notifications/duration_ms", type=int),
             )
 

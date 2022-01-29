@@ -1,3 +1,6 @@
+import logging
+import webbrowser
+
 from gotify_tray.database import Settings
 from gotify_tray.utils import verify_server
 from PyQt6 import QtCore, QtGui, QtWidgets
@@ -5,6 +8,8 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from .designs.widget_settings import Ui_Dialog
 from .themes import set_theme
 
+
+logger = logging.getLogger("logger")
 settings = Settings("gotify-tray")
 
 
@@ -55,6 +60,18 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.spin_duration.setValue(
             settings.value("tray/notifications/duration_ms", type=int)
         )
+
+        # Logging
+        self.combo_logging.addItems(
+            [
+                logging.getLevelName(logging.ERROR),
+                logging.getLevelName(logging.WARNING),
+                logging.getLevelName(logging.INFO),
+                logging.getLevelName(logging.DEBUG),
+                "Disabled",
+            ]
+        )
+        self.combo_logging.setCurrentText(settings.value("logging/level", type=str))
 
     def set_font_labels(self):
         self.label_font_message_title.setText(
@@ -133,6 +150,12 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         # Server info
         self.pb_change_server_info.clicked.connect(self.change_server_info_callback)
 
+        # Logging
+        self.combo_logging.currentTextChanged.connect(self.settings_changed_callback)
+        self.pb_open_log.clicked.connect(
+            lambda: webbrowser.open(logger.root.handlers[0].baseFilename)
+        )
+
     def apply_settings(self):
         # Fonts
         settings.setValue(
@@ -161,6 +184,15 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         # Priority
         settings.setValue("tray/notifications/priority", self.spin_priority.value())
         settings.setValue("tray/notifications/duration_ms", self.spin_duration.value())
+
+        # Logging
+        selected_level = self.combo_logging.currentText()
+        settings.setValue("logging/level", selected_level)
+        if selected_level == "Disabled":
+            logging.disable(logging.CRITICAL)
+        else:
+            logging.disable(logging.NOTSET)
+            logger.setLevel(selected_level)
 
         self.settings_changed = False
         self.buttonBox.button(

@@ -1,38 +1,46 @@
 import getpass
 import logging
 import os
+import sys
 import tempfile
 from typing import List
 
 from gotify_tray import gotify
+from gotify_tray.__version__ import __title__
 from gotify_tray.database import Downloader, Settings
 from gotify_tray.tasks import (
+    DeleteAllMessagesTask,
     DeleteApplicationMessagesTask,
     DeleteMessageTask,
-    DeleteAllMessagesTask,
     GetApplicationMessagesTask,
     GetApplicationsTask,
     GetMessagesTask,
 )
+from gotify_tray.utils import verify_server
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from ..__version__ import __title__
 from .ApplicationModel import (
-    ApplicationItemDataRole,
     ApplicationAllMessagesItem,
+    ApplicationItemDataRole,
     ApplicationModel,
     ApplicationModelItem,
 )
 from .designs.widget_main import Ui_Form as Ui_Main
-from .themes import set_theme
 from .MessagesModel import MessageItemDataRole, MessagesModel, MessagesModelItem
 from .MessageWidget import MessageWidget
 from .SettingsDialog import SettingsDialog
+from .themes import set_theme
 from .Tray import Tray
 
 settings = Settings("gotify-tray")
 logger = logging.getLogger("logger")
 downloader = Downloader()
+
+if (level := settings.value("logging/level", type=str)) != "Disabled":
+    logger.setLevel(level)
+else:
+    logging.disable()
 
 
 class MainWidget(QtWidgets.QWidget, Ui_Main):
@@ -460,3 +468,33 @@ class MainWindow(QtWidgets.QMainWindow):
         self.gotify_client.stop()
         super(MainWindow, self).closeEvent(e)
         self.app.quit()
+
+
+def start_gui():
+    title = __title__.replace(" ", "-")
+
+    app = QtWidgets.QApplication(sys.argv)
+    app.setApplicationName(title)
+    app.setQuitOnLastWindowClosed(False)
+    app.setWindowIcon(QtGui.QIcon("gotify_tray/gui/images/gotify-small.png"))
+    app.setStyle("fusion")
+
+    logdir = QtCore.QStandardPaths.standardLocations(
+        QtCore.QStandardPaths.StandardLocation.AppDataLocation
+    )[0]
+    if not os.path.exists(logdir):
+        os.mkdir(logdir)
+    logging.basicConfig(
+        filename=os.path.join(logdir, f"{title}.log"),
+        format="%(levelname)s > %(name)s > %(asctime)s > %(message)s",
+    )
+
+    # import from gui has to happen after 'setApplicationName' to make sure the correct cache directory is created
+    from gotify_tray.gui import MainWindow
+
+    window = MainWindow(app)
+
+    # prevent multiple instances
+    if (window.acquire_lock() or "--no-lock" in sys.argv) and verify_server():
+        window.init_ui()
+        sys.exit(app.exec())

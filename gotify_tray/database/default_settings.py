@@ -1,4 +1,5 @@
 DEFAULT_SETTINGS = {
+    "logging/level": "Disabled",
     "MainWindow/start_minimized": True,
     "MainWindow/theme": "default",
     "MainWidget/status_image/size": 28,

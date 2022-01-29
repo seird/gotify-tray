@@ -1,9 +1,11 @@
 import abc
 import logging
+import time
 
 from PyQt6 import QtCore
 from PyQt6.QtCore import pyqtSignal
 
+from gotify_tray.gotify.api import GotifyClient
 from gotify_tray.gotify.models import GotifyVersionModel
 
 from . import gotify
@@ -154,3 +156,21 @@ class VerifyServerInfoTask(BaseTask):
             self.incorrect_url.emit()
         except Exception as e:
             self.incorrect_url.emit()
+
+
+class ServerConnectionWatchdogTask(BaseTask):
+    closed = pyqtSignal()
+
+    def __init__(self, gotify_client: GotifyClient):
+        super(ServerConnectionWatchdogTask, self).__init__()
+        self.gotify_client = gotify_client
+        self.interval = 60
+
+    def task(self):
+        while True:
+            time.sleep(self.interval)
+            if not self.gotify_client.is_listening():
+                self.closed.emit()
+                logger.debug(
+                    f"ServerConnectionWatchdogTask: gotify_client is not listening"
+                )

@@ -1,4 +1,5 @@
 import json
+import logging
 import time
 
 import websocket
@@ -57,14 +58,17 @@ class Listener(QtCore.QThread):
         self.closed.emit(close_status_code, close_msg)
 
     def stop(self):
+        logger.debug("Listener: stopping.")
         self.ws.close()
         self.running = False
 
     def run(self):
         self.running = True
+        logger.debug(f"Listener: waiting {self.wait_time} seconds before connecting.")
 
         try:
             time.sleep(self.wait_time)
             self.ws.run_forever()
         finally:
+            logger.debug("Listener: stopped.")
             self.running = False

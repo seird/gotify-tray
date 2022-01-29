@@ -15,6 +15,7 @@ from gotify_tray.tasks import (
     GetApplicationMessagesTask,
     GetApplicationsTask,
     GetMessagesTask,
+    ServerConnectionWatchdogTask,
 )
 from gotify_tray.utils import verify_server
 from PyQt6 import QtCore, QtGui, QtWidgets
@@ -111,6 +112,10 @@ class MainWindow(QtWidgets.QMainWindow):
             opened_callback=self.listener_opened_callback,
             closed_callback=self.listener_closed_callback,
         )
+
+        self.watchdog = ServerConnectionWatchdogTask(self.gotify_client)
+        self.watchdog.closed.connect(lambda: self.listener_closed_callback(None, None))
+        self.watchdog.start()
 
         self.link_callbacks()
 

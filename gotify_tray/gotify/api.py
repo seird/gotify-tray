@@ -198,6 +198,9 @@ class GotifyClient(GotifySession):
             self.listener.reset_wait_time()
         self.listener.stop()
 
+    def is_listening(self) -> bool:
+        return self.listener.running
+
     """
     Health
     """

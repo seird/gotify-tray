@@ -1,6 +1,7 @@
+from gotify_tray.gotify.models import GotifyVersionModel
+from gotify_tray.tasks import VerifyServerInfoTask
 from PyQt6 import QtWidgets
 
-from gotify_tray.tasks import VerifyServerInfoTask
 from .designs.widget_server import Ui_Dialog
 
 
@@ -11,7 +12,9 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         self.setWindowTitle("Server info")
         self.line_url.setText(url)
         self.line_token.setText(token)
-        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(True)
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(
+            True
+        )
         self.link_callbacks()
 
     def test_server_info(self):
@@ -25,7 +28,9 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
             return
 
         self.pb_test.setDisabled(True)
-        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(True)
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(
+            True
+        )
 
         self.task = VerifyServerInfoTask(url, client_token)
         self.task.success.connect(self.server_info_success)
@@ -33,22 +38,35 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         self.task.incorrect_url.connect(self.incorrect_url_callback)
         self.task.start()
 
-    def server_info_success(self):
+    def server_info_success(self, version: GotifyVersionModel):
         self.pb_test.setEnabled(True)
+        self.label_server_info.setText(f"Version: {version.version}")
         self.pb_test.setStyleSheet("background-color: rgba(0, 255, 0, 100);")
-        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setEnabled(True)
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setEnabled(
+            True
+        )
 
-    def incorrect_token_callback(self):
+    def incorrect_token_callback(self, version: GotifyVersionModel):
         self.pb_test.setEnabled(True)
+        self.label_server_info.setText(f"Version: {version.version}")
         self.pb_test.setStyleSheet("background-color: rgba(255, 0, 0, 100);")
         self.line_token.setStyleSheet("border: 1px solid red;")
 
     def incorrect_url_callback(self):
         self.pb_test.setEnabled(True)
+        self.label_server_info.clear()
         self.pb_test.setStyleSheet("background-color: rgba(255, 0, 0, 100);")
         self.line_url.setStyleSheet("border: 1px solid red;")
 
     def link_callbacks(self):
         self.pb_test.clicked.connect(self.test_server_info)
-        self.line_url.textChanged.connect(lambda: self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(True))
-        self.line_token.textChanged.connect(lambda: self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(True))
+        self.line_url.textChanged.connect(
+            lambda: self.buttonBox.button(
+                QtWidgets.QDialogButtonBox.StandardButton.Ok
+            ).setDisabled(True)
+        )
+        self.line_token.textChanged.connect(
+            lambda: self.buttonBox.button(
+                QtWidgets.QDialogButtonBox.StandardButton.Ok
+            ).setDisabled(True)
+        )

@@ -4,6 +4,8 @@ import logging
 from PyQt6 import QtCore
 from PyQt6.QtCore import pyqtSignal
 
+from gotify_tray.gotify.models import GotifyVersionModel
+
 from . import gotify
 
 
@@ -120,8 +122,8 @@ class GetMessagesTask(BaseTask):
 
 
 class VerifyServerInfoTask(BaseTask):
-    success = pyqtSignal()
-    incorrect_token = pyqtSignal()
+    success = pyqtSignal(GotifyVersionModel)
+    incorrect_token = pyqtSignal(GotifyVersionModel)
     incorrect_url = pyqtSignal()
 
     def __init__(self, url: str, client_token: str):
@@ -132,16 +134,22 @@ class VerifyServerInfoTask(BaseTask):
     def task(self):
         try:
             gotify_client = gotify.GotifyClient(self.url, self.client_token)
+
+            version = gotify_client.version()
+            if isinstance(version, gotify.GotifyErrorModel):
+                self.incorrect_url.emit()
+                return
+
             result = gotify_client.get_messages(limit=1)
 
             if isinstance(result, gotify.GotifyPagedMessagesModel):
-                self.success.emit()
+                self.success.emit(version)
                 return
             elif (
                 isinstance(result, gotify.GotifyErrorModel)
                 and result["error"] == "Unauthorized"
             ):
-                self.incorrect_token.emit()
+                self.incorrect_token.emit(version)
                 return
             self.incorrect_url.emit()
         except Exception as e:

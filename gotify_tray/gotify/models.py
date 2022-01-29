@@ -5,7 +5,7 @@ from typing import List, Optional
 import requests
 
 
-logger = logging.getLogger("logger")
+logger = logging.getLogger("gotify-tray")
 
 
 try:

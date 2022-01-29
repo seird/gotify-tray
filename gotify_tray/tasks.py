@@ -9,7 +9,7 @@ from gotify_tray.gotify.models import GotifyVersionModel
 from . import gotify
 
 
-logger = logging.getLogger("logger")
+logger = logging.getLogger("gotify-tray")
 
 
 class BaseTask(QtCore.QThread):

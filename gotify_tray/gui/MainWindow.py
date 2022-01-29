@@ -34,7 +34,7 @@ from .themes import set_theme
 from .Tray import Tray
 
 settings = Settings("gotify-tray")
-logger = logging.getLogger("logger")
+logger = logging.getLogger("gotify-tray")
 downloader = Downloader()
 
 if (level := settings.value("logging/level", type=str)) != "Disabled":

@@ -5,7 +5,7 @@ import sqlite3
 from PyQt6 import QtCore
 
 
-logger = logging.getLogger("logger")
+logger = logging.getLogger("gotify-tray")
 
 
 class Database(sqlite3.Connection):

@@ -7,6 +7,9 @@ from PyQt6 import QtCore
 from .models import GotifyMessageModel, GotifyErrorModel
 
 
+logger = logging.getLogger("gotify-tray")
+
+
 class Listener(QtCore.QThread):
     new_message = QtCore.pyqtSignal(GotifyMessageModel)
     error = QtCore.pyqtSignal(Exception)

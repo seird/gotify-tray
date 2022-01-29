@@ -14,7 +14,7 @@ from .models import (
     GotifyVersionModel,
 )
 
-logger = logging.getLogger("logger")
+logger = logging.getLogger("gotify-tray")
 
 
 class GotifySession(object):

@@ -9,7 +9,7 @@ from PyQt6 import QtCore
 
 from .database import Database
 
-logger = logging.getLogger("logger")
+logger = logging.getLogger("gotify-tray")
 
 
 class Cache(object):

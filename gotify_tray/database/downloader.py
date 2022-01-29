@@ -6,7 +6,7 @@ from .cache import Cache
 from .settings import Settings
 
 
-logger = logging.getLogger("logger")
+logger = logging.getLogger("gotify-tray")
 settings = Settings("gotify-tray")
 
 

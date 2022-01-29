@@ -9,7 +9,7 @@ from .designs.widget_settings import Ui_Dialog
 from .themes import set_theme
 
 
-logger = logging.getLogger("logger")
+logger = logging.getLogger("gotify-tray")
 settings = Settings("gotify-tray")
 
 

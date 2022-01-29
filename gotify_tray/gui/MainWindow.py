@@ -350,10 +350,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 QtCore.Qt.WindowState.WindowMinimized
                 | QtCore.Qt.WindowState.WindowMaximized
             ):
-                self.show()
-                self.setWindowState(
-                    self.window_state_to_restore | QtCore.Qt.WindowState.WindowActive
-                )  # Set the window to its normal state
+                self.bring_to_front()
             else:
                 window_state_temp = self.windowState()
                 self.setWindowState(QtCore.Qt.WindowState.WindowMinimized)
@@ -427,6 +424,15 @@ class MainWindow(QtWidgets.QMainWindow):
         settings.setValue("MainWindow/geometry", self.saveGeometry())
         settings.setValue("MainWindow/state", self.saveState())
 
+    def bring_to_front(self):
+        self.ensurePolished()
+        self.setWindowState(
+            self.window_state_to_restore & ~QtCore.Qt.WindowState.WindowMinimized
+            | QtCore.Qt.WindowState.WindowActive
+        )
+        self.show()
+        self.activateWindow()
+
     def changeEvent(self, event: QtCore.QEvent) -> None:
         if event.type() == QtCore.QEvent.Type.WindowStateChange:
             if settings.value("tray/show", type=bool) and settings.value(
@@ -435,6 +441,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 if self.windowState() & QtCore.Qt.WindowState.WindowMinimized:
                     self.window_state_to_restore = (
                         self.windowState() & ~QtCore.Qt.WindowState.WindowMinimized
+                        | QtCore.Qt.WindowState.WindowActive
                     )
                     self.hide()
 

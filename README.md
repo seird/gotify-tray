@@ -58,12 +58,10 @@ $ iscc gotify-tray.iss
 
 ## Images
 
-![notification](images/notification.png)
-
-![main_window](images/main_window.png)
-
-![notification_centre](images/notification_centre.png)
-
+Windows 10                                         |  KDE
+:-------------------------------------------------:|:---------------------------------------------------------:
+![notification](images/notification.png)           |  ![kde_notification](images/kde_notification.png)
+![notification](images/notification_centre.png)    |  ![kde_notification](images/kde_notification_centre.png)
 
 
 ## Requirements

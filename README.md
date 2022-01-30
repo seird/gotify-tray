@@ -4,7 +4,11 @@
 A tray notification application for receiving messages from a [Gotify server](https://github.com/gotify/server).
 
 
-[![logo](https://raw.githubusercontent.com/gotify/logo/master/gotify-logo.png)](https://github.com/gotify/logo)
+<p align="center">
+    <a href="https://github.com/gotify/logo">
+        <img height="370px" src="https://raw.githubusercontent.com/gotify/logo/master/gotify-logo.png" />
+    </a>
+</p>
 
 ## Download
 

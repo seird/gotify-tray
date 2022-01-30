@@ -51,6 +51,7 @@ class Listener(QtCore.QThread):
 
     def _on_open(self, ws: websocket.WebSocketApp):
         self.opened.emit()
+        self.reset_wait_time()
 
     def _on_close(
         self, ws: websocket.WebSocketApp, close_status_code: int, close_msg: str

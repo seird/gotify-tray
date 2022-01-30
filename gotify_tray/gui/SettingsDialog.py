@@ -6,7 +6,6 @@ from gotify_tray.utils import verify_server
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from .designs.widget_settings import Ui_Dialog
-from .themes import set_theme
 
 
 logger = logging.getLogger("gotify-tray")
@@ -33,12 +32,6 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.buttonBox.button(
             QtWidgets.QDialogButtonBox.StandardButton.Apply
         ).setEnabled(False)
-
-        # Theme
-        self.combo_theme.addItems(["default", "dark"])
-        self.combo_theme.setCurrentText(
-            settings.value("MainApplication/theme", type=str)
-        )
 
         # Icons
         self.cb_icons_notification.setChecked(
@@ -92,9 +85,6 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             QtWidgets.QDialogButtonBox.StandardButton.Apply
         ).clicked.connect(self.apply_settings)
 
-        # Theme
-        self.combo_theme.currentTextChanged.connect(self.settings_changed_callback)
-
         # Icons
         self.cb_icons_notification.stateChanged.connect(self.settings_changed_callback)
 
@@ -112,10 +102,6 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         )
 
     def apply_settings(self):
-        # Theme
-        settings.setValue("MainApplication/theme", self.combo_theme.currentText())
-        set_theme(self.app, self.combo_theme.currentText())
-
         # Icons
         settings.setValue(
             "tray/notifications/icon/show", self.cb_icons_notification.isChecked()

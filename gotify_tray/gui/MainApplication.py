@@ -19,7 +19,6 @@ from .ApplicationModel import (
     ApplicationModelItem,
 )
 from .SettingsDialog import SettingsDialog
-from .themes import set_theme
 from .Tray import Tray
 
 settings = Settings("gotify-tray")
@@ -64,8 +63,6 @@ class MainApplication(QtWidgets.QApplication):
             settings.value("Server/url", type=str),
             settings.value("Server/client_token", type=str),
         )
-
-        set_theme(self, settings.value("MainApplication/theme", type=str))
 
         self.application_model = ApplicationModel()
         self.refresh_applications()

@@ -15,10 +15,6 @@ class Ui_Dialog(object):
         Dialog.resize(300, 130)
         self.gridLayout = QtWidgets.QGridLayout(Dialog)
         self.gridLayout.setObjectName("gridLayout")
-        self.label_server_info = QtWidgets.QLabel(Dialog)
-        self.label_server_info.setText("")
-        self.label_server_info.setObjectName("label_server_info")
-        self.gridLayout.addWidget(self.label_server_info, 1, 2, 1, 1)
         self.pb_test = QtWidgets.QPushButton(Dialog)
         self.pb_test.setObjectName("pb_test")
         self.gridLayout.addWidget(self.pb_test, 1, 4, 1, 1)
@@ -44,6 +40,10 @@ class Ui_Dialog(object):
         self.gridLayout.addWidget(self.buttonBox, 2, 4, 1, 1)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout.addItem(spacerItem, 1, 3, 1, 1)
+        self.label_server_info = QtWidgets.QLabel(Dialog)
+        self.label_server_info.setText("")
+        self.label_server_info.setObjectName("label_server_info")
+        self.gridLayout.addWidget(self.label_server_info, 1, 1, 1, 2)
 
         self.retranslateUi(Dialog)
         self.buttonBox.accepted.connect(Dialog.accept) # type: ignore

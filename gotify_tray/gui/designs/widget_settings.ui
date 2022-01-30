@@ -7,125 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>375</width>
-    <height>606</height>
+    <height>392</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Fonts</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QGroupBox" name="groupBox_2">
-        <property name="title">
-         <string>Message</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Content</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Date</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QPushButton" name="pb_font_message_content">
-           <property name="maximumSize">
-            <size>
-             <width>30</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QPushButton" name="pb_font_message_date">
-           <property name="maximumSize">
-            <size>
-             <width>30</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Title</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="label_font_message_title">
-           <property name="text">
-            <string>TextLabel</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QPushButton" name="pb_font_message_title">
-           <property name="maximumSize">
-            <size>
-             <width>30</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="1" column="2">
-          <widget class="QLabel" name="label_font_message_date">
-           <property name="text">
-            <string>TextLabel</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <widget class="QLabel" name="label_font_message_content">
-           <property name="text">
-            <string>TextLabel</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
    <item>
     <widget class="QGroupBox" name="groupBox_6">
      <property name="title">
@@ -157,20 +45,6 @@
       <string>Icons</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QCheckBox" name="cb_icons_application">
-        <property name="text">
-         <string>Show application icons</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cb_icons_message">
-        <property name="text">
-         <string>Show message icons</string>
-        </property>
-       </widget>
-      </item>
       <item>
        <widget class="QCheckBox" name="cb_icons_notification">
         <property name="text">
@@ -340,15 +214,13 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>pb_font_message_title</tabstop>
-  <tabstop>pb_font_message_date</tabstop>
-  <tabstop>pb_font_message_content</tabstop>
-  <tabstop>cb_icons_application</tabstop>
-  <tabstop>cb_icons_message</tabstop>
+  <tabstop>combo_theme</tabstop>
   <tabstop>cb_icons_notification</tabstop>
   <tabstop>spin_priority</tabstop>
   <tabstop>spin_duration</tabstop>
   <tabstop>pb_change_server_info</tabstop>
+  <tabstop>combo_logging</tabstop>
+  <tabstop>pb_open_log</tabstop>
  </tabstops>
  <resources/>
  <connections>

@@ -1,6 +1,6 @@
 import enum
 
-from typing import Optional, Union
+from typing import Optional
 from PyQt6 import QtCore, QtGui
 from gotify_tray import gotify
 from gotify_tray.database import Settings
@@ -36,13 +36,6 @@ class ApplicationModelItem(QtGui.QStandardItem):
         )
 
 
-class ApplicationAllMessagesItem(QtGui.QStandardItem):
-    def __init__(self, *args, **kwargs):
-        super(ApplicationAllMessagesItem, self).__init__("ALL MESSAGES")
-        self.setDropEnabled(False)
-        self.setDragEnabled(False)
-
-
 class ApplicationModel(QtGui.QStandardItemModel):
     def __init__(self):
         super(ApplicationModel, self).__init__()
@@ -50,17 +43,10 @@ class ApplicationModel(QtGui.QStandardItemModel):
             ApplicationModelItem(gotify.GotifyApplicationModel({"name": ""}), None)
         )
 
-    def setItem(
-        self,
-        row: int,
-        column: int,
-        item: Union[ApplicationModelItem, ApplicationAllMessagesItem],
-    ) -> None:
+    def setItem(self, row: int, column: int, item: ApplicationModelItem,) -> None:
         super(ApplicationModel, self).setItem(row, column, item)
 
-    def itemFromIndex(
-        self, index: QtCore.QModelIndex
-    ) -> Union[ApplicationModelItem, ApplicationAllMessagesItem]:
+    def itemFromIndex(self, index: QtCore.QModelIndex) -> ApplicationModelItem:
         return super(ApplicationModel, self).itemFromIndex(index)
 
     def itemFromId(self, appid: int) -> Optional[ApplicationModelItem]:
@@ -71,14 +57,3 @@ class ApplicationModel(QtGui.QStandardItemModel):
             if item.data(ApplicationItemDataRole.ApplicationRole).id == appid:
                 return item
         return None
-
-    def save_order(self, *args):
-        try:
-            application_ids = [
-                self.item(i, 0).data(ApplicationItemDataRole.ApplicationRole).id
-                for i in range(1, self.rowCount())
-            ]
-        except AttributeError:
-            return
-
-        settings.setValue("ApplicationModel/order", application_ids)

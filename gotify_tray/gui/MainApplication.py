@@ -120,24 +120,29 @@ class MainApplication(QtWidgets.QApplication):
         self.gotify_client.reconnect(increase_wait_time=False)
 
     def new_message_callback(self, message: gotify.GotifyMessageModel):
-        # Show a notification
-        if not (application_item := self.application_model.itemFromId(message.appid)):
-            logger.error(
-                f"MainWindow.new_message_callback: App id {message.appid} could not be found. Refreshing applications."
-            )
-            self.refresh_applications()
+        if message.priority < settings.value("tray/notifications/priority", type=int):
             return
 
-        if message.priority >= settings.value("tray/notifications/priority", type=int):
-            image_url = f"{self.gotify_client.url}/{application_item.data(ApplicationItemDataRole.ApplicationRole).image}"
-            self.tray.showMessage(
-                message.title,
-                message.message,
-                QtGui.QIcon(downloader.get_filename(image_url))
-                if settings.value("tray/notifications/icon/show", type=bool)
-                else QtWidgets.QSystemTrayIcon.MessageIcon.Information,
-                msecs=settings.value("tray/notifications/duration_ms", type=int),
-            )
+        if settings.value("tray/notifications/icon/show", type=bool):
+            if application_item := self.application_model.itemFromId(message.appid):
+                image_url = f"{self.gotify_client.url}/{application_item.data(ApplicationItemDataRole.ApplicationRole).image}"
+                icon = QtGui.QIcon(downloader.get_filename(image_url))
+            else:
+                logger.error(
+                    f"MainWindow.new_message_callback: App id {message.appid} could not be found. Refreshing applications."
+                )
+                self.refresh_applications()
+                icon = QtWidgets.QSystemTrayIcon.MessageIcon.Information
+        else:
+            icon = QtWidgets.QSystemTrayIcon.MessageIcon.Information
+
+        # Show a notification
+        self.tray.showMessage(
+            message.title,
+            message.message,
+            icon,
+            msecs=settings.value("tray/notifications/duration_ms", type=int),
+        )
 
     def settings_callback(self):
         settings_dialog = SettingsDialog(self)

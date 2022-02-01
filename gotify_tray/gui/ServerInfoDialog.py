@@ -10,6 +10,7 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         super(ServerInfoDialog, self).__init__()
         self.setupUi(self)
         self.setWindowTitle("Server info")
+        self.line_url.setPlaceholderText("https://gotify.example.com")
         self.line_url.setText(url)
         self.line_token.setText(token)
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(
@@ -21,6 +22,7 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         self.pb_test.setStyleSheet("")
         self.line_url.setStyleSheet("")
         self.line_token.setStyleSheet("")
+        self.label_server_info.clear()
 
         url = self.line_url.text()
         client_token = self.line_token.text()

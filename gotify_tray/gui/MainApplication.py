@@ -52,11 +52,6 @@ class MainApplication(QtWidgets.QApplication):
         self.shutting_down = False
 
     def init_ui(self):
-        self.setApplicationName(title)
-        self.setQuitOnLastWindowClosed(False)
-        self.setWindowIcon(QtGui.QIcon("gotify_tray/gui/images/gotify-small.png"))
-        self.setStyle("fusion")
-
         init_logger()
 
         self.gotify_client = gotify.GotifyClient(
@@ -190,6 +185,10 @@ class MainApplication(QtWidgets.QApplication):
 
 def start_gui():
     app = MainApplication(sys.argv)
+    app.setApplicationName(title)
+    app.setQuitOnLastWindowClosed(False)
+    app.setWindowIcon(QtGui.QIcon("gotify_tray/gui/images/gotify-small.png"))
+    app.setStyle("fusion")
 
     # prevent multiple instances
     if (app.acquire_lock() or "--no-lock" in sys.argv) and verify_server():

@@ -72,10 +72,10 @@ class MainApplication(QtWidgets.QApplication):
         )
 
         self.watchdog = ServerConnectionWatchdogTask(self.gotify_client)
-        self.watchdog.closed.connect(lambda: self.listener_closed_callback(None, None))
-        self.watchdog.start()
 
         self.link_callbacks()
+
+        self.watchdog.start()
 
     def refresh_applications(self):
         self.application_model.clear()
@@ -163,6 +163,8 @@ class MainApplication(QtWidgets.QApplication):
         self.tray.actionQuit.triggered.connect(self.quit)
         self.tray.actionSettings.triggered.connect(self.settings_callback)
         self.tray.actionReconnect.triggered.connect(self.refresh_callback)
+
+        self.watchdog.closed.connect(lambda: self.listener_closed_callback(None, None))
 
     def acquire_lock(self) -> bool:
         temp_dir = tempfile.gettempdir()

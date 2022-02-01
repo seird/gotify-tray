@@ -5,12 +5,14 @@ import time
 from PyQt6 import QtCore
 from PyQt6.QtCore import pyqtSignal
 
+from gotify_tray.database import Settings
 from gotify_tray.gotify.api import GotifyClient
 from gotify_tray.gotify.models import GotifyVersionModel
 
 from . import gotify
 
 
+settings = Settings("gotify-tray")
 logger = logging.getLogger("gotify-tray")
 
 
@@ -105,13 +107,12 @@ class ServerConnectionWatchdogTask(BaseTask):
     def __init__(self, gotify_client: GotifyClient):
         super(ServerConnectionWatchdogTask, self).__init__()
         self.gotify_client = gotify_client
-        self.interval = 60
 
     def task(self):
         while True:
-            time.sleep(self.interval)
+            time.sleep(settings.value("watchdog/interval/s", type=int))
             if not self.gotify_client.is_listening():
                 self.closed.emit()
                 logger.debug(
-                    f"ServerConnectionWatchdogTask: gotify_client is not listening"
+                    "ServerConnectionWatchdogTask: gotify_client is not listening"
                 )

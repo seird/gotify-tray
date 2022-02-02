@@ -16,7 +16,12 @@ A tray notification application for receiving messages from a [Gotify server](ht
 [Download the latest release.](https://github.com/seird/gotify-tray/releases/latest)
 
 
-## Install
+## Supported Platforms
+
+See https://doc.qt.io/qt-6/qsystemtrayicon.html#details
+
+
+## Manual Install
 
 Get the source and install the requirements:
 

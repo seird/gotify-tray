@@ -13,12 +13,10 @@ settings = Settings("gotify-tray")
 
 
 class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
-    def __init__(self, app: QtWidgets.QApplication):
+    def __init__(self):
         super(SettingsDialog, self).__init__()
         self.setupUi(self)
         self.setWindowTitle("Settings")
-
-        self.app = app
 
         self.settings_changed = False
         self.changes_applied = False

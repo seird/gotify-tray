@@ -23,18 +23,17 @@ from .Tray import Tray
 
 settings = Settings("gotify-tray")
 logger = logging.getLogger("gotify-tray")
-downloader = Downloader()
-
-if (level := settings.value("logging/level", type=str)) != "Disabled":
-    logger.setLevel(level)
-else:
-    logging.disable()
 
 
 title = __title__.replace(" ", "-")
 
 
-def init_logger():
+def init_logger(logger: logging.Logger):
+    if (level := settings.value("logging/level", type=str)) != "Disabled":
+        logger.setLevel(level)
+    else:
+        logging.disable()
+
     logdir = QtCore.QStandardPaths.standardLocations(
         QtCore.QStandardPaths.StandardLocation.AppDataLocation
     )[0]
@@ -52,12 +51,12 @@ class MainApplication(QtWidgets.QApplication):
         self.shutting_down = False
 
     def init_ui(self):
-        init_logger()
-
         self.gotify_client = gotify.GotifyClient(
             settings.value("Server/url", type=str),
             settings.value("Server/client_token", type=str),
         )
+
+        self.downloader = Downloader()
 
         self.application_model = ApplicationModel()
         self.refresh_applications()
@@ -85,7 +84,7 @@ class MainApplication(QtWidgets.QApplication):
         ):
             for i, application in enumerate(applications):
                 icon = QtGui.QIcon(
-                    downloader.get_filename(
+                    self.downloader.get_filename(
                         f"{self.gotify_client.url}/{application.image}"
                     )
                 )
@@ -121,7 +120,7 @@ class MainApplication(QtWidgets.QApplication):
         if settings.value("tray/notifications/icon/show", type=bool):
             if application_item := self.application_model.itemFromId(message.appid):
                 image_url = f"{self.gotify_client.url}/{application_item.data(ApplicationItemDataRole.ApplicationRole).image}"
-                icon = QtGui.QIcon(downloader.get_filename(image_url))
+                icon = QtGui.QIcon(self.downloader.get_filename(image_url))
             else:
                 logger.error(
                     f"MainWindow.new_message_callback: App id {message.appid} could not be found. Refreshing applications."
@@ -140,7 +139,7 @@ class MainApplication(QtWidgets.QApplication):
         )
 
     def settings_callback(self):
-        settings_dialog = SettingsDialog(self)
+        settings_dialog = SettingsDialog()
         accepted = settings_dialog.exec()
 
         if accepted and settings_dialog.settings_changed:
@@ -191,6 +190,8 @@ def start_gui():
     app.setQuitOnLastWindowClosed(False)
     app.setWindowIcon(QtGui.QIcon("gotify_tray/gui/images/gotify-small.png"))
     app.setStyle("fusion")
+
+    init_logger(logger)
 
     # prevent multiple instances
     if (app.acquire_lock() or "--no-lock" in sys.argv) and verify_server():

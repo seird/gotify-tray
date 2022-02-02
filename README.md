@@ -40,7 +40,7 @@ $ python entry_point.py
 ### Create a pyinstaller executable
 
 ```
-$ pip install pyinstaller==4.4
+$ pip install pyinstaller
 $ pyinstaller gotify-tray.spec
 ```
 An executable is created at `dist/gotify-tray/`.

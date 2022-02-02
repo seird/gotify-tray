@@ -45,7 +45,7 @@ class Cache(object):
         if q:
             # Cache hit
             filename, cached_on = q
-            return filename
+            return filename if os.path.exists(filename) else ""
         else:
             # Cache miss
             return ""

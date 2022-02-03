@@ -17,13 +17,16 @@ class Listener(QtCore.QThread):
     opened = QtCore.pyqtSignal()
     closed = QtCore.pyqtSignal(int, str)
 
-    def __init__(self, hostname: str, client_token: str):
+    def __init__(self, url: str, client_token: str):
         super(Listener, self).__init__()
-        self.hostname = hostname
-        self.client_token = client_token
+
+        qurl = QtCore.QUrl(url)
+        qurl.setScheme("wss")
+        qurl.setPath("/stream")
+        qurl.setQuery(f"token={client_token}")
 
         self.ws = websocket.WebSocketApp(
-            f"wss://{self.hostname}/stream?token={self.client_token}",
+            qurl.toString(),
             on_message=self._on_message,
             on_error=self._on_error,
             on_open=self._on_open,

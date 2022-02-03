@@ -69,8 +69,7 @@ class GotifyApplication(GotifySession):
 class GotifyClient(GotifySession):
     def __init__(self, url: str, client_token: str):
         super(GotifyClient, self).__init__(url, client_token)
-        self.hostname = self.url.lstrip("https://").lstrip("http://")
-        self.listener = Listener(self.hostname, client_token)
+        self.listener = Listener(url, client_token)
 
     """
     Application

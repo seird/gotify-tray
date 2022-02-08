@@ -50,7 +50,7 @@ class GotifyMessageModel(AttributeDict):
         d.update(
             {
                 "date": datetime.datetime.fromisoformat(
-                    d["date"].split(".")[0] + ".000000+00:00"
+                    d["date"].split(".")[0] + ".000000+" + d["date"].split("+")[-1]
                 ).astimezone(local_timezone)
             }
         )

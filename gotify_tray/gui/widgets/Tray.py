@@ -27,6 +27,11 @@ class Tray(QtWidgets.QSystemTrayIcon):
 
         menu.addSeparator()
 
+        self.actionShowWindow = QtGui.QAction("Show Window", self)
+        menu.addAction(self.actionShowWindow)
+
+        menu.addSeparator()
+
         self.actionReconnect = QtGui.QAction("Reconnect", self)
         menu.addAction(self.actionReconnect)
 

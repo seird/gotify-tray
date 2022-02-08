@@ -5,7 +5,7 @@ from gotify_tray.database import Settings
 from gotify_tray.utils import verify_server
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from .designs.widget_settings import Ui_Dialog
+from ..designs.widget_settings import Ui_Dialog
 
 
 logger = logging.getLogger("gotify-tray")

@@ -38,6 +38,32 @@ class BaseTask(QtCore.QThread):
             self.running = False
 
 
+class DeleteMessageTask(BaseTask):
+    deleted = pyqtSignal(bool)
+
+    def __init__(self, message_id: int, gotify_client: gotify.GotifyClient):
+        super(DeleteMessageTask, self).__init__()
+        self.message_id = message_id
+        self.gotify_client = gotify_client
+
+    def task(self):
+        success = self.gotify_client.delete_message(self.message_id)
+        self.deleted.emit(success)
+
+
+class DeleteApplicationMessagesTask(BaseTask):
+    deleted = pyqtSignal(bool)
+
+    def __init__(self, appid: int, gotify_client: gotify.GotifyClient):
+        super(DeleteApplicationMessagesTask, self).__init__()
+        self.appid = appid
+        self.gotify_client = gotify_client
+
+    def task(self):
+        success = self.gotify_client.delete_application_messages(self.appid)
+        self.deleted.emit(success)
+
+
 class DeleteAllMessagesTask(BaseTask):
     deleted = pyqtSignal(bool)
 
@@ -60,6 +86,39 @@ class GetApplicationsTask(BaseTask):
 
     def task(self):
         result = self.gotify_client.get_applications()
+        if isinstance(result, gotify.GotifyErrorModel):
+            self.error.emit(result)
+        else:
+            self.success.emit(result)
+
+
+class GetApplicationMessagesTask(BaseTask):
+    success = pyqtSignal(gotify.GotifyPagedMessagesModel)
+    error = pyqtSignal(gotify.GotifyErrorModel)
+
+    def __init__(self, appid: int, gotify_client: gotify.GotifyClient):
+        super(GetApplicationMessagesTask, self).__init__()
+        self.appid = appid
+        self.gotify_client = gotify_client
+
+    def task(self):
+        result = self.gotify_client.get_application_messages(self.appid)
+        if isinstance(result, gotify.GotifyErrorModel):
+            self.error.emit(result)
+        else:
+            self.success.emit(result)
+
+
+class GetMessagesTask(BaseTask):
+    success = pyqtSignal(gotify.GotifyPagedMessagesModel)
+    error = pyqtSignal(gotify.GotifyErrorModel)
+
+    def __init__(self, gotify_client: gotify.GotifyClient):
+        super(GetMessagesTask, self).__init__()
+        self.gotify_client = gotify_client
+
+    def task(self):
+        result = self.gotify_client.get_messages()
         if isinstance(result, gotify.GotifyErrorModel):
             self.error.emit(result)
         else:

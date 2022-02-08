@@ -2,7 +2,7 @@ from gotify_tray.gotify.models import GotifyVersionModel
 from gotify_tray.tasks import VerifyServerInfoTask
 from PyQt6 import QtWidgets
 
-from .designs.widget_server import Ui_Dialog
+from ..designs.widget_server import Ui_Dialog
 
 
 class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):

@@ -1,6 +1,6 @@
 import enum
 
-from typing import Optional
+from typing import Optional, Union
 from PyQt6 import QtCore, QtGui
 from gotify_tray import gotify
 from gotify_tray.database import Settings
@@ -20,12 +20,15 @@ class ApplicationModelItem(QtGui.QStandardItem):
         application: gotify.GotifyApplicationModel,
         icon: Optional[QtGui.QIcon] = None,
         *args,
-        **kwargs
+        **kwargs,
     ):
         super(ApplicationModelItem, self).__init__(application.name)
         self.setDropEnabled(False)
         self.setData(application, ApplicationItemDataRole.ApplicationRole)
         self.setData(icon, ApplicationItemDataRole.IconRole)
+        font = QtGui.QFont()
+        font.fromString(settings.value("ApplicationItem/font", type=str))
+        self.setFont(font)
         if icon:
             self.setIcon(icon)
 
@@ -36,6 +39,16 @@ class ApplicationModelItem(QtGui.QStandardItem):
         )
 
 
+class ApplicationAllMessagesItem(QtGui.QStandardItem):
+    def __init__(self, *args, **kwargs):
+        super(ApplicationAllMessagesItem, self).__init__("ALL MESSAGES")
+        self.setDropEnabled(False)
+        self.setDragEnabled(False)
+        font = QtGui.QFont()
+        font.fromString(settings.value("ApplicationItem/font", type=str))
+        self.setFont(font)
+
+
 class ApplicationModel(QtGui.QStandardItemModel):
     def __init__(self):
         super(ApplicationModel, self).__init__()
@@ -43,10 +56,17 @@ class ApplicationModel(QtGui.QStandardItemModel):
             ApplicationModelItem(gotify.GotifyApplicationModel({"name": ""}), None)
         )
 
-    def setItem(self, row: int, column: int, item: ApplicationModelItem,) -> None:
+    def setItem(
+        self,
+        row: int,
+        column: int,
+        item: Union[ApplicationModelItem, ApplicationAllMessagesItem],
+    ) -> None:
         super(ApplicationModel, self).setItem(row, column, item)
 
-    def itemFromIndex(self, index: QtCore.QModelIndex) -> ApplicationModelItem:
+    def itemFromIndex(
+        self, index: QtCore.QModelIndex
+    ) -> Union[ApplicationModelItem, ApplicationAllMessagesItem]:
         return super(ApplicationModel, self).itemFromIndex(index)
 
     def itemFromId(self, appid: int) -> Optional[ApplicationModelItem]:

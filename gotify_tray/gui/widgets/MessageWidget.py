@@ -27,19 +27,19 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
 
         font_title.fromString(settings.value("MessageWidget/font/title", type=str))
         font_date.fromString(settings.value("MessageWidget/font/date", type=str))
-        font_content.fromString(settings.value("MessageWidget/font/content", type=str))
+        font_content.fromString(settings.value("MessageWidget/font/message", type=str))
 
         self.label_title.setFont(font_title)
         self.label_date.setFont(font_date)
-        self.text_message.setFont(font_content)
+        self.label_message.setFont(font_content)
 
         # Display message contents
         self.label_title.setText(message.title)
         self.label_date.setText(message.date.strftime("%Y-%m-%d, %H:%M"))
 
         if markdown := message.get("extras", {}).get("client::display", {}).get("contentType") == "text/markdown":
-            self.text_message.setTextFormat(QtCore.Qt.TextFormat.MarkdownText)
-        self.text_message.setText(convert_links(message.message))
+            self.label_message.setTextFormat(QtCore.Qt.TextFormat.MarkdownText)
+        self.label_message.setText(convert_links(message.message))
 
         # Show the application icon
         if image_path:

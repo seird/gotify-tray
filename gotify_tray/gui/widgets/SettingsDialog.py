@@ -2,6 +2,9 @@ import logging
 import webbrowser
 
 from gotify_tray.database import Settings
+from gotify_tray.gotify import GotifyMessageModel
+from gotify_tray.gui.models import MessagesModelItem
+from . import MessageWidget
 from gotify_tray.utils import verify_server
 from PyQt6 import QtCore, QtGui, QtWidgets
 
@@ -31,11 +34,6 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             QtWidgets.QDialogButtonBox.StandardButton.Apply
         ).setEnabled(False)
 
-        # Icons
-        self.cb_icons_notification.setChecked(
-            settings.value("tray/notifications/icon/show", type=bool)
-        )
-
         # Notifications
         self.spin_priority.setValue(
             settings.value("tray/notifications/priority", type=int)
@@ -57,6 +55,20 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         )
         self.combo_logging.setCurrentText(settings.value("logging/level", type=str))
 
+        # Fonts
+        self.message_widget = MessageWidget(
+            MessagesModelItem(
+                GotifyMessageModel(
+                    {
+                        "date": "2021-01-01T11:11:00.928224+01:00",
+                        "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin luctus.",
+                        "title": "Title",
+                    }
+                )
+            )
+        )
+        self.layout_fonts_message.addWidget(self.message_widget)
+
     def change_server_info_callback(self):
         self.server_changed = verify_server(force_new=True)
 
@@ -66,25 +78,21 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             QtWidgets.QDialogButtonBox.StandardButton.Apply
         ).setEnabled(True)
 
-    def reset_settings_callback(self):
-        response = QtWidgets.QMessageBox.warning(
-            self,
-            "Are you sure?",
-            "Reset all settings?",
-            QtWidgets.QMessageBox.StandardButton.Ok
-            | QtWidgets.QMessageBox.StandardButton.Cancel,
-            defaultButton=QtWidgets.QMessageBox.StandardButton.Cancel,
+    def change_font_callback(self, name: str):
+        label: QtWidgets.QLabel = getattr(self.message_widget, "label_" + name)
+
+        font, accepted = QtWidgets.QFontDialog.getFont(
+            label.font(), self, f"Select a {name} font"
         )
-        if response == QtWidgets.QMessageBox.StandardButton.Ok:
-            settings.clear()
+
+        if accepted:
+            self.settings_changed_callback()
+            label.setFont(font)
 
     def link_callbacks(self):
         self.buttonBox.button(
             QtWidgets.QDialogButtonBox.StandardButton.Apply
         ).clicked.connect(self.apply_settings)
-
-        # Icons
-        self.cb_icons_notification.stateChanged.connect(self.settings_changed_callback)
 
         # Notifications
         self.spin_priority.valueChanged.connect(self.settings_changed_callback)
@@ -99,12 +107,18 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             lambda: webbrowser.open(logger.root.handlers[0].baseFilename)
         )
 
-    def apply_settings(self):
-        # Icons
-        settings.setValue(
-            "tray/notifications/icon/show", self.cb_icons_notification.isChecked()
+        # Fonts
+        self.pb_font_message_title.clicked.connect(
+            lambda: self.change_font_callback("title")
+        )
+        self.pb_font_message_date.clicked.connect(
+            lambda: self.change_font_callback("date")
+        )
+        self.pb_font_message_content.clicked.connect(
+            lambda: self.change_font_callback("message")
         )
 
+    def apply_settings(self):
         # Priority
         settings.setValue("tray/notifications/priority", self.spin_priority.value())
         settings.setValue("tray/notifications/duration_ms", self.spin_duration.value())
@@ -117,6 +131,19 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         else:
             logging.disable(logging.NOTSET)
             logger.setLevel(selected_level)
+
+        # Fonts
+        settings.setValue(
+            "MessageWidget/font/title",
+            self.message_widget.label_title.font().toString(),
+        )
+        settings.setValue(
+            "MessageWidget/font/date", self.message_widget.label_date.font().toString()
+        )
+        settings.setValue(
+            "MessageWidget/font/message",
+            self.message_widget.label_message.font().toString(),
+        )
 
         self.settings_changed = False
         self.buttonBox.button(

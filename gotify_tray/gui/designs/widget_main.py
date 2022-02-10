@@ -50,6 +50,7 @@ class Ui_MainWindow(object):
         self.listView_messages = QtWidgets.QListView(self.verticalLayoutWidget)
         self.listView_messages.setAutoScroll(True)
         self.listView_messages.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.listView_messages.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollMode.ScrollPerPixel)
         self.listView_messages.setObjectName("listView_messages")
         self.verticalLayout_2.addWidget(self.listView_messages)
         self.gridLayout.addWidget(self.splitter, 0, 0, 1, 1)

@@ -17,7 +17,7 @@ from gotify_tray.tasks import (
     GetMessagesTask,
     ServerConnectionWatchdogTask,
 )
-from gotify_tray.utils import verify_server
+from gotify_tray.utils import get_abs_path, verify_server
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from ..__version__ import __title__
@@ -345,7 +345,9 @@ def start_gui():
     app = MainApplication(sys.argv)
     app.setApplicationName(title)
     app.setQuitOnLastWindowClosed(False)
-    app.setWindowIcon(QtGui.QIcon("gotify_tray/gui/images/gotify-small.png"))
+    app.setWindowIcon(
+        QtGui.QIcon(get_abs_path("gotify_tray/gui/images/gotify-small.png"))
+    )
     app.setStyle("fusion")
 
     init_logger(logger)

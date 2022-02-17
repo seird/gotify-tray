@@ -68,10 +68,7 @@ class Listener(QtCore.QThread):
 
     def run(self):
         self.running = True
-        logger.debug(f"Listener: waiting {self.wait_time} seconds before connecting.")
-
         try:
-            time.sleep(self.wait_time)
             self.ws.run_forever()
         finally:
             logger.debug("Listener: stopped.")

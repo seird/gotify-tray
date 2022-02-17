@@ -175,3 +175,12 @@ class ServerConnectionWatchdogTask(BaseTask):
                 logger.debug(
                     "ServerConnectionWatchdogTask: gotify_client is not listening"
                 )
+
+
+class SleepTask(BaseTask):
+    def __init__(self, secs: int):
+        super(SleepTask, self).__init__()
+        self.secs = secs
+
+    def task(self):
+        time.sleep(self.secs)

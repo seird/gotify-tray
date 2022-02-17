@@ -16,6 +16,7 @@ from gotify_tray.tasks import (
     GetApplicationMessagesTask,
     GetMessagesTask,
     ServerConnectionWatchdogTask,
+    SleepTask,
 )
 from gotify_tray.utils import get_abs_path, verify_server
 from PyQt6 import QtCore, QtGui, QtWidgets
@@ -53,7 +54,7 @@ def init_logger(logger: logging.Logger):
         os.mkdir(logdir)
     logging.basicConfig(
         filename=os.path.join(logdir, f"{title}.log"),
-        format="%(levelname)s > %(name)s > %(asctime)s > %(message)s",
+        format="%(levelname)s > %(name)s > %(asctime)s > %(filename)20s:%(lineno)3s - %(funcName)20s() > %(message)s",
     )
 
 
@@ -131,14 +132,17 @@ class MainApplication(QtWidgets.QApplication):
         self.main_window.set_connecting()
         self.tray.set_icon_error()
         if not self.shutting_down:
-            self.gotify_client.reconnect()
+            self.gotify_client.increase_wait_time()
+            self.sleep_task = SleepTask(self.gotify_client.get_wait_time())
+            self.sleep_task.finished.connect(self.gotify_client.reconnect)
+            self.sleep_task.start()
 
     def reconnect_callback(self):
         if not self.gotify_client.is_listening():
             self.gotify_client.listener.reset_wait_time()
+            self.gotify_client.reconnect()
         else:
             self.gotify_client.stop(reset_wait=True)
-        self.gotify_client.reconnect(increase_wait_time=False)
 
     def insert_message(
         self,

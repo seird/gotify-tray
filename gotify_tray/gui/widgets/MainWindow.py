@@ -58,8 +58,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         size = settings.value("MainWindow/button/size", type=int)
         self.pb_refresh.setFixedSize(QtCore.QSize(size, size))
         self.pb_delete_all.setFixedSize(QtCore.QSize(size, size))
-        self.pb_refresh.setIconSize(QtCore.QSize(0.7 * size, 0.7 * size))
-        self.pb_delete_all.setIconSize(QtCore.QSize(0.9 * size, 0.9 * size))
+        self.pb_refresh.setIconSize(QtCore.QSize(int(0.7 * size), int(0.7 * size)))
+        self.pb_delete_all.setIconSize(QtCore.QSize(int(0.9 * size), int(0.9 * size)))
 
         size = settings.value("MainWindow/application/icon/size", type=int)
         self.listView_applications.setIconSize(QtCore.QSize(size, size))

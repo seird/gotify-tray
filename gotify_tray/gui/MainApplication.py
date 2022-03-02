@@ -16,7 +16,6 @@ from gotify_tray.tasks import (
     GetApplicationMessagesTask,
     GetMessagesTask,
     ServerConnectionWatchdogTask,
-    SleepTask,
 )
 from gotify_tray.utils import get_abs_path, verify_server
 from PyQt6 import QtCore, QtGui, QtWidgets
@@ -133,9 +132,9 @@ class MainApplication(QtWidgets.QApplication):
         self.tray.set_icon_error()
         if not self.shutting_down:
             self.gotify_client.increase_wait_time()
-            self.sleep_task = SleepTask(self.gotify_client.get_wait_time())
-            self.sleep_task.finished.connect(self.gotify_client.reconnect)
-            self.sleep_task.start()
+            QtCore.QTimer.singleShot(
+                self.gotify_client.get_wait_time() * 1000, self.gotify_client.reconnect
+            )
 
     def reconnect_callback(self):
         if not self.gotify_client.is_listening():

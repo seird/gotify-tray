@@ -15,6 +15,11 @@ A tray notification application for receiving messages from a [Gotify server](ht
 
 [Download the latest release.](https://github.com/seird/gotify-tray/releases/latest)
 
+or, install via pip:
+```
+$ pip install gotify-tray
+```
+
 
 ## Supported Platforms
 

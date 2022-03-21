@@ -3,7 +3,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from ..models.MessagesModel import MessageItemDataRole, MessagesModelItem
 from ..designs.widget_message import Ui_Form
 from gotify_tray.database import Settings
-from gotify_tray.utils import convert_links
+from gotify_tray.utils import convert_links, get_abs_path
 
 
 settings = Settings("gotify-tray")
@@ -62,7 +62,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
             )
         )
         
-        self.pb_delete.setIcon(QtGui.QIcon("gotify_tray/gui/images/trashcan.svg"))
+        self.pb_delete.setIcon(QtGui.QIcon(get_abs_path("gotify_tray/gui/images/trashcan.svg")))
         self.pb_delete.setIconSize(QtCore.QSize(24, 24))
 
         self.link_callbacks()

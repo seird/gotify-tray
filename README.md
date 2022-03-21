@@ -46,7 +46,7 @@ $ python -m gotify_tray
 
 - Install the pip package:
     ```
-    $ pip install dist/gotify_tray-0.1.3-py3-none-any.whl
+    $ pip install dist/gotify_tray-0.1.4-py3-none-any.whl
     ```
 
 - Launch:

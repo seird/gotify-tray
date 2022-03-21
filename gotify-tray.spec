@@ -2,7 +2,7 @@
 
 block_cipher = None
 
-a = Analysis(['entry_point.py'],
+a = Analysis(['gotify_tray/__main__.py'],
              pathex=[os.getcwd()],
              binaries=[],
              datas=[('gotify_tray/gui/images', 'gotify_tray/gui/images')],

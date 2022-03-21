@@ -34,8 +34,25 @@ $ pip install -r requirements.txt
 ### Run from source
 
 ```
-$ python entry_point.py
+$ python -m gotify_tray
 ```
+
+### Create and install a pip package
+
+- Create the pip package:
+    ```
+    $ python -m build
+    ```
+
+- Install the pip package:
+    ```
+    $ pip install dist/gotify_tray-0.1.3-py3-none-any.whl
+    ```
+
+- Launch:
+    ```
+    $ gotify-tray
+    ```
 
 ### Create a pyinstaller executable
 
@@ -45,6 +62,13 @@ $ pyinstaller gotify-tray.spec
 ```
 An executable is created at `dist/gotify-tray/`.
 
+### Inno setup (Windows)
+
+Create an installer for windows with inno setup from pyinstaller output:
+
+```
+$ iscc gotify-tray.iss
+```
 
 ### Create a deb package
 
@@ -56,15 +80,6 @@ $ make build
 $ sudo make install
 ```
 
-### (Inno setup (Windows))
-
-Create an installer for windows with inno setup:
-
-```
-$ iscc gotify-tray.iss
-```
-
-
 ## Images
 
 Windows 10                                         |  KDE
@@ -75,7 +90,7 @@ Windows 10                                         |  KDE
 
 ## Requirements
 
-- python 3.9
+- python >=3.9
 - PyQt6
 - requests
 - websocket-client

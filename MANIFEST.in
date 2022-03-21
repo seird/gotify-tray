@@ -1,0 +1,3 @@
+include README.md version.txt
+include gotifytray/gui/images/*.png
+include gotifytray/gui/images/*.svg

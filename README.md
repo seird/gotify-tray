@@ -95,7 +95,7 @@ Windows 10                                         |  KDE
 
 ## Requirements
 
-- python >=3.9
+- python >=3.8
 - PyQt6
 - requests
 - websocket-client

@@ -183,13 +183,13 @@ class GotifyClient(GotifySession):
         self.listener.start()
 
     def opened_callback(self, user_callback: Callable[[], None] = None):
+        self.reset_wait_time()
         if user_callback:
             user_callback()
 
     def reconnect(self):
         if not self.is_listening():
             self.listener.start()
-            self.reset_wait_time()
 
     def stop(self, reset_wait: bool = False):
         if reset_wait:

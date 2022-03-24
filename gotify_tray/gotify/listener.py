@@ -50,6 +50,7 @@ class Listener(QtCore.QThread):
         self.new_message.emit(GotifyMessageModel(json.loads(message)))
 
     def _on_error(self, ws: websocket.WebSocketApp, error: Exception):
+        logger.error(f"websocket error: {error}")
         self.error.emit(error)
 
     def _on_open(self, ws: websocket.WebSocketApp):

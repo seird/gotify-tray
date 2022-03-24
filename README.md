@@ -4,12 +4,6 @@
 A tray notification application for receiving messages from a [Gotify server](https://github.com/gotify/server).
 
 
-<p align="center">
-    <a href="https://github.com/gotify/logo">
-        <img height="370px" src="https://raw.githubusercontent.com/gotify/logo/master/gotify-logo.png" />
-    </a>
-</p>
-
 ## Download
 
 
@@ -21,12 +15,32 @@ $ pip install gotify-tray
 ```
 
 
-## Supported Platforms
+## Features
 
-See https://doc.qt.io/qt-6/qsystemtrayicon.html#details
+- Receive gotify messages in the native notification area.
+- Reconnect after wake from sleep or losing network connection.
+- Disable notification banners for low priority messages.
+- Manually delete received messages.
+- Go through a history of all previously received messages.
 
 
-## Manual Install
+## Images
+
+### Notification banners
+
+Windows 10                                         |  KDE
+:-------------------------------------------------:|:---------------------------------------------------------:
+![notification](images/notification.png)           |  ![kde_notification](images/kde_notification.png)
+![notification](images/notification_centre.png)    |  ![kde_notification](images/kde_notification_centre.png)
+
+### Main window
+![main window](images/main_window.png)
+
+### Settings window
+![settings](images/settings.png)
+
+
+## Manual Installation
 
 Get the source and install the requirements:
 
@@ -36,10 +50,27 @@ $ cd gotify-tray
 $ pip install -r requirements.txt
 ```
 
+
 ### Run from source
 
 ```
 $ python -m gotify_tray
+```
+
+### Create a pyinstaller executable
+
+```
+$ pip install pyinstaller
+$ pyinstaller gotify-tray.spec
+```
+An executable is created at `dist/gotify-tray/`.
+
+### Inno setup (Windows)
+
+Create an installer for windows with inno setup from pyinstaller output:
+
+```
+$ iscc gotify-tray.iss
 ```
 
 ### Create and install a pip package
@@ -59,22 +90,6 @@ $ python -m gotify_tray
     $ gotify-tray
     ```
 
-### Create a pyinstaller executable
-
-```
-$ pip install pyinstaller
-$ pyinstaller gotify-tray.spec
-```
-An executable is created at `dist/gotify-tray/`.
-
-### Inno setup (Windows)
-
-Create an installer for windows with inno setup from pyinstaller output:
-
-```
-$ iscc gotify-tray.iss
-```
-
 ### Create a deb package
 
 ```
@@ -84,13 +99,6 @@ $ make build
 
 $ sudo make install
 ```
-
-## Images
-
-Windows 10                                         |  KDE
-:-------------------------------------------------:|:---------------------------------------------------------:
-![notification](images/notification.png)           |  ![kde_notification](images/kde_notification.png)
-![notification](images/notification_centre.png)    |  ![kde_notification](images/kde_notification_centre.png)
 
 
 ## Requirements

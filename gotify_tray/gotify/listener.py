@@ -21,7 +21,7 @@ class Listener(QtCore.QThread):
         super(Listener, self).__init__()
 
         qurl = QtCore.QUrl(url)
-        qurl.setScheme("wss")
+        qurl.setScheme("wss" if qurl.scheme() == "https" else "ws")
         qurl.setPath("/stream")
         qurl.setQuery(f"token={client_token}")
 

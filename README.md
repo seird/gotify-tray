@@ -82,7 +82,7 @@ $ iscc gotify-tray.iss
 
 - Install the pip package:
     ```
-    $ pip install dist/gotify_tray-0.1.5-py3-none-any.whl
+    $ pip install dist/gotify_tray-0.1.6-py3-none-any.whl
     ```
 
 - Launch:

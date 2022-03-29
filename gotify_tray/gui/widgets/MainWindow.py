@@ -108,6 +108,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.application_selection_changed.emit(item)
 
     def delete_all_callback(self):
+        if (
+            self.messages_model.rowCount() == 0
+            or QtWidgets.QMessageBox.warning(
+                self,
+                "Are you sure?",
+                "Delete all messages?",
+                QtWidgets.QMessageBox.StandardButton.Ok
+                | QtWidgets.QMessageBox.StandardButton.Cancel,
+                defaultButton=QtWidgets.QMessageBox.StandardButton.Cancel,
+            )
+            != QtWidgets.QMessageBox.StandardButton.Ok
+        ):
+            return
+
         index = self.currentApplicationIndex()
         if item := self.application_model.itemFromIndex(index):
             self.delete_all.emit(item)

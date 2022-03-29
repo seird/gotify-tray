@@ -22,6 +22,7 @@ $ pip install gotify-tray
 - Disable notification banners for low priority messages.
 - Manually delete received messages.
 - Go through a history of all previously received messages.
+- Receive missed messages after losing network connection.
 
 
 ## Images
@@ -30,14 +31,14 @@ $ pip install gotify-tray
 
 Windows 10                                         |  KDE
 :-------------------------------------------------:|:---------------------------------------------------------:
-![notification](images/notification.png)           |  ![kde_notification](images/kde_notification.png)
-![notification](images/notification_centre.png)    |  ![kde_notification](images/kde_notification_centre.png)
+![notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/notification.png)           |  ![kde_notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/kde_notification.png)
+![notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/notification_centre.png)    |  ![kde_notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/kde_notification_centre.png)
 
 ### Main window
-![main window](images/main_window.png)
+![main window](https://raw.githubusercontent.com/seird/gotify-tray/master/images/main_window.png)
 
 ### Settings window
-![settings](images/settings.png)
+![settings](https://raw.githubusercontent.com/seird/gotify-tray/master/images/settings.png)
 
 
 ## Manual Installation

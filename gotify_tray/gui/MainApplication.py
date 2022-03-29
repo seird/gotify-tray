@@ -80,6 +80,8 @@ class MainApplication(QtWidgets.QApplication):
         self.tray = Tray()
         self.tray.show()
 
+        self.first_connect = True
+
         self.gotify_client.listen(
             new_message_callback=self.new_message_callback,
             opened_callback=self.listener_opened_callback,
@@ -123,9 +125,38 @@ class MainApplication(QtWidgets.QApplication):
                 i + 1, 0, ApplicationModelItem(application, icon),
             )
 
+    def update_last_id(self, i: int):
+        if i > settings.value("message/last_id", type=int):
+            settings.setValue("message/last_id", i)
+
     def listener_opened_callback(self):
         self.main_window.set_active()
         self.tray.set_icon_ok()
+
+        if self.first_connect:
+            # Do not check for missed messages on launch
+            self.first_connect = False
+            return
+
+        def get_missed_messages_callback(page: gotify.GotifyPagedMessagesModel):
+            last_id = settings.value("message/last_id", type=int)
+            ids = []
+
+            page.messages.reverse()
+            for message in page.messages:
+                if message.id > last_id:
+                    if settings.value("message/check_missed/notify", type=bool):
+                        self.new_message_callback(message)
+                    else:
+                        self.add_message_to_model(message)
+                    ids.append(message.id)
+
+            if ids:
+                self.update_last_id(max(ids))
+
+        self.get_missed_messages_task = GetMessagesTask(self.gotify_client)
+        self.get_missed_messages_task.success.connect(get_missed_messages_callback)
+        self.get_missed_messages_task.start()
 
     def listener_closed_callback(self, close_status_code: int, close_msg: str):
         self.main_window.set_connecting()
@@ -149,6 +180,7 @@ class MainApplication(QtWidgets.QApplication):
         message: gotify.GotifyMessageModel,
         application: gotify.GotifyApplicationModel,
     ):
+        self.update_last_id(message.id)
         message_item = MessagesModelItem(message)
         self.messages_model.insertRow(row, message_item)
         self.main_window.insert_message_widget(

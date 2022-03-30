@@ -2,6 +2,7 @@ DEFAULT_SETTINGS = {
     "message/check_missed/notify": True,
     "message/last_id": 0,
     "logging/level": "Disabled",
+    "shortcuts/quit": "Ctrl+Q",
     "tray/notifications/priority": 5,
     "tray/notifications/duration_ms": 5000,
     "tray/notifications/icon/show": True,

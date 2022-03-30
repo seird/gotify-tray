@@ -91,6 +91,7 @@ class MainApplication(QtWidgets.QApplication):
         self.watchdog = ServerConnectionWatchdogTask(self.gotify_client)
 
         self.link_callbacks()
+        self.init_shortcuts()
 
         self.watchdog.start()
 
@@ -354,6 +355,13 @@ class MainApplication(QtWidgets.QApplication):
         self.main_window.delete_message.connect(self.delete_message_callback)
 
         self.watchdog.closed.connect(lambda: self.listener_closed_callback(None, None))
+
+    def init_shortcuts(self):
+        self.shortcut_quit = QtGui.QShortcut(
+            QtGui.QKeySequence.fromString(settings.value("shortcuts/quit", type=str)),
+            self.main_window,
+        )
+        self.shortcut_quit.activated.connect(self.quit)
 
     def acquire_lock(self) -> bool:
         temp_dir = tempfile.gettempdir()

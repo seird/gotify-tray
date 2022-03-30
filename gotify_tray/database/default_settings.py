@@ -1,5 +1,5 @@
 DEFAULT_SETTINGS = {
-    "message/check_missed/notify": False,
+    "message/check_missed/notify": True,
     "message/last_id": 0,
     "logging/level": "Disabled",
     "tray/notifications/priority": 5,

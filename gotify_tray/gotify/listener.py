@@ -1,6 +1,5 @@
 import json
 import logging
-import time
 
 import websocket
 from PyQt6 import QtCore
@@ -20,9 +19,9 @@ class Listener(QtCore.QThread):
     def __init__(self, url: str, client_token: str):
         super(Listener, self).__init__()
 
-        qurl = QtCore.QUrl(url)
+        qurl = QtCore.QUrl(url.rstrip("/") + "/")
         qurl.setScheme("wss" if qurl.scheme() == "https" else "ws")
-        qurl.setPath("/stream")
+        qurl.setPath(qurl.path() + "stream")
         qurl.setQuery(f"token={client_token}")
 
         self.ws = websocket.WebSocketApp(

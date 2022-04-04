@@ -109,6 +109,13 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             self.export_settings_task.start()
             settings.setValue("settings/export_path", fname)
 
+    def import_success_callback(self):
+        response = QtWidgets.QMessageBox.information(
+            self, "Restart to apply settings", "Restart to apply settings"
+        )
+        if response == QtWidgets.QMessageBox.StandardButton.Ok:
+            self.quit_requested.emit()
+
     def import_callback(self):
         fname = QtWidgets.QFileDialog.getOpenFileName(
             self,
@@ -118,6 +125,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         )[0]
         if fname and os.path.exists(fname):
             self.import_settings_task = ImportSettingsTask(fname)
+            self.import_settings_task.success.connect(self.import_success_callback)
             self.import_settings_task.start()
 
     def reset_callback(self):

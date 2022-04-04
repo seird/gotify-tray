@@ -15,9 +15,10 @@ class Ui_Dialog(object):
         Dialog.resize(300, 130)
         self.gridLayout = QtWidgets.QGridLayout(Dialog)
         self.gridLayout.setObjectName("gridLayout")
-        self.pb_test = QtWidgets.QPushButton(Dialog)
-        self.pb_test.setObjectName("pb_test")
-        self.gridLayout.addWidget(self.pb_test, 1, 4, 1, 1)
+        self.label_server_info = QtWidgets.QLabel(Dialog)
+        self.label_server_info.setText("")
+        self.label_server_info.setObjectName("label_server_info")
+        self.gridLayout.addWidget(self.label_server_info, 1, 1, 1, 2)
         self.formLayout = QtWidgets.QFormLayout()
         self.formLayout.setObjectName("formLayout")
         self.label = QtWidgets.QLabel(Dialog)
@@ -32,30 +33,35 @@ class Ui_Dialog(object):
         self.line_token = QtWidgets.QLineEdit(Dialog)
         self.line_token.setObjectName("line_token")
         self.formLayout.setWidget(1, QtWidgets.QFormLayout.ItemRole.FieldRole, self.line_token)
-        self.gridLayout.addLayout(self.formLayout, 0, 1, 1, 4)
+        self.gridLayout.addLayout(self.formLayout, 0, 1, 1, 5)
+        self.pb_test = QtWidgets.QPushButton(Dialog)
+        self.pb_test.setObjectName("pb_test")
+        self.gridLayout.addWidget(self.pb_test, 1, 5, 1, 1)
         self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.buttonBox.setObjectName("buttonBox")
-        self.gridLayout.addWidget(self.buttonBox, 2, 4, 1, 1)
+        self.gridLayout.addWidget(self.buttonBox, 2, 5, 1, 1)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout.addItem(spacerItem, 1, 3, 1, 1)
-        self.label_server_info = QtWidgets.QLabel(Dialog)
-        self.label_server_info.setText("")
-        self.label_server_info.setObjectName("label_server_info")
-        self.gridLayout.addWidget(self.label_server_info, 1, 1, 1, 2)
+        self.pb_import = QtWidgets.QPushButton(Dialog)
+        self.pb_import.setMaximumSize(QtCore.QSize(30, 16777215))
+        self.pb_import.setObjectName("pb_import")
+        self.gridLayout.addWidget(self.pb_import, 1, 4, 1, 1)
 
         self.retranslateUi(Dialog)
-        self.buttonBox.accepted.connect(Dialog.accept)
-        self.buttonBox.rejected.connect(Dialog.reject)
+        self.buttonBox.accepted.connect(Dialog.accept) # type: ignore
+        self.buttonBox.rejected.connect(Dialog.reject) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.pb_test.setText(_translate("Dialog", "Test"))
         self.label.setText(_translate("Dialog", "Server url:"))
         self.label_2.setText(_translate("Dialog", "Client token:"))
+        self.pb_test.setText(_translate("Dialog", "Test"))
+        self.pb_import.setToolTip(_translate("Dialog", "Import settings"))
+        self.pb_import.setText(_translate("Dialog", "..."))
 
 
 if __name__ == "__main__":

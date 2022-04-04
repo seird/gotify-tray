@@ -315,6 +315,7 @@ class MainApplication(QtWidgets.QApplication):
 
     def settings_callback(self):
         settings_dialog = SettingsDialog()
+        settings_dialog.quit_requested.connect(self.quit)
         accepted = settings_dialog.exec()
 
         if accepted and settings_dialog.settings_changed:

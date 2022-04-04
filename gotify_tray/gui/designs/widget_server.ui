@@ -14,14 +14,14 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="4">
-    <widget class="QPushButton" name="pb_test">
+   <item row="1" column="1" colspan="2">
+    <widget class="QLabel" name="label_server_info">
      <property name="text">
-      <string>Test</string>
+      <string/>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="4">
+   <item row="0" column="1" colspan="5">
     <layout class="QFormLayout" name="formLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="label">
@@ -45,7 +45,14 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="4">
+   <item row="1" column="5">
+    <widget class="QPushButton" name="pb_test">
+     <property name="text">
+      <string>Test</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="5">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -68,10 +75,19 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="1" colspan="2">
-    <widget class="QLabel" name="label_server_info">
+   <item row="1" column="4">
+    <widget class="QPushButton" name="pb_import">
+     <property name="maximumSize">
+      <size>
+       <width>30</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Import settings</string>
+     </property>
      <property name="text">
-      <string/>
+      <string>...</string>
      </property>
     </widget>
    </item>

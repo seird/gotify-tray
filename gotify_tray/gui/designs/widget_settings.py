@@ -17,11 +17,7 @@ class Ui_Dialog(object):
         self.gridLayout.setObjectName("gridLayout")
         self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
         self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.StandardButton.Apply
-            | QtWidgets.QDialogButtonBox.StandardButton.Cancel
-            | QtWidgets.QDialogButtonBox.StandardButton.Ok
-        )
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Apply|QtWidgets.QDialogButtonBox.StandardButton.Cancel|QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.gridLayout.addWidget(self.buttonBox, 1, 0, 1, 1)
         self.tabWidget = QtWidgets.QTabWidget(Dialog)
@@ -34,12 +30,7 @@ class Ui_Dialog(object):
         self.groupBox_5.setObjectName("groupBox_5")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.groupBox_5)
         self.gridLayout_4.setObjectName("gridLayout_4")
-        spacerItem = QtWidgets.QSpacerItem(
-            40,
-            20,
-            QtWidgets.QSizePolicy.Policy.Expanding,
-            QtWidgets.QSizePolicy.Policy.Minimum,
-        )
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_4.addItem(spacerItem, 0, 2, 1, 1)
         self.label_6 = QtWidgets.QLabel(self.groupBox_5)
         self.label_6.setObjectName("label_6")
@@ -73,12 +64,7 @@ class Ui_Dialog(object):
         self.pb_change_server_info = QtWidgets.QPushButton(self.groupBox_4)
         self.pb_change_server_info.setObjectName("pb_change_server_info")
         self.gridLayout_3.addWidget(self.pb_change_server_info, 0, 0, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(
-            40,
-            20,
-            QtWidgets.QSizePolicy.Policy.Expanding,
-            QtWidgets.QSizePolicy.Policy.Minimum,
-        )
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_3.addItem(spacerItem1, 0, 1, 1, 1)
         self.verticalLayout_4.addWidget(self.groupBox_4)
         self.groupBox_7 = QtWidgets.QGroupBox(self.tab_general)
@@ -95,20 +81,10 @@ class Ui_Dialog(object):
         self.pb_open_log.setMaximumSize(QtCore.QSize(30, 16777215))
         self.pb_open_log.setObjectName("pb_open_log")
         self.gridLayout_6.addWidget(self.pb_open_log, 0, 2, 1, 1)
-        spacerItem2 = QtWidgets.QSpacerItem(
-            190,
-            20,
-            QtWidgets.QSizePolicy.Policy.Expanding,
-            QtWidgets.QSizePolicy.Policy.Minimum,
-        )
+        spacerItem2 = QtWidgets.QSpacerItem(190, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_6.addItem(spacerItem2, 0, 3, 1, 1)
         self.verticalLayout_4.addWidget(self.groupBox_7)
-        spacerItem3 = QtWidgets.QSpacerItem(
-            20,
-            40,
-            QtWidgets.QSizePolicy.Policy.Minimum,
-            QtWidgets.QSizePolicy.Policy.Expanding,
-        )
+        spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_4.addItem(spacerItem3)
         self.tabWidget.addTab(self.tab_general, "")
         self.tab_fonts = QtWidgets.QWidget()
@@ -134,20 +110,31 @@ class Ui_Dialog(object):
         self.horizontalLayout.addWidget(self.pb_font_message_content)
         self.layout_fonts_message.addLayout(self.horizontalLayout)
         self.verticalLayout_5.addWidget(self.groupBox_2)
-        spacerItem4 = QtWidgets.QSpacerItem(
-            20,
-            40,
-            QtWidgets.QSizePolicy.Policy.Minimum,
-            QtWidgets.QSizePolicy.Policy.Expanding,
-        )
+        spacerItem4 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_5.addItem(spacerItem4)
         self.tabWidget.addTab(self.tab_fonts, "")
+        self.tab = QtWidgets.QWidget()
+        self.tab.setObjectName("tab")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.tab)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.pb_export = QtWidgets.QPushButton(self.tab)
+        self.pb_export.setObjectName("pb_export")
+        self.verticalLayout.addWidget(self.pb_export)
+        self.pb_import = QtWidgets.QPushButton(self.tab)
+        self.pb_import.setObjectName("pb_import")
+        self.verticalLayout.addWidget(self.pb_import)
+        self.pb_reset = QtWidgets.QPushButton(self.tab)
+        self.pb_reset.setObjectName("pb_reset")
+        self.verticalLayout.addWidget(self.pb_reset)
+        spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.verticalLayout.addItem(spacerItem5)
+        self.tabWidget.addTab(self.tab, "")
         self.gridLayout.addWidget(self.tabWidget, 0, 0, 1, 1)
 
         self.retranslateUi(Dialog)
         self.tabWidget.setCurrentIndex(0)
-        self.buttonBox.accepted.connect(Dialog.accept)
-        self.buttonBox.rejected.connect(Dialog.reject)
+        self.buttonBox.accepted.connect(Dialog.accept) # type: ignore
+        self.buttonBox.rejected.connect(Dialog.reject) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(Dialog)
         Dialog.setTabOrder(self.tabWidget, self.spin_priority)
         Dialog.setTabOrder(self.spin_priority, self.spin_duration)
@@ -164,37 +151,29 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.groupBox_5.setTitle(_translate("Dialog", "Notifications"))
         self.label_6.setText(_translate("Dialog", "ms"))
-        self.label_4.setText(
-            _translate("Dialog", "Minimum priority to show notifications:")
-        )
+        self.label_4.setText(_translate("Dialog", "Minimum priority to show notifications:"))
         self.label_5.setText(_translate("Dialog", "Notification duration:"))
-        self.cb_notify.setText(
-            _translate(
-                "Dialog",
-                "Show a notification for missed messages after reconnecting",
-            )
-        )
+        self.cb_notify.setText(_translate("Dialog", "Show a notification for missed messages after reconnecting"))
         self.groupBox_4.setTitle(_translate("Dialog", "Server info"))
         self.pb_change_server_info.setText(_translate("Dialog", "Change server info"))
         self.groupBox_7.setTitle(_translate("Dialog", "Logging"))
         self.label_7.setText(_translate("Dialog", "Level"))
         self.pb_open_log.setToolTip(_translate("Dialog", "Open logfile"))
         self.pb_open_log.setText(_translate("Dialog", "..."))
-        self.tabWidget.setTabText(
-            self.tabWidget.indexOf(self.tab_general), _translate("Dialog", "General")
-        )
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_general), _translate("Dialog", "General"))
         self.groupBox_2.setTitle(_translate("Dialog", "Message"))
         self.pb_font_message_title.setText(_translate("Dialog", "Title"))
         self.pb_font_message_date.setText(_translate("Dialog", "Date"))
         self.pb_font_message_content.setText(_translate("Dialog", "Message"))
-        self.tabWidget.setTabText(
-            self.tabWidget.indexOf(self.tab_fonts), _translate("Dialog", "Fonts")
-        )
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_fonts), _translate("Dialog", "Fonts"))
+        self.pb_export.setText(_translate("Dialog", "Export Settings"))
+        self.pb_import.setText(_translate("Dialog", "Import Settings"))
+        self.pb_reset.setText(_translate("Dialog", "Reset Settings"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("Dialog", "Advanced"))
 
 
 if __name__ == "__main__":
     import sys
-
     app = QtWidgets.QApplication(sys.argv)
     Dialog = QtWidgets.QDialog()
     ui = Ui_Dialog()

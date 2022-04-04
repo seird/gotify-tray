@@ -37,15 +37,25 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         self.label_title.setText(message.title)
         self.label_date.setText(message.date.strftime("%Y-%m-%d, %H:%M"))
 
-        if markdown := message.get("extras", {}).get("client::display", {}).get("contentType") == "text/markdown":
+        if (
+            markdown := message.get("extras", {})
+            .get("client::display", {})
+            .get("contentType")
+        ) == "text/markdown":
             self.label_message.setTextFormat(QtCore.Qt.TextFormat.MarkdownText)
+
         self.label_message.setText(convert_links(message.message))
 
         # Show the application icon
         if image_path:
             image_size = settings.value("MessageWidget/image/size", type=int)
             self.label_image.setFixedSize(QtCore.QSize(image_size, image_size))
-            pixmap = QtGui.QPixmap(image_path).scaled(image_size, image_size, aspectRatioMode=QtCore.Qt.AspectRatioMode.KeepAspectRatioByExpanding)
+            pixmap = QtGui.QPixmap(image_path).scaled(
+                image_size,
+                image_size,
+                aspectRatioMode=QtCore.Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+                transformMode=QtCore.Qt.TransformationMode.SmoothTransformation,
+            )
             self.label_image.setPixmap(pixmap)
         else:
             self.label_image.hide()
@@ -55,17 +65,16 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         self.gridLayout.setContentsMargins(5, 15, 5, 15)
         self.adjustSize()
         size_hint = self.message_item.sizeHint()
-        self.message_item.setSizeHint(
-            QtCore.QSize(
-                size_hint.width(),
-                self.height()
-            )
+        self.message_item.setSizeHint(QtCore.QSize(size_hint.width(), self.height()))
+
+        self.pb_delete.setIcon(
+            QtGui.QIcon(get_abs_path("gotify_tray/gui/images/trashcan.svg"))
         )
-        
-        self.pb_delete.setIcon(QtGui.QIcon(get_abs_path("gotify_tray/gui/images/trashcan.svg")))
         self.pb_delete.setIconSize(QtCore.QSize(24, 24))
 
         self.link_callbacks()
 
     def link_callbacks(self):
-        self.pb_delete.clicked.connect(lambda: self.deletion_requested.emit(self.message_item))
+        self.pb_delete.clicked.connect(
+            lambda: self.deletion_requested.emit(self.message_item)
+        )

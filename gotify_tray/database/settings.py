@@ -32,10 +32,10 @@ class Settings(QtCore.QSettings):
             pickle.dump(data, f)
 
     def load(self, path: str):
-        self.clear()
-
         with open(path, "rb") as f:
             data = pickle.load(f)
+
+        self.clear()
 
         for key in data:
             self.setValue(key, data[key])

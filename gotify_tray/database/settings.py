@@ -24,6 +24,7 @@ class Settings(QtCore.QSettings):
             if not (  # skip settings that might not translate well between platforms
                 isinstance(self.value(key), QtCore.QByteArray)
                 or key == "settings/export_path"
+                or key == "message/last_id"
             )
         }
 

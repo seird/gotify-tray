@@ -73,10 +73,7 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
 
     def import_callback(self):
         fname = QtWidgets.QFileDialog.getOpenFileName(
-            self,
-            "Import Settings",
-            settings.value("settings/export_path", type=str),
-            "*",
+            self, "Import Settings", settings.value("export/path", type=str), "*",
         )[0]
         if fname and os.path.exists(fname):
             self.import_settings_task = ImportSettingsTask(fname)

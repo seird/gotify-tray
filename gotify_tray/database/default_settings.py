@@ -6,9 +6,8 @@ from ..__version__ import __title__
 
 DEFAULT_SETTINGS = {
     "message/check_missed/notify": True,
-    "message/last_id": 0,
     "logging/level": "Disabled",
-    "settings/export_path": os.path.join(
+    "export/path": os.path.join(
         Path.home(), f"{__title__.replace(' ', '-').lower()}-settings.bytes"
     ),
     "shortcuts/quit": "Ctrl+Q",

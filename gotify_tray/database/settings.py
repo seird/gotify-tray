@@ -23,8 +23,8 @@ class Settings(QtCore.QSettings):
             for key in self.allKeys()
             if not (  # skip settings that might not translate well between platforms
                 isinstance(self.value(key), QtCore.QByteArray)
-                or key == "settings/export_path"
-                or key == "message/last_id"
+                or key == "export/path"
+                or key == "message/last"
             )
         }
 

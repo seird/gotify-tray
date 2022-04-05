@@ -99,15 +99,12 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
 
     def export_callback(self):
         fname = QtWidgets.QFileDialog.getSaveFileName(
-            self,
-            "Export Settings",
-            settings.value("settings/export_path", type=str),
-            "*",
+            self, "Export Settings", settings.value("export/path", type=str), "*",
         )[0]
         if fname and os.path.exists(os.path.dirname(fname)):
             self.export_settings_task = ExportSettingsTask(fname)
             self.export_settings_task.start()
-            settings.setValue("settings/export_path", fname)
+            settings.setValue("export/path", fname)
 
     def import_success_callback(self):
         response = QtWidgets.QMessageBox.information(
@@ -118,10 +115,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
 
     def import_callback(self):
         fname = QtWidgets.QFileDialog.getOpenFileName(
-            self,
-            "Import Settings",
-            settings.value("settings/export_path", type=str),
-            "*",
+            self, "Import Settings", settings.value("export/path", type=str), "*",
         )[0]
         if fname and os.path.exists(fname):
             self.import_settings_task = ImportSettingsTask(fname)

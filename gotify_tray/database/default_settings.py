@@ -16,7 +16,7 @@ DEFAULT_SETTINGS = {
     "tray/notifications/icon/show": True,
     "watchdog/interval/s": 60,
     "MessageWidget/image/size": 33,
-    "MessageWidget/font/title": "Noto Sans,17,-1,5,75,0,0,0,0,0,Bold",
+    "MessageWidget/font/title": "Noto Sans,12,-1,5,75,0,0,0,0,0,Bold",
     "MessageWidget/font/date": "Noto Sans,11,-1,5,50,1,0,0,0,0,Italic",
     "MessageWidget/font/message": "Noto Sans,11,-1,5,50,0,0,0,0,0,Regular",
     "ApplicationItem/font": "Noto Sans,10,-1,5,50,0,0,0,0,0,Regular",

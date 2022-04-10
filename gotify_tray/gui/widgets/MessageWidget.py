@@ -62,7 +62,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
 
         # Set MessagesModelItem's size hint based on the size of this widget
         self.gridLayout_frame.setContentsMargins(5, 5, 5, 5)
-        self.gridLayout.setContentsMargins(5, 5, 5, 5)
+        self.gridLayout.setContentsMargins(4, 5, 4, 0)
         self.adjustSize()
         size_hint = self.message_item.sizeHint()
         self.message_item.setSizeHint(QtCore.QSize(size_hint.width(), self.height()))

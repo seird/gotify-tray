@@ -175,3 +175,27 @@ class ServerConnectionWatchdogTask(BaseTask):
                 logger.debug(
                     "ServerConnectionWatchdogTask: gotify_client is not listening"
                 )
+
+
+class ExportSettingsTask(BaseTask):
+    success = pyqtSignal()
+
+    def __init__(self, path: str):
+        super(ExportSettingsTask, self).__init__()
+        self.path = path
+
+    def task(self):
+        settings.export(self.path)
+        self.success.emit()
+
+
+class ImportSettingsTask(BaseTask):
+    success = pyqtSignal()
+
+    def __init__(self, path: str):
+        super(ImportSettingsTask, self).__init__()
+        self.path = path
+
+    def task(self):
+        settings.load(self.path)
+        self.success.emit()

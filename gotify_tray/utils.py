@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 
 
-def verify_server(force_new: bool = False) -> bool:
+def verify_server(force_new: bool = False, enable_import: bool = True) -> bool:
     from gotify_tray.gui import ServerInfoDialog
     from gotify_tray.database import Settings
 
@@ -14,7 +14,7 @@ def verify_server(force_new: bool = False) -> bool:
     token = settings.value("Server/client_token", type=str)
 
     if not url or not token or force_new:
-        dialog = ServerInfoDialog(url, token)
+        dialog = ServerInfoDialog(url, token, enable_import)
         if dialog.exec():
             settings.setValue("Server/url", dialog.line_url.text())
             settings.setValue("Server/client_token", dialog.line_token.text())

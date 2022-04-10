@@ -40,6 +40,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.splitter.setStretchFactor(0, 0)
         self.splitter.setStretchFactor(1, 1)
 
+        # Do not collapse the message list
+        self.splitter.setCollapsible(1, False)
+
         self.status_widget = StatusWidget()
         self.horizontalLayout.insertWidget(0, self.status_widget)
 

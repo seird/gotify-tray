@@ -1,12 +1,18 @@
+import os
+
+from gotify_tray.database import Settings
 from gotify_tray.gotify.models import GotifyVersionModel
-from gotify_tray.tasks import VerifyServerInfoTask
+from gotify_tray.tasks import ImportSettingsTask, VerifyServerInfoTask
 from PyQt6 import QtWidgets
 
 from ..designs.widget_server import Ui_Dialog
 
 
+settings = Settings("gotify-tray")
+
+
 class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
-    def __init__(self, url: str = "", token: str = ""):
+    def __init__(self, url: str = "", token: str = "", enable_import: bool = True):
         super(ServerInfoDialog, self).__init__()
         self.setupUi(self)
         self.setWindowTitle("Server info")
@@ -16,6 +22,7 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(
             True
         )
+        self.pb_import.setVisible(enable_import)
         self.link_callbacks()
 
     def test_server_info(self):
@@ -60,6 +67,19 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         self.pb_test.setStyleSheet("background-color: rgba(255, 0, 0, 100);")
         self.line_url.setStyleSheet("border: 1px solid red;")
 
+    def import_success_callback(self):
+        self.line_url.setText(settings.value("Server/url", type=str))
+        self.line_token.setText(settings.value("Server/client_token"))
+
+    def import_callback(self):
+        fname = QtWidgets.QFileDialog.getOpenFileName(
+            self, "Import Settings", settings.value("export/path", type=str), "*",
+        )[0]
+        if fname and os.path.exists(fname):
+            self.import_settings_task = ImportSettingsTask(fname)
+            self.import_settings_task.success.connect(self.import_success_callback)
+            self.import_settings_task.start()
+
     def link_callbacks(self):
         self.pb_test.clicked.connect(self.test_server_info)
         self.line_url.textChanged.connect(
@@ -72,3 +92,4 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
                 QtWidgets.QDialogButtonBox.StandardButton.Ok
             ).setDisabled(True)
         )
+        self.pb_import.clicked.connect(self.import_callback)

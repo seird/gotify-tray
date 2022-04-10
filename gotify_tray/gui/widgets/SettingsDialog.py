@@ -1,4 +1,5 @@
 import logging
+import os
 import webbrowser
 
 from gotify_tray.database import Settings
@@ -6,6 +7,7 @@ from gotify_tray.gotify import GotifyMessageModel
 from gotify_tray.gui.models import MessagesModelItem
 from . import MessageWidget
 from gotify_tray.utils import verify_server
+from gotify_tray.tasks import ExportSettingsTask, ImportSettingsTask
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from ..designs.widget_settings import Ui_Dialog
@@ -16,6 +18,8 @@ settings = Settings("gotify-tray")
 
 
 class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
+    quit_requested = QtCore.pyqtSignal()
+
     def __init__(self):
         super(SettingsDialog, self).__init__()
         self.setupUi(self)
@@ -74,7 +78,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.layout_fonts_message.addWidget(self.message_widget)
 
     def change_server_info_callback(self):
-        self.server_changed = verify_server(force_new=True)
+        self.server_changed = verify_server(force_new=True, enable_import=False)
 
     def settings_changed_callback(self, *args, **kwargs):
         self.settings_changed = True
@@ -92,6 +96,44 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         if accepted:
             self.settings_changed_callback()
             label.setFont(font)
+
+    def export_callback(self):
+        fname = QtWidgets.QFileDialog.getSaveFileName(
+            self, "Export Settings", settings.value("export/path", type=str), "*",
+        )[0]
+        if fname and os.path.exists(os.path.dirname(fname)):
+            self.export_settings_task = ExportSettingsTask(fname)
+            self.export_settings_task.start()
+            settings.setValue("export/path", fname)
+
+    def import_success_callback(self):
+        response = QtWidgets.QMessageBox.information(
+            self, "Restart to apply settings", "Restart to apply settings"
+        )
+        if response == QtWidgets.QMessageBox.StandardButton.Ok:
+            self.quit_requested.emit()
+
+    def import_callback(self):
+        fname = QtWidgets.QFileDialog.getOpenFileName(
+            self, "Import Settings", settings.value("export/path", type=str), "*",
+        )[0]
+        if fname and os.path.exists(fname):
+            self.import_settings_task = ImportSettingsTask(fname)
+            self.import_settings_task.success.connect(self.import_success_callback)
+            self.import_settings_task.start()
+
+    def reset_callback(self):
+        response = QtWidgets.QMessageBox.warning(
+            self,
+            "Are you sure?",
+            "Reset all settings?",
+            QtWidgets.QMessageBox.StandardButton.Ok
+            | QtWidgets.QMessageBox.StandardButton.Cancel,
+            defaultButton=QtWidgets.QMessageBox.StandardButton.Cancel,
+        )
+        if response == QtWidgets.QMessageBox.StandardButton.Ok:
+            settings.clear()
+            self.quit_requested.emit()
 
     def link_callbacks(self):
         self.buttonBox.button(
@@ -122,6 +164,11 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.pb_font_message_content.clicked.connect(
             lambda: self.change_font_callback("message")
         )
+
+        # Advanced
+        self.pb_export.clicked.connect(self.export_callback)
+        self.pb_import.clicked.connect(self.import_callback)
+        self.pb_reset.clicked.connect(self.reset_callback)
 
     def apply_settings(self):
         # Priority

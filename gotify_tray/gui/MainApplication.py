@@ -127,8 +127,8 @@ class MainApplication(QtWidgets.QApplication):
             )
 
     def update_last_id(self, i: int):
-        if i > settings.value("message/last_id", type=int):
-            settings.setValue("message/last_id", i)
+        if i > settings.value("message/last", type=int):
+            settings.setValue("message/last", i)
 
     def listener_opened_callback(self):
         self.main_window.set_active()
@@ -140,7 +140,7 @@ class MainApplication(QtWidgets.QApplication):
             return
 
         def get_missed_messages_callback(page: gotify.GotifyPagedMessagesModel):
-            last_id = settings.value("message/last_id", type=int)
+            last_id = settings.value("message/last", type=int)
             ids = []
 
             page.messages.reverse()
@@ -315,6 +315,7 @@ class MainApplication(QtWidgets.QApplication):
 
     def settings_callback(self):
         settings_dialog = SettingsDialog()
+        settings_dialog.quit_requested.connect(self.quit)
         accepted = settings_dialog.exec()
 
         if accepted and settings_dialog.settings_changed:

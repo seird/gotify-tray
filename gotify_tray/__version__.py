@@ -3,4 +3,4 @@ __description__ = (
     "A tray notification application for receiving messages from a Gotify server."
 )
 __url__ = "https://github.com/seird/gotify-tray"
-__version__ = "0.1.8"
+__version__ = "0.1.9"

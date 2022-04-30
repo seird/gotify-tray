@@ -69,7 +69,7 @@ setup(
     ],
 
     entry_points={
-        'console_scripts': ['gotify-tray=gotify_tray:start_gui'],
+        'console_scripts': ['gotify-tray=gotify_tray.__main__:main'],
     },
     install_requires=REQUIRED,
     extras_require=EXTRAS,

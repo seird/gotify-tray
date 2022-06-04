@@ -34,12 +34,12 @@ VSVersionInfo(
                         StringStruct(u"Comments", u"Gotify Tray"),
                         StringStruct(u"CompanyName", u""),
                         StringStruct(u"FileDescription", u"Gotifiy Tray"),
-                        StringStruct(u"FileVersion", u"0.1.9"),
+                        StringStruct(u"FileVersion", u"0.1.10"),
                         StringStruct(u"InternalName", u"gotify-tray"),
                         StringStruct(u"LegalCopyright", u""),
                         StringStruct(u"OriginalFilename", u"gotify-tray.exe"),
                         StringStruct(u"ProductName", u"Gotify Tray"),
-                        StringStruct(u"ProductVersion", u"0.1.9"),
+                        StringStruct(u"ProductVersion", u"0.1.10"),
                     ],
                 )
             ]

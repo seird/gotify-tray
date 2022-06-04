@@ -1,4 +1,5 @@
 import datetime
+from dateutil.parser import isoparse
 import logging
 from typing import List, Optional
 
@@ -47,15 +48,8 @@ class GotifyMessageModel(AttributeDict):
     title: Optional[str] = None
 
     def __init__(self, d: dict, *args, **kwargs):
-        s = (
-            d["date"].split(".")[0]  # date
-            + "."
-            + d["date"].split(".")[1][:6]  # ms
-            + "+"
-            + d["date"].split("+")[-1]  # timezone
-        )
         d.update(
-            {"date": datetime.datetime.fromisoformat(s).astimezone(local_timezone)}
+            {"date": isoparse(d["date"]).astimezone(local_timezone)}
         )
         super(GotifyMessageModel, self).__init__(d, *args, **kwargs)
 

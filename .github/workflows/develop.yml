@@ -69,9 +69,12 @@ jobs:
     - name: Build
       run: |
         make build-macos
-        cp dist/Gotify-Tray.app Gotify-Tray.app
+        cd dist
+        zip -r Gotify-Tray.zip Gotify-Tray.app
+        cd ..
+        cp dist/Gotify-Tray.zip Gotify-Tray.zip
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: Gotify-Tray.app
-        path: Gotify-Tray.app
+        name: Gotify-Tray.zip
+        path: Gotify-Tray.zip

@@ -69,12 +69,10 @@ jobs:
     - name: Build
       run: |
         make build-macos
-        cd dist
-        zip -r Gotify-Tray.zip Gotify-Tray.app
-        cd ..
-        cp dist/Gotify-Tray.zip Gotify-Tray.zip
+        brew install create-dmg
+        create-dmg --volname "Gotify Tray" --app-drop-link 0 0 --no-internet-enable "Gotify-Tray.dmg" "./dist/Gotify-Tray.app"
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: Gotify-Tray.zip
-        path: Gotify-Tray.zip
+        name: Gotify-Tray.dmg
+        path: Gotify-Tray.dmg

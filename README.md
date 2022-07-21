@@ -66,6 +66,13 @@ $ pyinstaller gotify-tray.spec
 ```
 An executable is created at `dist/gotify-tray/`.
 
+### Create a macos .app
+
+```
+$ pip install pyinstaller Pillow
+$ pyinstaller gotify-tray-macos.spec
+```
+
 ### Inno setup (Windows)
 
 Create an installer for windows with inno setup from pyinstaller output:

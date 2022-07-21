@@ -36,7 +36,7 @@ jobs:
   build-ubuntu:
     strategy:
       matrix:
-        tag: [focal, groovy]
+        tag: [focal, hirsute, impish, jammy]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -59,7 +59,7 @@ jobs:
   build-debian:
     strategy:
       matrix:
-        tag: [buster, bullseye]
+        tag: [bullseye, bookworm]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -93,6 +93,8 @@ jobs:
         files: |
           gotify-tray-installer-win.exe
           gotify-tray_amd64_ubuntu_focal.deb
-          gotify-tray_amd64_ubuntu_groovy.deb
-          gotify-tray_amd64_debian_buster.deb
+          gotify-tray_amd64_ubuntu_hirsute.deb
+          gotify-tray_amd64_ubuntu_impish.deb
+          gotify-tray_amd64_ubuntu_jammy.deb
           gotify-tray_amd64_debian_bullseye.deb
+          gotify-tray_amd64_debian_bookworm.deb

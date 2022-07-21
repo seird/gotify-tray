@@ -113,13 +113,17 @@ class GotifyClient(GotifySession):
 
     def upload_application_image(
         self, application_id: int, img_path: str
-    ) -> Optional[GotifyApplicationModel]:
+    ) -> Optional[Union[GotifyApplicationModel, GotifyErrorModel]]:
         try:
             with open(img_path, "rb") as f:
                 response = self._post(
                     f"/application/{application_id}/image", files={"file": f}
                 )
-            return response.json() if response.ok else None
+            return (
+                GotifyApplicationModel(response.json())
+                if response.ok
+                else GotifyErrorModel(response)
+            )
         except FileNotFoundError:
             logger.error(
                 f"GotifyClient.upload_application_image: image '{img_path}' not found."

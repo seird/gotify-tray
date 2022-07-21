@@ -1,5 +1,7 @@
 import json
 import logging
+import platform
+import ssl
 
 import websocket
 from PyQt6 import QtCore
@@ -69,7 +71,10 @@ class Listener(QtCore.QThread):
     def run(self):
         self.running = True
         try:
-            self.ws.run_forever()
+            if platform.system() == "Darwin":
+                self.ws.run_forever(sslopt={ssl.CERT_NONE})
+            else:
+                self.ws.run_forever()
         finally:
             logger.debug("Listener: stopped.")
             self.running = False

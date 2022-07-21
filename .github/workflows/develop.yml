@@ -68,7 +68,7 @@ jobs:
       run: python -m pip install --upgrade pip setuptools wheel
     - name: Build
       run: |
-        make build
+        make build-macos
         cp dist/Gotify-Tray.app Gotify-Tray.app
     - name: Upload artifact
       uses: actions/upload-artifact@v2

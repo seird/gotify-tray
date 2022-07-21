@@ -72,7 +72,7 @@ class Listener(QtCore.QThread):
         self.running = True
         try:
             if platform.system() == "Darwin":
-                self.ws.run_forever(sslopt={ssl.CERT_NONE})
+                self.ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
             else:
                 self.ws.run_forever()
         finally:

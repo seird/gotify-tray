@@ -29,10 +29,10 @@ $ pip install gotify-tray
 
 ### Notification banners
 
-Windows 10                                         |  KDE
-:-------------------------------------------------:|:---------------------------------------------------------:
-![notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/notification.png)           |  ![kde_notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/kde_notification.png)
-![notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/notification_centre.png)    |  ![kde_notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/kde_notification_centre.png)
+Windows 10                                         |  KDE                                                      |  MacOS 12
+:-------------------------------------------------:|:---------------------------------------------------------:|:---------------------------------------------------------:
+![notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/notification.png)            |  ![kde_notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/kde_notification.png)      |  ![macos_notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/macos_notification.png)
+![notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/notification_centre.png)     |  ![kde_notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/kde_notification_centre.png) |  
 
 ### Main window
 ![main window](https://raw.githubusercontent.com/seird/gotify-tray/master/images/main_window.png)

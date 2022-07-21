@@ -3,7 +3,7 @@ name: build
 on:
   push:
     branches:
-      - 'master'
+      - 'develop'
 
 jobs:
 
@@ -70,9 +70,10 @@ jobs:
       run: |
         make build-macos
         brew install create-dmg
-        create-dmg --volname "Gotify Tray" --app-drop-link 0 0 --no-internet-enable "Gotify-Tray.dmg" "./dist/Gotify-Tray.app"
+        create-dmg --volname "Gotify Tray" --app-drop-link 0 0 --no-internet-enable "gotify-tray.dmg" "./dist/Gotify-Tray.app"
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: Gotify-Tray.dmg
-        path: Gotify-Tray.dmg
+        name: gotify-tray.dmg
+        path: gotify-tray.dmg
+

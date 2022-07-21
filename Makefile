@@ -7,6 +7,12 @@ build: clean
 	cp -r dist/gotify-tray build/debian/usr/lib/gotify-tray
 	dpkg -b build/debian dist/gotify-tray_amd64.deb
 
+build-macos: clean
+	pip install -r requirements.txt
+	pip install pyinstaller
+	pip install Pillow
+	pyinstaller gotify-tray-macos.spec
+
 install: build
 	sudo dpkg -i dist/gotify-tray_amd64.deb
 

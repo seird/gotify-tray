@@ -15,7 +15,7 @@ with open("version.txt", "r") as f:
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'requests', 'PyQt6', 'websocket-client'
+    'requests', 'PyQt6', 'websocket-client', 'python-dateutil'
 ]
 
 # What packages are optional?

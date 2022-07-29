@@ -14,12 +14,6 @@ class Downloader(object):
     def __init__(self):
         self.cache = Cache()
         self.session = requests.Session()
-        self.session.proxies.update(
-            {
-                "https": settings.value("proxies/https", type=str),
-                "http": settings.value("proxies/http", type=str),
-            }
-        )
 
     def get(self, url: str) -> requests.Response:
         """

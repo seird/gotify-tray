@@ -2,8 +2,10 @@ name: build
 
 on:
   push:
-    branches:
-      - 'develop'
+    branches-ignore:
+      - master
+    tags-ignore:
+      - '*'
 
 jobs:
 

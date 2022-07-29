@@ -79,8 +79,6 @@ class MainApplication(QtWidgets.QApplication):
         self.first_connect = True
 
         self.gotify_client.listen(
-            settings.value("Server/url", type=str),
-            settings.value("Server/client_token", type=str),
             new_message_callback=self.new_message_callback,
             opened_callback=self.listener_opened_callback,
             closed_callback=self.listener_closed_callback,
@@ -321,9 +319,11 @@ class MainApplication(QtWidgets.QApplication):
         if settings_dialog.server_changed:
             # Restart the listener
             self.gotify_client.stop_final()
-            self.gotify_client.listen(
+            self.gotify_client.update_auth(
                 settings.value("Server/url", type=str),
                 settings.value("Server/client_token", type=str),
+            )
+            self.gotify_client.listen(
                 new_message_callback=self.new_message_callback,
                 opened_callback=self.listener_opened_callback,
                 closed_callback=self.listener_closed_callback,

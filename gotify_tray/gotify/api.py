@@ -69,7 +69,8 @@ class GotifyApplication(GotifySession):
 class GotifyClient(GotifySession):
     def __init__(self, url: str, client_token: str):
         super(GotifyClient, self).__init__(url, client_token)
-        self.listener = Listener(url, client_token)
+        self.url = url
+        self.client_token = client_token
 
     """
     Application
@@ -172,6 +173,8 @@ class GotifyClient(GotifySession):
 
     def listen(
         self,
+        url: str,
+        client_token: str,
         opened_callback: Callable[[], None] = None,
         closed_callback: Callable[[int, str], None] = None,
         new_message_callback: Callable[[GotifyMessageModel], None] = None,
@@ -180,6 +183,7 @@ class GotifyClient(GotifySession):
         def dummy(*args):
             ...
 
+        self.listener = Listener(url, client_token)
         self.listener.opened.connect(lambda: self.opened_callback(opened_callback))
         self.listener.closed.connect(closed_callback or dummy)
         self.listener.new_message.connect(new_message_callback or dummy)
@@ -194,6 +198,9 @@ class GotifyClient(GotifySession):
     def reconnect(self):
         if not self.is_listening():
             self.listener.start()
+    
+    def stop_final(self):
+        self.listener.stop_final()
 
     def stop(self, reset_wait: bool = False):
         if reset_wait:

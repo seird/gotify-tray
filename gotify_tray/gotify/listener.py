@@ -63,6 +63,14 @@ class Listener(QtCore.QThread):
     ):
         self.closed.emit(close_status_code, close_msg)
 
+    def stop_final(self):
+        def dummy(*args):
+            ...
+
+        self.ws.on_close = dummy
+        self.ws.close()
+        self.running = False
+
     def stop(self):
         logger.debug("Listener: stopping.")
         self.ws.close()

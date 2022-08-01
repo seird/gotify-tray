@@ -46,6 +46,9 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.spin_duration.setValue(
             settings.value("tray/notifications/duration_ms", type=int)
         )
+        self.label_notification_duration.setToolTip(
+            "This setting is ignored on Windows."
+        )
 
         self.cb_notify.setChecked(
             settings.value("message/check_missed/notify", type=bool)

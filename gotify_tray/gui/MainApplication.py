@@ -58,10 +58,6 @@ def init_logger(logger: logging.Logger):
 
 
 class MainApplication(QtWidgets.QApplication):
-    def __init__(self, argv: List):
-        super(MainApplication, self).__init__(argv)
-        self.shutting_down = False
-
     def init_ui(self):
         self.gotify_client = gotify.GotifyClient(
             settings.value("Server/url", type=str),
@@ -162,11 +158,10 @@ class MainApplication(QtWidgets.QApplication):
     def listener_closed_callback(self, close_status_code: int, close_msg: str):
         self.main_window.set_connecting()
         self.tray.set_icon_error()
-        if not self.shutting_down:
-            self.gotify_client.increase_wait_time()
-            QtCore.QTimer.singleShot(
-                self.gotify_client.get_wait_time() * 1000, self.gotify_client.reconnect
-            )
+        self.gotify_client.increase_wait_time()
+        QtCore.QTimer.singleShot(
+            self.gotify_client.get_wait_time() * 1000, self.gotify_client.reconnect
+        )
 
     def reconnect_callback(self):
         if not self.gotify_client.is_listening():
@@ -322,17 +317,17 @@ class MainApplication(QtWidgets.QApplication):
             settings_dialog.apply_settings()
 
         if settings_dialog.server_changed:
-            mb = QtWidgets.QMessageBox(
-                QtWidgets.QMessageBox.Icon.Information,
-                "Restart",
-                "Restart to apply server changes",
-                QtWidgets.QMessageBox.StandardButton.Yes
-                | QtWidgets.QMessageBox.StandardButton.Cancel,
+            # Restart the listener
+            self.gotify_client.stop_final()
+            self.gotify_client.update_auth(
+                settings.value("Server/url", type=str),
+                settings.value("Server/client_token", type=str),
             )
-
-            r = mb.exec()
-            if r == QtWidgets.QMessageBox.StandardButton.Yes:
-                self.quit()
+            self.gotify_client.listen(
+                new_message_callback=self.new_message_callback,
+                opened_callback=self.listener_opened_callback,
+                closed_callback=self.listener_closed_callback,
+            )
 
     def tray_activated_callback(
         self, reason: QtWidgets.QSystemTrayIcon.ActivationReason
@@ -380,8 +375,7 @@ class MainApplication(QtWidgets.QApplication):
 
         self.lock_file.unlock()
 
-        self.shutting_down = True
-        self.gotify_client.stop()
+        self.gotify_client.stop_final()
         super(MainApplication, self).quit()
 
 

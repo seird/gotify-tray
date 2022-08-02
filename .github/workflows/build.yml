@@ -120,3 +120,24 @@ jobs:
           gotify-tray_amd64_debian_bullseye.deb
           gotify-tray_amd64_debian_bookworm.deb
           gotify-tray.dmg
+  
+  pypi:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+          python-version: '3.9.5'
+    - name: Upgrade pip and enable wheel support
+      run: python -m pip install --upgrade pip setuptools wheel
+    - name: install requirements
+      run: |
+        pip install -r requirements.txt
+        pip install build
+    - name: create pip package
+      run: python -m build
+    - name: upload to pypi
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}

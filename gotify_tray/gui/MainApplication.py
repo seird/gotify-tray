@@ -7,7 +7,7 @@ from typing import List, Union
 
 from gotify_tray import gotify
 from gotify_tray.__version__ import __title__
-from gotify_tray.database import Downloader, Settings
+from gotify_tray.database import Cache, Downloader, Settings
 from gotify_tray.tasks import (
     DeleteApplicationMessagesTask,
     DeleteAllMessagesTask,
@@ -308,6 +308,11 @@ class MainApplication(QtWidgets.QApplication):
 
         self.messages_model.clear()
 
+    def refresh_callback(self):
+        # Manual refresh -> also reset the image cache
+        Cache().clear()
+        self.refresh_applications()
+
     def settings_callback(self):
         settings_dialog = SettingsDialog()
         settings_dialog.quit_requested.connect(self.quit)
@@ -343,7 +348,7 @@ class MainApplication(QtWidgets.QApplication):
         self.tray.messageClicked.connect(self.main_window.bring_to_front)
         self.tray.activated.connect(self.tray_activated_callback)
 
-        self.main_window.refresh.connect(self.refresh_applications)
+        self.main_window.refresh.connect(self.refresh_callback)
         self.main_window.delete_all.connect(self.delete_all_messages_callback)
         self.main_window.application_selection_changed.connect(
             self.application_selection_changed_callback

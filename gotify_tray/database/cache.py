@@ -1,7 +1,7 @@
 import glob
 import logging
 import os
-import time
+import uuid
 
 import requests
 
@@ -35,40 +35,34 @@ class Cache(object):
     def clear(self):
         self.cursor.execute("DELETE FROM cache")
         self.database.commit()
+
+        if not self.cache_dir:
+            logger.error("Cache directory is empty.")
+            return
+
         for filename in glob.glob(self.cache_dir + "/*"):
             os.remove(filename)
 
     def lookup(self, key: str) -> str:
-        q = self.cursor.execute(
-            "SELECT filename, cached_on FROM cache WHERE url=?", (key,)
-        ).fetchone()
-        if q:
+        if q := self.cursor.execute(
+            "SELECT filename FROM cache WHERE url=?", (key,)
+        ).fetchone():
             # Cache hit
-            filename, cached_on = q
-            return filename if os.path.exists(filename) else ""
+            return q["filename"] if os.path.exists(q["filename"]) else ""
         else:
             # Cache miss
             return ""
 
-    def store(
-        self, key: str, response: requests.Response, add_time: bool = True
-    ) -> str:
+    def store(self, key: str, response: requests.Response) -> str:
         # Create a file and store the response contents
-        filename = str(time.time()).replace(".", "") if add_time else ""
-        if "Content-Disposition" in response.headers.keys():
-            filename += response.headers["Content-Disposition"]
-        else:
-            filename += response.url.split("/")[-1]
+        filepath = os.path.join(self.cache_dir, uuid.uuid4().hex)
 
-        filename = "".join([c for c in filename if c.isalpha() or c.isdigit()]).rstrip()
-        filename = os.path.join(self.cache_dir, filename)
-
-        with open(filename, "wb") as f:
+        with open(filepath, "wb") as f:
             f.write(response.content)
 
         self.cursor.execute(
             "INSERT INTO cache (url, filename, cached_on) VALUES(?, ?, datetime('now', 'localtime'))",
-            (key, filename),
+            (key, filepath),
         )
         self.database.commit()
-        return filename
+        return filepath

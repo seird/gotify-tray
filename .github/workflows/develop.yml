@@ -79,3 +79,24 @@ jobs:
         name: gotify-tray.dmg
         path: gotify-tray.dmg
 
+  build-pip:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+          python-version: '3.9.5'
+    - name: Upgrade pip and enable wheel support
+      run: python -m pip install --upgrade pip setuptools wheel
+    - name: install requirements
+      run: |
+        pip install -r requirements.txt
+        pip install build
+    - name: create pip package
+      run: python -m build
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: gotify_tray.whl
+        path: dist/gotify_tray-*.whl

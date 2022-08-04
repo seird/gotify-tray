@@ -100,27 +100,6 @@ jobs:
         name: gotify-tray.dmg
         path: gotify-tray.dmg
 
-  release:
-    runs-on: ubuntu-latest
-    needs: [build-win64, build-ubuntu, build-debian, build-macos]
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/download-artifact@master
-    - name: Release
-      uses: marvinpinto/action-automatic-releases@latest
-      with:
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        prerelease: false
-        files: |
-          gotify-tray-installer-win.exe
-          gotify-tray_amd64_ubuntu_focal.deb
-          gotify-tray_amd64_ubuntu_hirsute.deb
-          gotify-tray_amd64_ubuntu_impish.deb
-          gotify-tray_amd64_ubuntu_jammy.deb
-          gotify-tray_amd64_debian_bullseye.deb
-          gotify-tray_amd64_debian_bookworm.deb
-          gotify-tray.dmg
-  
   pypi:
     runs-on: ubuntu-latest
     steps:
@@ -141,3 +120,29 @@ jobs:
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        path: dist/gotify_tray-*.whl
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [build-win64, build-ubuntu, build-debian, build-macos, pypi]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/download-artifact@master
+    - name: Release
+      uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        prerelease: false
+        files: |
+          gotify-tray-installer-win.exe
+          gotify-tray_amd64_ubuntu_focal.deb
+          gotify-tray_amd64_ubuntu_hirsute.deb
+          gotify-tray_amd64_ubuntu_impish.deb
+          gotify-tray_amd64_ubuntu_jammy.deb
+          gotify-tray_amd64_debian_bullseye.deb
+          gotify-tray_amd64_debian_bookworm.deb
+          gotify-tray.dmg
+          gotify_tray-*.whl

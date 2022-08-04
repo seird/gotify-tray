@@ -22,43 +22,12 @@ class Downloader(object):
         """
         return self.session.get(url)
 
-    def get_bytes(self, url: str, cached: bool = True, add_time: bool = True) -> bytes:
-        """
-        Get the content of an http get request, as bytes.
-        Optionally use the cache.
-        """
-        if cached:
-            # Retrieve from cache
-            filename = self.cache.lookup(url)
-            if filename:
-                with open(filename, "rb") as f:
-                    return f.read()
-
-        try:
-            response = self.get(url)
-        except Exception as e:
-            logger.error(f"get_bytes: downloading {url} failed.: {e}")
-            return b""
-
-        if not response.ok:
-            return b""
-
-        if cached:
-            # Store in cache
-            self.cache.store(url, response, add_time=add_time)
-
-        return response.content
-
-    def get_filename(
-        self, url: str, retrieve_from_cache: bool = True, add_time: bool = True
-    ) -> str:
+    def get_filename(self, url: str) -> str:
         """
         Get the content of an http get request, as a filename.
         """
-        if retrieve_from_cache:
-            filename = self.cache.lookup(url)
-            if filename:
-                return filename
+        if filename := self.cache.lookup(url):
+            return filename
 
         try:
             response = self.get(url)
@@ -66,7 +35,4 @@ class Downloader(object):
             logger.error(f"get_filename: downloading {url} failed.: {e}")
             return ""
 
-        if not response.ok:
-            return ""
-
-        return self.cache.store(url, response, add_time=add_time)
+        return self.cache.store(url, response) if response.ok else ""

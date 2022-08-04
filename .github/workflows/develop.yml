@@ -4,7 +4,6 @@ on:
   push:
     branches-ignore:
       - master
-      - "dependabot/**"
     tags-ignore:
       - '*'
 
@@ -37,6 +36,7 @@ jobs:
         path: gotify-tray-installer-win.exe
 
   build-ubuntu:
+    if: ${{ github.actor != 'dependabot[bot]' }}
     strategy:
       matrix:
         tag: [focal]
@@ -60,6 +60,7 @@ jobs:
         path: gotify-tray_amd64_ubuntu_${{ matrix.tag }}.deb
 
   build-macos:
+    if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: macos-12
     steps:
     - uses: actions/checkout@v2
@@ -99,5 +100,4 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: gotify_tray.whl
         path: dist/gotify_tray-*.whl

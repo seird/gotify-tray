@@ -123,7 +123,8 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        path: dist/gotify_tray-*.whl
+        name: gotify_tray-${{ github.ref_name }}-py3-none-any.whl
+        path: dist/gotify_tray-${{ github.ref_name }}-py3-none-any.whl
 
   release:
     runs-on: ubuntu-latest
@@ -145,4 +146,4 @@ jobs:
           gotify-tray_amd64_debian_bullseye.deb
           gotify-tray_amd64_debian_bookworm.deb
           gotify-tray.dmg
-          gotify_tray-*.whl
+          gotify_tray-${{ github.ref_name }}-py3-none-any.whl

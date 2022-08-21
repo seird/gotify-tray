@@ -1,6 +1,7 @@
 import getpass
 import logging
 import os
+import platform
 import sys
 import tempfile
 from typing import List, Union
@@ -337,7 +338,10 @@ class MainApplication(QtWidgets.QApplication):
     def tray_activated_callback(
         self, reason: QtWidgets.QSystemTrayIcon.ActivationReason
     ):
-        if reason == QtWidgets.QSystemTrayIcon.ActivationReason.Trigger:
+        if (
+            reason == QtWidgets.QSystemTrayIcon.ActivationReason.Trigger
+            and platform.system() != "Darwin"
+        ):
             self.main_window.bring_to_front()
 
     def link_callbacks(self):

@@ -1,5 +1,7 @@
 import os
+import platform
 import re
+import subprocess
 
 from pathlib import Path
 
@@ -46,3 +48,12 @@ def get_abs_path(s) -> str:
     h = Path(__file__).parent.parent
     p = Path(s)
     return os.path.join(h, p).replace("\\", "/")
+
+
+def open_file(filename: str):
+    if platform.system() == "Linux":
+        subprocess.call(["xdg-open", filename])
+    elif platform.system() == "Windows":
+        os.startfile(filename)
+    elif platform.system() == "Darwin":
+        subprocess.call(["open", filename])

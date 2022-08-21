@@ -386,6 +386,7 @@ class MainApplication(QtWidgets.QApplication):
 
         self.gotify_client.stop_final()
         super(MainApplication, self).quit()
+        sys.exit(0)
 
 
 def start_gui():

@@ -1,4 +1,5 @@
 import logging
+import platform
 import os
 import webbrowser
 
@@ -46,9 +47,11 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.spin_duration.setValue(
             settings.value("tray/notifications/duration_ms", type=int)
         )
-        self.label_notification_duration.setToolTip(
-            "This setting is ignored on Windows."
-        )
+        if platform.system() == "Windows":
+            # The notification duration setting is ignored by windows
+            self.label_notification_duration.hide()
+            self.spin_duration.hide()
+            self.label_notification_duration_ms.hide()
 
         self.cb_notify.setChecked(
             settings.value("message/check_missed/notify", type=bool)

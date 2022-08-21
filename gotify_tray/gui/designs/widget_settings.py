@@ -155,7 +155,7 @@ class Ui_Dialog(object):
         self.groupBox_notifications.setTitle(_translate("Dialog", "Notifications"))
         self.label_notification_duration_ms.setText(_translate("Dialog", "ms"))
         self.label_notification_priority.setText(_translate("Dialog", "Minimum priority to show notifications:"))
-        self.label_notification_duration.setText(_translate("Dialog", "<html><head/><body><p>Notification duration <span style=\" font-weight:600; color:#0000ff;\">[?]</span>:</p></body></html>"))
+        self.label_notification_duration.setText(_translate("Dialog", "Notification duration:"))
         self.cb_notify.setText(_translate("Dialog", "Show a notification for missed messages after reconnecting"))
         self.groupBox_server_info.setTitle(_translate("Dialog", "Server info"))
         self.pb_change_server_info.setText(_translate("Dialog", "Change server info"))

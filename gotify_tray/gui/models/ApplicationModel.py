@@ -26,9 +26,11 @@ class ApplicationModelItem(QtGui.QStandardItem):
         self.setDropEnabled(False)
         self.setData(application, ApplicationItemDataRole.ApplicationRole)
         self.setData(icon, ApplicationItemDataRole.IconRole)
-        font = QtGui.QFont()
-        font.fromString(settings.value("ApplicationItem/font", type=str))
-        self.setFont(font)
+
+        if s := settings.value("ApplicationItem/font", type=str):
+            font = QtGui.QFont()
+            font.fromString(s)
+            self.setFont(font)
         if icon:
             self.setIcon(icon)
 
@@ -44,9 +46,10 @@ class ApplicationAllMessagesItem(QtGui.QStandardItem):
         super(ApplicationAllMessagesItem, self).__init__("ALL MESSAGES")
         self.setDropEnabled(False)
         self.setDragEnabled(False)
-        font = QtGui.QFont()
-        font.fromString(settings.value("ApplicationItem/font", type=str))
-        self.setFont(font)
+        if s := settings.value("ApplicationItem/font", type=str):
+            font = QtGui.QFont()
+            font.fromString(s)
+            self.setFont(font)
 
 
 class ApplicationModel(QtGui.QStandardItemModel):

@@ -21,17 +21,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         message = message_item.data(MessageItemDataRole.MessageRole)
 
         # Fonts
-        font_title = QtGui.QFont()
-        font_date = QtGui.QFont()
-        font_content = QtGui.QFont()
-
-        font_title.fromString(settings.value("MessageWidget/font/title", type=str))
-        font_date.fromString(settings.value("MessageWidget/font/date", type=str))
-        font_content.fromString(settings.value("MessageWidget/font/message", type=str))
-
-        self.label_title.setFont(font_title)
-        self.label_date.setFont(font_date)
-        self.label_message.setFont(font_content)
+        self.set_fonts()
 
         # Display message contents
         self.label_title.setText(message.title)
@@ -73,6 +63,28 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         self.pb_delete.setIconSize(QtCore.QSize(24, 24))
 
         self.link_callbacks()
+
+    def set_fonts(self):
+        font_title = QtGui.QFont()
+        font_date = QtGui.QFont()
+        font_content = QtGui.QFont()
+
+        if s := settings.value("MessageWidget/font/title", type=str):
+            font_title.fromString(s)
+        else:
+            font_title.setBold(True)
+
+        if s := settings.value("MessageWidget/font/date", type=str):
+            font_date.fromString(s)
+        else:
+            font_date.setItalic(True)
+
+        if s := settings.value("MessageWidget/font/message", type=str):
+            font_content.fromString(s)
+
+        self.label_title.setFont(font_title)
+        self.label_date.setFont(font_date)
+        self.label_message.setFont(font_content)
 
     def link_callbacks(self):
         self.pb_delete.clicked.connect(

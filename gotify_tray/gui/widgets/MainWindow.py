@@ -68,7 +68,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.listView_applications.setIconSize(QtCore.QSize(size, size))
 
         font_title = QtGui.QFont()
-        font_title.fromString(settings.value("MainWindow/font/application", type=str))
+        if s := settings.value("MainWindow/font/application", type=str):
+            font_title.fromString(s)
+        else:
+            font_title.setBold(True)
         self.label_application.setFont(font_title)
 
         # Set tooltips

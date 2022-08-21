@@ -70,7 +70,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label_notification_duration">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Notification duration &lt;span style=&quot; font-weight:600; color:#0000ff;&quot;&gt;[?]&lt;/span&gt;:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>Notification duration:</string>
             </property>
            </widget>
           </item>

@@ -72,6 +72,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             font_title.fromString(s)
         else:
             font_title.setBold(True)
+            font_title.setPointSize(font_title.pointSize() + 2)
         self.label_application.setFont(font_title)
 
         # Set tooltips

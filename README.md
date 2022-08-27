@@ -70,7 +70,7 @@ An executable is created at `dist/gotify-tray/`.
 
 ```
 $ pip install pyinstaller Pillow
-$ pyinstaller gotify-tray-macos.spec
+$ pyinstaller gotify-tray.spec
 ```
 
 ### Inno setup (Windows)

@@ -11,7 +11,7 @@ build-macos: clean
 	pip install -r requirements.txt
 	pip install pyinstaller
 	pip install Pillow
-	pyinstaller gotify-tray-macos.spec
+	pyinstaller gotify-tray.spec
 
 install: build
 	sudo dpkg -i dist/gotify-tray_amd64.deb

@@ -74,7 +74,7 @@ jobs:
       run: |
         make build-macos
         brew install create-dmg
-        create-dmg --volname "Gotify Tray" --app-drop-link 0 0 --no-internet-enable "gotify-tray.dmg" "./dist/Gotify-Tray.app"
+        create-dmg --volname "Gotify Tray" --app-drop-link 0 0 --no-internet-enable "gotify-tray.dmg" "./dist/Gotify Tray.app"
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:

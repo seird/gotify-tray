@@ -1,5 +1,7 @@
 # -*- mode: python -*-
 
+import platform
+
 block_cipher = None
 
 a = Analysis(['gotify_tray/__main__.py'],
@@ -35,3 +37,9 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                name='gotify-tray')
+
+if platform.system() == "Darwin":
+    app = BUNDLE(coll,
+                name='Gotify Tray.app',
+                icon='logo.ico',
+                bundle_identifier=None)

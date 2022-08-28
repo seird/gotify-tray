@@ -24,7 +24,8 @@ class ImagePopup(QtWidgets.QLabel):
         pixmap = QtGui.QPixmap(filename).scaled(
                 settings.value("ImagePopup/w", type=int),
                 settings.value("ImagePopup/h", type=int),
-                QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                aspectRatioMode=QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                transformMode=QtCore.Qt.TransformationMode.SmoothTransformation
             )
         self.setPixmap(pixmap)
         

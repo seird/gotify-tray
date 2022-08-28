@@ -21,14 +21,14 @@ class ImagePopup(QtWidgets.QLabel):
         self.setWindowFlags(QtCore.Qt.WindowType.ToolTip)
         self.installEventFilter(self)
 
-        self.setPixmap(
-            QtGui.QPixmap(filename).scaled(
+        pixmap = QtGui.QPixmap(filename).scaled(
                 settings.value("ImagePopup/w", type=int),
                 settings.value("ImagePopup/h", type=int),
                 QtCore.Qt.AspectRatioMode.KeepAspectRatio,
             )
-        )
-        self.move(pos - QtCore.QPoint(30, 30))
+        self.setPixmap(pixmap)
+        
+        self.move(pos - QtCore.QPoint(pixmap.width()/2, pixmap.height()/2))
         self.show()
 
     def eventFilter(self, object: QtCore.QObject, event: QtCore.QEvent) -> bool:

@@ -22,6 +22,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     delete_message = QtCore.pyqtSignal(MessagesModelItem)
     application_selection_changed = QtCore.pyqtSignal(QtGui.QStandardItem)
     image_popup = QtCore.pyqtSignal(str, QtCore.QPoint)
+    hidden = QtCore.pyqtSignal()
 
     def __init__(
         self, application_model: ApplicationModel, messages_model: MessagesModel
@@ -175,3 +176,4 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def closeEvent(self, e: QtGui.QCloseEvent) -> None:
         self.hide()
+        self.hidden.emit()

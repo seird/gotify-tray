@@ -313,6 +313,7 @@ class MainApplication(QtWidgets.QApplication):
     def image_popup_callback(self, link: str, pos: QtCore.QPoint):
         if (filename := self.cache.lookup(link)) or (filename := self.downloader.get_filename(link)): # TODO: preload links
             self.image_popup = ImagePopup(filename, pos, link)
+            self.image_popup.show()
         else:
             # TODO
             logger.warning(f"Image {link} is not in the cache")

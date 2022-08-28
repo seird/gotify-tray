@@ -82,6 +82,10 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         )
         self.layout_fonts_message.addWidget(self.message_widget)
 
+        # Advanced
+        self.cb_image_popup.setChecked(settings.value("ImagePopup/enabled", type=bool))
+        # TODO: w/h
+
     def change_server_info_callback(self):
         self.server_changed = verify_server(force_new=True, enable_import=False)
 
@@ -174,6 +178,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.pb_export.clicked.connect(self.export_callback)
         self.pb_import.clicked.connect(self.import_callback)
         self.pb_reset.clicked.connect(self.reset_callback)
+        self.cb_image_popup.stateChanged.connect(self.settings_changed_callback)
 
     def apply_settings(self):
         # Priority
@@ -202,6 +207,9 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             "MessageWidget/font/message",
             self.message_widget.label_message.font().toString(),
         )
+
+        # Advanced
+        settings.setValue("ImagePopup/enabled", self.cb_image_popup.isChecked())
 
         self.settings_changed = False
         self.buttonBox.button(

@@ -20,18 +20,31 @@ class ImagePopup(QtWidgets.QLabel):
 
         self.setWindowFlags(QtCore.Qt.WindowType.ToolTip)
         self.installEventFilter(self)
-
-        pixmap = QtGui.QPixmap(filename).scaled(
-                settings.value("ImagePopup/w", type=int),
-                settings.value("ImagePopup/h", type=int),
-                aspectRatioMode=QtCore.Qt.AspectRatioMode.KeepAspectRatio,
-                transformMode=QtCore.Qt.TransformationMode.SmoothTransformation
-            )
-        self.setPixmap(pixmap)
         
-        self.move(pos - QtCore.QPoint(pixmap.width()/2, pixmap.height()/2))
-        self.show()
+        # Prevent leaving the pop-up open when moving quickly out of the widget
+        self.popup_timer = QtCore.QTimer()
+        self.popup_timer.timeout.connect(self.check_mouse)
+        
+        pixmap = QtGui.QPixmap(filename).scaled(
+            settings.value("ImagePopup/w", type=int),
+            settings.value("ImagePopup/h", type=int),
+            aspectRatioMode=QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+            transformMode=QtCore.Qt.TransformationMode.SmoothTransformation,
+        )
+        self.setPixmap(pixmap)
 
+        self.move(pos - QtCore.QPoint(15, 15))
+        
+        self.popup_timer.start(500)
+    
+    def check_mouse(self):
+        if not self.underMouse():
+            self.close()
+        
+    def close(self):
+        self.popup_timer.stop()
+        super(ImagePopup, self).close()
+        
     def eventFilter(self, object: QtCore.QObject, event: QtCore.QEvent) -> bool:
         if event.type() == QtCore.QEvent.Type.Leave:
             # Close the pop-up on mouse leave

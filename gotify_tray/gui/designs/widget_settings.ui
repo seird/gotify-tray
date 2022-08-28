@@ -240,11 +240,11 @@
          <property name="title">
           <string>Settings</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QPushButton" name="pb_export">
+           <widget class="QPushButton" name="pb_reset">
             <property name="text">
-             <string>Export</string>
+             <string>Reset</string>
             </property>
            </widget>
           </item>
@@ -256,9 +256,25 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pb_reset">
+           <widget class="QPushButton" name="pb_export">
             <property name="text">
-             <string>Reset</string>
+             <string>Export</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Image pop-up</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="cb_image_popup">
+            <property name="text">
+             <string>Show an image pop-up when hovering over image URLs</string>
             </property>
            </widget>
           </item>

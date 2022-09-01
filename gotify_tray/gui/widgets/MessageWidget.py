@@ -4,7 +4,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 
 from ..models.MessagesModel import MessageItemDataRole, MessagesModelItem
 from ..designs.widget_message import Ui_Form
-from gotify_tray.database import Cache, Settings
+from gotify_tray.database import Settings
 from gotify_tray.utils import convert_links, get_abs_path
 
 

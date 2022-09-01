@@ -20,6 +20,7 @@ DEFAULT_SETTINGS = {
     "MainWindow/button/size": 33,
     "MainWindow/application/icon/size": 40,
     "ImagePopup/enabled": False,
+    "ImagePopup/extensions": [".jpg", ".jpeg", ".png", ".svg"],
     "ImagePopup/w": 400,
     "ImagePopup/h": 400,
 }

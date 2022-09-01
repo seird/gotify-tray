@@ -65,7 +65,6 @@ class MainApplication(QtWidgets.QApplication):
             settings.value("Server/client_token", type=str),
         )
 
-        self.cache = Cache()
         self.downloader = Downloader()
 
         self.messages_model = MessagesModel()
@@ -309,15 +308,14 @@ class MainApplication(QtWidgets.QApplication):
             return
 
         self.messages_model.clear()
-    
+
     def image_popup_callback(self, link: str, pos: QtCore.QPoint):
-        if (filename := self.cache.lookup(link)) or (filename := self.downloader.get_filename(link)): # TODO: preload links
+        if filename := self.downloader.get_filename(link):
             self.image_popup = ImagePopup(filename, pos, link)
             self.image_popup.show()
         else:
-            # TODO
             logger.warning(f"Image {link} is not in the cache")
-    
+
     def main_window_hidden_callback(self):
         if image_popup := getattr(self, "image_popup", None):
             image_popup.close()

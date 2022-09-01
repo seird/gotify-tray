@@ -94,7 +94,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
             return
         
         _, ext = os.path.splitext(link)
-        if ext in [".jpg", ".jpeg", ".png"]:
+        if ext in settings.value("ImagePopup/extensions", type=list):
             self.image_popup.emit(link, QtGui.QCursor.pos())
 
     def link_callbacks(self):

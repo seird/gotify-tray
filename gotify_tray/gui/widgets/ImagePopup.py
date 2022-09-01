@@ -1,3 +1,4 @@
+import platform
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from gotify_tray.database import Settings
@@ -18,13 +19,13 @@ class ImagePopup(QtWidgets.QLabel):
         super(ImagePopup, self).__init__()
         self.link = link
 
-        self.setWindowFlags(QtCore.Qt.WindowType.ToolTip)
+        self.setWindowFlags(QtCore.Qt.WindowType.Popup)
         self.installEventFilter(self)
-        
+
         # Prevent leaving the pop-up open when moving quickly out of the widget
         self.popup_timer = QtCore.QTimer()
         self.popup_timer.timeout.connect(self.check_mouse)
-        
+
         pixmap = QtGui.QPixmap(filename).scaled(
             settings.value("ImagePopup/w", type=int),
             settings.value("ImagePopup/h", type=int),
@@ -34,19 +35,19 @@ class ImagePopup(QtWidgets.QLabel):
         self.setPixmap(pixmap)
 
         self.move(pos - QtCore.QPoint(15, 15))
-        
+
         self.popup_timer.start(500)
-    
+
     def check_mouse(self):
         if not self.underMouse():
             self.close()
-        
+
     def close(self):
         self.popup_timer.stop()
         super(ImagePopup, self).close()
-        
+
     def eventFilter(self, object: QtCore.QObject, event: QtCore.QEvent) -> bool:
-        if event.type() == QtCore.QEvent.Type.Leave:
+        if platform.system() != "Darwin" and event.type() == QtCore.QEvent.Type.Leave:
             # Close the pop-up on mouse leave
             self.close()
         elif (

@@ -93,7 +93,8 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         if not settings.value("ImagePopup/enabled", type=bool):
             return
         
-        _, ext = os.path.splitext(link)
+        qurl = QtCore.QUrl(link)
+        _, ext = os.path.splitext(qurl.fileName())
         if ext in settings.value("ImagePopup/extensions", type=list):
             self.image_popup.emit(link, QtGui.QCursor.pos())
 

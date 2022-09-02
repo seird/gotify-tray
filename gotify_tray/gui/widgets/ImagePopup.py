@@ -26,12 +26,16 @@ class ImagePopup(QtWidgets.QLabel):
         self.popup_timer = QtCore.QTimer()
         self.popup_timer.timeout.connect(self.check_mouse)
 
-        pixmap = QtGui.QPixmap(filename).scaled(
-            settings.value("ImagePopup/w", type=int),
-            settings.value("ImagePopup/h", type=int),
-            aspectRatioMode=QtCore.Qt.AspectRatioMode.KeepAspectRatio,
-            transformMode=QtCore.Qt.TransformationMode.SmoothTransformation,
-        )
+        pixmap = QtGui.QPixmap(filename)
+        W = settings.value("ImagePopup/w", type=int)
+        H = settings.value("ImagePopup/h", type=int)
+        if pixmap.height() > H or pixmap.width() > W:
+            pixmap = pixmap.scaled(
+                W,
+                H,
+                aspectRatioMode=QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                transformMode=QtCore.Qt.TransformationMode.SmoothTransformation,
+            )
         self.setPixmap(pixmap)
 
         self.move(pos - QtCore.QPoint(15, 15))

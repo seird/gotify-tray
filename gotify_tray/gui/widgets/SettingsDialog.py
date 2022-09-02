@@ -84,7 +84,8 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
 
         # Advanced
         self.cb_image_popup.setChecked(settings.value("ImagePopup/enabled", type=bool))
-        # TODO: w/h
+        self.spin_popup_w.setValue(settings.value("ImagePopup/w", type=int))
+        self.spin_popup_h.setValue(settings.value("ImagePopup/h", type=int))
 
     def change_server_info_callback(self):
         self.server_changed = verify_server(force_new=True, enable_import=False)
@@ -179,6 +180,8 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.pb_import.clicked.connect(self.import_callback)
         self.pb_reset.clicked.connect(self.reset_callback)
         self.cb_image_popup.stateChanged.connect(self.settings_changed_callback)
+        self.spin_popup_w.valueChanged.connect(self.settings_changed_callback)
+        self.spin_popup_h.valueChanged.connect(self.settings_changed_callback)
 
     def apply_settings(self):
         # Priority
@@ -210,6 +213,8 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
 
         # Advanced
         settings.setValue("ImagePopup/enabled", self.cb_image_popup.isChecked())
+        settings.setValue("ImagePopup/w", self.spin_popup_w.value())
+        settings.setValue("ImagePopup/h", self.spin_popup_h.value())
 
         self.settings_changed = False
         self.buttonBox.button(

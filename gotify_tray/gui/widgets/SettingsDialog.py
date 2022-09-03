@@ -87,7 +87,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.layout_fonts_message.addWidget(self.message_widget)
 
         # Advanced
-        self.cb_image_popup.setChecked(settings.value("ImagePopup/enabled", type=bool))
+        self.groupbox_image_popup.setChecked(settings.value("ImagePopup/enabled", type=bool))
         self.spin_popup_w.setValue(settings.value("ImagePopup/w", type=int))
         self.spin_popup_h.setValue(settings.value("ImagePopup/h", type=int))
 
@@ -184,7 +184,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.pb_export.clicked.connect(self.export_callback)
         self.pb_import.clicked.connect(self.import_callback)
         self.pb_reset.clicked.connect(self.reset_callback)
-        self.cb_image_popup.stateChanged.connect(self.settings_changed_callback)
+        self.groupbox_image_popup.toggled.connect(self.settings_changed_callback)
         self.spin_popup_w.valueChanged.connect(self.settings_changed_callback)
         self.spin_popup_h.valueChanged.connect(self.settings_changed_callback)
 
@@ -220,7 +220,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         )
 
         # Advanced
-        settings.setValue("ImagePopup/enabled", self.cb_image_popup.isChecked())
+        settings.setValue("ImagePopup/enabled", self.groupbox_image_popup.isChecked())
         settings.setValue("ImagePopup/w", self.spin_popup_w.value())
         settings.setValue("ImagePopup/h", self.spin_popup_h.value())
 

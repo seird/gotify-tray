@@ -266,12 +266,15 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_2">
+        <widget class="QGroupBox" name="groupbox_image_popup">
          <property name="title">
-          <string>Image pop-up</string>
+          <string>Image pop-up for URLs</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="1" column="0">
+          <item row="0" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
              <widget class="QLabel" name="label">
@@ -339,13 +342,6 @@
              </spacer>
             </item>
            </layout>
-          </item>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="cb_image_popup">
-            <property name="text">
-             <string>Show an image pop-up when hovering over image URLs</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>

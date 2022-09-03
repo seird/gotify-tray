@@ -335,6 +335,10 @@ class MainApplication(QtWidgets.QApplication):
                 closed_callback=self.listener_closed_callback,
             )
 
+    def tray_notification_clicked_callback(self):
+        if settings.value("tray/notifications/click", type=bool):
+            self.main_window.bring_to_front()
+
     def tray_activated_callback(
         self, reason: QtWidgets.QSystemTrayIcon.ActivationReason
     ):
@@ -349,7 +353,7 @@ class MainApplication(QtWidgets.QApplication):
         self.tray.actionSettings.triggered.connect(self.settings_callback)
         self.tray.actionShowWindow.triggered.connect(self.main_window.bring_to_front)
         self.tray.actionReconnect.triggered.connect(self.reconnect_callback)
-        self.tray.messageClicked.connect(self.main_window.bring_to_front)
+        self.tray.messageClicked.connect(self.tray_notification_clicked_callback)
         self.tray.activated.connect(self.tray_activated_callback)
 
         self.main_window.refresh.connect(self.refresh_callback)

@@ -56,6 +56,10 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             settings.value("message/check_missed/notify", type=bool)
         )
 
+        self.cb_notification_click.setChecked(
+            settings.value("tray/notifications/click", type=bool)
+        )
+
         # Logging
         self.combo_logging.addItems(
             [
@@ -149,6 +153,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.spin_priority.valueChanged.connect(self.settings_changed_callback)
         self.spin_duration.valueChanged.connect(self.settings_changed_callback)
         self.cb_notify.stateChanged.connect(self.settings_changed_callback)
+        self.cb_notification_click.stateChanged.connect(self.settings_changed_callback)
 
         # Server info
         self.pb_change_server_info.clicked.connect(self.change_server_info_callback)
@@ -180,6 +185,9 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         settings.setValue("tray/notifications/priority", self.spin_priority.value())
         settings.setValue("tray/notifications/duration_ms", self.spin_duration.value())
         settings.setValue("message/check_missed/notify", self.cb_notify.isChecked())
+        settings.setValue(
+            "tray/notifications/click", self.cb_notification_click.isChecked()
+        )
 
         # Logging
         selected_level = self.combo_logging.currentText()

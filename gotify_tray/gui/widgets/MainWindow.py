@@ -21,6 +21,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     delete_all = QtCore.pyqtSignal(QtGui.QStandardItem)
     delete_message = QtCore.pyqtSignal(MessagesModelItem)
     application_selection_changed = QtCore.pyqtSignal(QtGui.QStandardItem)
+    image_popup = QtCore.pyqtSignal(str, QtCore.QPoint)
+    hidden = QtCore.pyqtSignal()
 
     def __init__(
         self, application_model: ApplicationModel, messages_model: MessagesModel
@@ -103,6 +105,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.messages_model.indexFromItem(message_item), message_widget
         )
         message_widget.deletion_requested.connect(self.delete_message.emit)
+        message_widget.image_popup.connect(self.image_popup.emit)
 
     def currentApplicationIndex(self) -> QtCore.QModelIndex:
         return self.listView_applications.selectionModel().currentIndex()
@@ -173,3 +176,4 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def closeEvent(self, e: QtGui.QCloseEvent) -> None:
         self.hide()
+        self.hidden.emit()

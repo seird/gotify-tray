@@ -31,7 +31,7 @@ from .models import (
     MessagesModelItem,
     MessageItemDataRole,
 )
-from .widgets import MainWindow, SettingsDialog, Tray
+from .widgets import ImagePopup, MainWindow, SettingsDialog, Tray
 
 
 settings = Settings("gotify-tray")
@@ -309,6 +309,17 @@ class MainApplication(QtWidgets.QApplication):
 
         self.messages_model.clear()
 
+    def image_popup_callback(self, link: str, pos: QtCore.QPoint):
+        if filename := self.downloader.get_filename(link):
+            self.image_popup = ImagePopup(filename, pos, link)
+            self.image_popup.show()
+        else:
+            logger.warning(f"Image {link} is not in the cache")
+
+    def main_window_hidden_callback(self):
+        if image_popup := getattr(self, "image_popup", None):
+            image_popup.close()
+
     def refresh_callback(self):
         # Manual refresh -> also reset the image cache
         Cache().clear()
@@ -362,6 +373,8 @@ class MainApplication(QtWidgets.QApplication):
             self.application_selection_changed_callback
         )
         self.main_window.delete_message.connect(self.delete_message_callback)
+        self.main_window.image_popup.connect(self.image_popup_callback)
+        self.main_window.hidden.connect(self.main_window_hidden_callback)
 
         self.watchdog.closed.connect(lambda: self.listener_closed_callback(None, None))
 

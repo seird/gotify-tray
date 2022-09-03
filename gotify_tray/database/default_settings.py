@@ -20,4 +20,8 @@ DEFAULT_SETTINGS = {
     "MainWindow/label/size": 25,
     "MainWindow/button/size": 33,
     "MainWindow/application/icon/size": 40,
+    "ImagePopup/enabled": False,
+    "ImagePopup/extensions": [".jpg", ".jpeg", ".png", ".svg"],
+    "ImagePopup/w": 400,
+    "ImagePopup/h": 400,
 }

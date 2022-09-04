@@ -4,15 +4,21 @@
 A tray notification application for receiving messages from a [Gotify server](https://github.com/gotify/server).
 
 
-## Download
+## Getting started
 
 
-[Download the latest release.](https://github.com/seird/gotify-tray/releases/latest)
+- [Download the latest release.](https://github.com/seird/gotify-tray/releases/latest)
 
-or, install via pip:
-```
-$ pip install gotify-tray
-```
+- or, install via pip:
+    ```shell
+    $ pip install gotify-tray
+    ```
+
+- or, run from source:
+    ```shell
+    $ pip install -r requirements.txt
+    $ python -m gotify_tray
+    ```
 
 
 ## Features
@@ -41,77 +47,11 @@ Windows 10                                         |  KDE                       
 ![settings](https://raw.githubusercontent.com/seird/gotify-tray/master/images/settings.png)
 
 
-## Manual Installation
+## Build instructions
 
-Get the source and install the requirements:
-
-```
-$ git clone https://github.com/seird/gotify-tray.git
-$ cd gotify-tray
-$ pip install -r requirements.txt
-```
-
-
-### Run from source
-
-```
-$ python -m gotify_tray
-```
-
-### Create a pyinstaller executable
-
-```
-$ pip install pyinstaller
-$ pyinstaller gotify-tray.spec
-```
-An executable is created at `dist/gotify-tray/`.
-
-### Create a macos .app
-
-```
-$ pip install pyinstaller Pillow
-$ pyinstaller gotify-tray.spec
-```
-
-### Inno setup (Windows)
-
-Create an installer for windows with inno setup from pyinstaller output:
-
-```
-$ iscc gotify-tray.iss
-```
-
-### Create and install a pip package
-
-- Create the pip package:
-    ```
-    $ python -m build
-    ```
-
-- Install the pip package:
-    ```
-    $ pip install dist/gotify_tray-0.1.14-py3-none-any.whl
-    ```
-
-- Launch:
-    ```
-    $ gotify-tray
-    ```
-
-### Create a deb package
-
-```
-$ make build
-
-# or install
-
-$ sudo make install
-```
+See [BUILDING](BUILDING.md).
 
 
 ## Requirements
 
 - python >=3.8
-- PyQt6
-- requests
-- websocket-client

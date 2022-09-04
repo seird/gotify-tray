@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>384</width>
-    <height>274</height>
+    <height>285</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,30 +40,10 @@
           <string>Notifications</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="2">
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="2">
-           <widget class="QLabel" name="label_notification_duration_ms">
+          <item row="2" column="0" colspan="3">
+           <widget class="QCheckBox" name="cb_notify">
             <property name="text">
-             <string>ms</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_notification_priority">
-            <property name="text">
-             <string>Minimum priority to show notifications:</string>
+             <string>Show a notification for missed messages after reconnecting</string>
             </property>
            </widget>
           </item>
@@ -74,16 +54,10 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="spin_duration">
-            <property name="minimum">
-             <number>500</number>
-            </property>
-            <property name="maximum">
-             <number>30000</number>
-            </property>
-            <property name="singleStep">
-             <number>100</number>
+          <item row="1" column="2">
+           <widget class="QLabel" name="label_notification_duration_ms">
+            <property name="text">
+             <string>ms</string>
             </property>
            </widget>
           </item>
@@ -100,10 +74,43 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="3">
-           <widget class="QCheckBox" name="cb_notify">
+          <item row="0" column="2">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_notification_priority">
             <property name="text">
-             <string>Show a notification for missed messages after reconnecting</string>
+             <string>Minimum priority to show notifications:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="spin_duration">
+            <property name="minimum">
+             <number>500</number>
+            </property>
+            <property name="maximum">
+             <number>30000</number>
+            </property>
+            <property name="singleStep">
+             <number>100</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="3">
+           <widget class="QCheckBox" name="cb_notification_click">
+            <property name="text">
+             <string>Clicking the notification pop-up opens the main window</string>
             </property>
            </widget>
           </item>
@@ -233,11 +240,11 @@
          <property name="title">
           <string>Settings</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QPushButton" name="pb_export">
+           <widget class="QPushButton" name="pb_reset">
             <property name="text">
-             <string>Export</string>
+             <string>Reset</string>
             </property>
            </widget>
           </item>
@@ -249,11 +256,92 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pb_reset">
+           <widget class="QPushButton" name="pb_export">
             <property name="text">
-             <string>Reset</string>
+             <string>Export</string>
             </property>
            </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupbox_image_popup">
+         <property name="title">
+          <string>Image pop-up for URLs</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="toolTip">
+               <string>Maximum pop-up width</string>
+              </property>
+              <property name="text">
+               <string>Width</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="spin_popup_w">
+              <property name="toolTip">
+               <string>Maximum pop-up width</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="minimum">
+               <number>100</number>
+              </property>
+              <property name="maximum">
+               <number>10000</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="toolTip">
+               <string>Maximum pop-up height</string>
+              </property>
+              <property name="text">
+               <string>Height</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="spin_popup_h">
+              <property name="toolTip">
+               <string>Maximum pop-up height</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="minimum">
+               <number>100</number>
+              </property>
+              <property name="maximum">
+               <number>10000</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -264,15 +352,21 @@
           <string>Logging</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_6">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_logging">
-            <property name="text">
-             <string>Level</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QComboBox" name="combo_logging"/>
+          </item>
+          <item row="0" column="3">
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>190</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
           <item row="0" column="2">
            <widget class="QPushButton" name="pb_open_log">
@@ -290,18 +384,12 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="3">
-           <spacer name="horizontalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_logging">
+            <property name="text">
+             <string>Level</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>190</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
+           </widget>
           </item>
          </layout>
         </widget>

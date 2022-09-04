@@ -1,3 +1,5 @@
+import os
+
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from ..models.MessagesModel import MessageItemDataRole, MessagesModelItem
@@ -11,6 +13,7 @@ settings = Settings("gotify-tray")
 
 class MessageWidget(QtWidgets.QWidget, Ui_Form):
     deletion_requested = QtCore.pyqtSignal(MessagesModelItem)
+    image_popup = QtCore.pyqtSignal(str, QtCore.QPoint)
 
     def __init__(self, message_item: MessagesModelItem, image_path: str = ""):
         super(MessageWidget, self).__init__()
@@ -86,7 +89,17 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         self.label_date.setFont(font_date)
         self.label_message.setFont(font_content)
 
+    def link_hovered_callback(self, link: str):
+        if not settings.value("ImagePopup/enabled", type=bool):
+            return
+        
+        qurl = QtCore.QUrl(link)
+        _, ext = os.path.splitext(qurl.fileName())
+        if ext in settings.value("ImagePopup/extensions", type=list):
+            self.image_popup.emit(link, QtGui.QCursor.pos())
+
     def link_callbacks(self):
         self.pb_delete.clicked.connect(
             lambda: self.deletion_requested.emit(self.message_item)
         )
+        self.label_message.linkHovered.connect(self.link_hovered_callback)

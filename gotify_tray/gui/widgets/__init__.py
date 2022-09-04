@@ -1,3 +1,4 @@
+from .ImagePopup import ImagePopup
 from .MessageWidget import MessageWidget
 from .MainWindow import MainWindow
 from .ServerInfoDialog import ServerInfoDialog

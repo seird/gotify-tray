@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=gotify-tray
+Name=Gotify Tray
 Comment=A tray notification application for receiving messages from a Gotify server.
 Path=/usr/lib/gotify-tray
 Exec=/usr/lib/gotify-tray/gotify-tray

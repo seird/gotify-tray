@@ -1,13 +1,12 @@
 import logging
 import platform
 import os
-import webbrowser
 
 from gotify_tray.database import Settings
 from gotify_tray.gotify import GotifyMessageModel
 from gotify_tray.gui.models import MessagesModelItem
 from . import MessageWidget
-from gotify_tray.utils import verify_server
+from gotify_tray.utils import verify_server, open_file
 from gotify_tray.tasks import ExportSettingsTask, ImportSettingsTask
 from PyQt6 import QtCore, QtGui, QtWidgets
 
@@ -57,6 +56,10 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             settings.value("message/check_missed/notify", type=bool)
         )
 
+        self.cb_notification_click.setChecked(
+            settings.value("tray/notifications/click", type=bool)
+        )
+
         # Logging
         self.combo_logging.addItems(
             [
@@ -82,6 +85,11 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             )
         )
         self.layout_fonts_message.addWidget(self.message_widget)
+
+        # Advanced
+        self.groupbox_image_popup.setChecked(settings.value("ImagePopup/enabled", type=bool))
+        self.spin_popup_w.setValue(settings.value("ImagePopup/w", type=int))
+        self.spin_popup_h.setValue(settings.value("ImagePopup/h", type=int))
 
     def change_server_info_callback(self):
         self.server_changed = verify_server(force_new=True, enable_import=False)
@@ -150,6 +158,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.spin_priority.valueChanged.connect(self.settings_changed_callback)
         self.spin_duration.valueChanged.connect(self.settings_changed_callback)
         self.cb_notify.stateChanged.connect(self.settings_changed_callback)
+        self.cb_notification_click.stateChanged.connect(self.settings_changed_callback)
 
         # Server info
         self.pb_change_server_info.clicked.connect(self.change_server_info_callback)
@@ -157,7 +166,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         # Logging
         self.combo_logging.currentTextChanged.connect(self.settings_changed_callback)
         self.pb_open_log.clicked.connect(
-            lambda: webbrowser.open(logger.root.handlers[0].baseFilename)
+            lambda: open_file(logger.root.handlers[0].baseFilename)
         )
 
         # Fonts
@@ -175,12 +184,18 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.pb_export.clicked.connect(self.export_callback)
         self.pb_import.clicked.connect(self.import_callback)
         self.pb_reset.clicked.connect(self.reset_callback)
+        self.groupbox_image_popup.toggled.connect(self.settings_changed_callback)
+        self.spin_popup_w.valueChanged.connect(self.settings_changed_callback)
+        self.spin_popup_h.valueChanged.connect(self.settings_changed_callback)
 
     def apply_settings(self):
         # Priority
         settings.setValue("tray/notifications/priority", self.spin_priority.value())
         settings.setValue("tray/notifications/duration_ms", self.spin_duration.value())
         settings.setValue("message/check_missed/notify", self.cb_notify.isChecked())
+        settings.setValue(
+            "tray/notifications/click", self.cb_notification_click.isChecked()
+        )
 
         # Logging
         selected_level = self.combo_logging.currentText()
@@ -203,6 +218,11 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             "MessageWidget/font/message",
             self.message_widget.label_message.font().toString(),
         )
+
+        # Advanced
+        settings.setValue("ImagePopup/enabled", self.groupbox_image_popup.isChecked())
+        settings.setValue("ImagePopup/w", self.spin_popup_w.value())
+        settings.setValue("ImagePopup/h", self.spin_popup_h.value())
 
         self.settings_changed = False
         self.buttonBox.button(

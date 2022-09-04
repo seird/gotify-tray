@@ -23,13 +23,13 @@ class Tray(QtWidgets.QSystemTrayIcon):
         # Tray menu items
         menu = QtWidgets.QMenu()
 
-        self.actionSettings = QtGui.QAction("Settings", self)
-        menu.addAction(self.actionSettings)
+        self.actionShowWindow = QtGui.QAction("Show Window", self)
+        menu.addAction(self.actionShowWindow)
 
         menu.addSeparator()
 
-        self.actionShowWindow = QtGui.QAction("Show Window", self)
-        menu.addAction(self.actionShowWindow)
+        self.actionSettings = QtGui.QAction("Settings", self)
+        menu.addAction(self.actionSettings)
 
         menu.addSeparator()
 

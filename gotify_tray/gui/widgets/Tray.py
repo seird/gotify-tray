@@ -2,7 +2,7 @@ import logging
 
 from PyQt6 import QtGui, QtWidgets
 from gotify_tray.__version__ import __title__
-from gotify_tray.utils import get_abs_path
+from gotify_tray.utils import get_icon
 
 
 logger = logging.getLogger("gotify-tray")
@@ -44,7 +44,7 @@ class Tray(QtWidgets.QSystemTrayIcon):
         self.setContextMenu(menu)
 
     def set_icon_ok(self):
-        self.setIcon(QtGui.QIcon(get_abs_path("gotify_tray/gui/images/gotify-small.png")))
+        self.setIcon(QtGui.QIcon(get_icon("tray")))
 
     def set_icon_error(self):
-        self.setIcon(QtGui.QIcon(get_abs_path("gotify_tray/gui/images/gotify-small-error.png")))
+        self.setIcon(QtGui.QIcon(get_icon("tray-error")))

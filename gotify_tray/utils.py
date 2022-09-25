@@ -57,3 +57,10 @@ def open_file(filename: str):
         os.startfile(filename)
     elif platform.system() == "Darwin":
         subprocess.call(["open", filename])
+
+
+def get_icon(name: str) -> str:
+    if platform.system() == "Darwin":
+        name += "-macos"
+
+    return get_abs_path(f"gotify_tray/gui/images/{name}.png")

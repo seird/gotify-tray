@@ -4,6 +4,8 @@ import platform
 
 block_cipher = None
 
+logo = "gotify_tray/gui/images/logo.ico" if platform.system() != "Darwin" else "gotify_tray/gui/images/logo-macos.ico"
+
 a = Analysis(['gotify_tray/__main__.py'],
              pathex=[os.getcwd()],
              binaries=[],
@@ -29,7 +31,7 @@ exe = EXE(pyz,
           upx=True,
           console=False,
           version='version.py',
-          icon='logo.ico')
+          icon=logo)
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
@@ -41,5 +43,5 @@ coll = COLLECT(exe,
 if platform.system() == "Darwin":
     app = BUNDLE(coll,
                 name='Gotify Tray.app',
-                icon='logo.ico',
+                icon=logo,
                 bundle_identifier=None)

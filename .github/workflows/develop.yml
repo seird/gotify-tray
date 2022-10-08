@@ -3,7 +3,7 @@ name: build
 on:
   push:
     branches-ignore:
-      - master
+      - 'release'
     tags-ignore:
       - '*'
 
@@ -39,7 +39,7 @@ jobs:
     if: ${{ github.actor != 'dependabot[bot]' }}
     strategy:
       matrix:
-        tag: [focal]
+        tag: [jammy]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2

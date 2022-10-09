@@ -152,6 +152,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
         self.show()
         self.activateWindow()
+        # pops on current desktop if window was visible on another desktop
+        self.raise_()
 
     def link_callbacks(self):
         self.pb_refresh.clicked.connect(self.refresh.emit)

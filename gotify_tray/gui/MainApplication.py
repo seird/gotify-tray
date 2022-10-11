@@ -177,6 +177,7 @@ class MainApplication(QtWidgets.QApplication):
         message: gotify.GotifyMessageModel,
         application: gotify.GotifyApplicationModel,
     ):
+        self.tray.set_icon_unread()
         self.update_last_id(message.id)
         message_item = MessagesModelItem(message)
         self.messages_model.insertRow(row, message_item)
@@ -278,6 +279,7 @@ class MainApplication(QtWidgets.QApplication):
         else:
             icon = QtWidgets.QSystemTrayIcon.MessageIcon.Information
 
+        self.tray.set_icon_unread()
         self.tray.showMessage(
             message.title,
             message.message,
@@ -348,6 +350,7 @@ class MainApplication(QtWidgets.QApplication):
 
     def tray_notification_clicked_callback(self):
         if settings.value("tray/notifications/click", type=bool):
+            self.tray.discard_icon_unread()
             self.main_window.bring_to_front()
 
     def tray_activated_callback(
@@ -357,6 +360,7 @@ class MainApplication(QtWidgets.QApplication):
             reason == QtWidgets.QSystemTrayIcon.ActivationReason.Trigger
             and platform.system() != "Darwin"
         ):
+            self.tray.discard_icon_unread()
             self.main_window.bring_to_front()
 
     def link_callbacks(self):

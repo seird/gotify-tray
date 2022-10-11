@@ -24,6 +24,7 @@ class Tray(QtWidgets.QSystemTrayIcon):
         menu = QtWidgets.QMenu()
 
         self.actionShowWindow = QtGui.QAction("Show Window", self)
+        self.actionShowWindow.triggered.connect(self.discard_icon_unread)
         menu.addAction(self.actionShowWindow)
 
         menu.addSeparator()
@@ -43,8 +44,14 @@ class Tray(QtWidgets.QSystemTrayIcon):
 
         self.setContextMenu(menu)
 
+    def set_icon_unread(self):
+        self.setIcon(QtGui.QIcon(get_icon("tray-unread")))
+
     def set_icon_ok(self):
         self.setIcon(QtGui.QIcon(get_icon("tray")))
 
     def set_icon_error(self):
         self.setIcon(QtGui.QIcon(get_icon("tray-error")))
+
+    def discard_icon_unread(self):
+        self.set_icon_ok()

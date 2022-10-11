@@ -350,7 +350,6 @@ class MainApplication(QtWidgets.QApplication):
 
     def tray_notification_clicked_callback(self):
         if settings.value("tray/notifications/click", type=bool):
-            self.tray.discard_icon_unread()
             self.main_window.bring_to_front()
 
     def tray_activated_callback(
@@ -360,7 +359,6 @@ class MainApplication(QtWidgets.QApplication):
             reason == QtWidgets.QSystemTrayIcon.ActivationReason.Trigger
             and platform.system() != "Darwin"
         ):
-            self.tray.discard_icon_unread()
             self.main_window.bring_to_front()
 
     def link_callbacks(self):
@@ -379,6 +377,7 @@ class MainApplication(QtWidgets.QApplication):
         self.main_window.delete_message.connect(self.delete_message_callback)
         self.main_window.image_popup.connect(self.image_popup_callback)
         self.main_window.hidden.connect(self.main_window_hidden_callback)
+        self.main_window.activated.connect(self.tray.discard_icon_unread)
 
         self.watchdog.closed.connect(lambda: self.listener_closed_callback(None, None))
 

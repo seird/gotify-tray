@@ -24,7 +24,6 @@ class Tray(QtWidgets.QSystemTrayIcon):
         menu = QtWidgets.QMenu()
 
         self.actionShowWindow = QtGui.QAction("Show Window", self)
-        self.actionShowWindow.triggered.connect(self.discard_icon_unread)
         menu.addAction(self.actionShowWindow)
 
         menu.addSeparator()

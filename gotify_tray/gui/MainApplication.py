@@ -83,6 +83,7 @@ class MainApplication(QtWidgets.QApplication):
             new_message_callback=self.new_message_callback,
             opened_callback=self.listener_opened_callback,
             closed_callback=self.listener_closed_callback,
+            error_callback=self.listener_error_callback
         )
 
         self.watchdog = ServerConnectionWatchdogTask(self.gotify_client)
@@ -163,6 +164,10 @@ class MainApplication(QtWidgets.QApplication):
         QtCore.QTimer.singleShot(
             self.gotify_client.get_wait_time() * 1000, self.gotify_client.reconnect
         )
+    
+    def listener_error_callback(self, exception: Exception):
+        self.main_window.set_connecting()
+        self.tray.set_icon_error()
 
     def reconnect_callback(self):
         if not self.gotify_client.is_listening():
@@ -344,6 +349,7 @@ class MainApplication(QtWidgets.QApplication):
                 new_message_callback=self.new_message_callback,
                 opened_callback=self.listener_opened_callback,
                 closed_callback=self.listener_closed_callback,
+                error_callback=self.listener_error_callback
             )
 
     def tray_notification_clicked_callback(self):

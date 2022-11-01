@@ -5,7 +5,8 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from ..models.MessagesModel import MessageItemDataRole, MessagesModelItem
 from ..designs.widget_message import Ui_Form
 from gotify_tray.database import Settings
-from gotify_tray.utils import convert_links, get_abs_path
+from gotify_tray.utils import convert_links
+from gotify_tray.gui.themes import get_theme_file
 
 
 settings = Settings("gotify-tray")
@@ -61,7 +62,9 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         self.message_item.setSizeHint(QtCore.QSize(size_hint.width(), self.height()))
 
         self.pb_delete.setIcon(
-            QtGui.QIcon(get_abs_path("gotify_tray/gui/images/trashcan.svg"))
+            QtGui.QIcon(
+                get_theme_file("trashcan.svg", settings.value("theme", type=str))
+            )
         )
         self.pb_delete.setIconSize(QtCore.QSize(24, 24))
 
@@ -92,7 +95,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
     def link_hovered_callback(self, link: str):
         if not settings.value("ImagePopup/enabled", type=bool):
             return
-        
+
         qurl = QtCore.QUrl(link)
         _, ext = os.path.splitext(qurl.fileName())
         if ext in settings.value("ImagePopup/extensions", type=list):

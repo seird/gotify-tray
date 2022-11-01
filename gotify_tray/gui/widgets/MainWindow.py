@@ -11,6 +11,7 @@ from . import MessageWidget
 from gotify_tray.__version__ import __title__
 from gotify_tray.database import Settings
 from gotify_tray.utils import get_abs_path
+from gotify_tray.gui.themes import get_theme_file
 
 
 settings = Settings("gotify-tray")
@@ -44,30 +45,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Do not collapse the message list
         self.splitter.setCollapsible(1, False)
-
         self.status_widget = StatusWidget()
         self.horizontalLayout.insertWidget(0, self.status_widget)
 
-        # Set button icons
-        self.pb_refresh.setIcon(
-            QtGui.QIcon(get_abs_path(f"gotify_tray/gui/images/refresh.svg"))
-        )
-        self.pb_delete_all.setIcon(
-            QtGui.QIcon(get_abs_path(f"gotify_tray/gui/images/trashcan.svg"))
-        )
-
-        # Resize the labels and icons
-        size = settings.value("MainWindow/label/size", type=int)
-        self.status_widget.setFixedSize(QtCore.QSize(size, size))
-
-        size = settings.value("MainWindow/button/size", type=int)
-        self.pb_refresh.setFixedSize(QtCore.QSize(size, size))
-        self.pb_delete_all.setFixedSize(QtCore.QSize(size, size))
-        self.pb_refresh.setIconSize(QtCore.QSize(int(0.7 * size), int(0.7 * size)))
-        self.pb_delete_all.setIconSize(QtCore.QSize(int(0.9 * size), int(0.9 * size)))
-
-        size = settings.value("MainWindow/application/icon/size", type=int)
-        self.listView_applications.setIconSize(QtCore.QSize(size, size))
+        self.set_icons()
 
         font_title = QtGui.QFont()
         if s := settings.value("MainWindow/font/application", type=str):
@@ -84,6 +65,26 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.restore_state()
 
         self.link_callbacks()
+
+    def set_icons(self):
+        theme = settings.value("theme", type=str)
+
+        # Set button icons
+        self.pb_refresh.setIcon(QtGui.QIcon(get_theme_file("refresh.svg", theme)))
+        self.pb_delete_all.setIcon(QtGui.QIcon(get_theme_file("trashcan.svg", theme)))
+
+        # Resize the labels and icons
+        size = settings.value("MainWindow/label/size", type=int)
+        self.status_widget.setFixedSize(QtCore.QSize(size, size))
+
+        size = settings.value("MainWindow/button/size", type=int)
+        self.pb_refresh.setFixedSize(QtCore.QSize(size, size))
+        self.pb_delete_all.setFixedSize(QtCore.QSize(size, size))
+        self.pb_refresh.setIconSize(QtCore.QSize(int(0.7 * size), int(0.7 * size)))
+        self.pb_delete_all.setIconSize(QtCore.QSize(int(0.9 * size), int(0.9 * size)))
+
+        size = settings.value("MainWindow/application/icon/size", type=int)
+        self.listView_applications.setIconSize(QtCore.QSize(size, size))
 
     def set_active(self):
         self.status_widget.set_active()

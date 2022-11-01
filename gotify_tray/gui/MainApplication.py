@@ -18,6 +18,7 @@ from gotify_tray.tasks import (
     GetMessagesTask,
     ServerConnectionWatchdogTask,
 )
+from gotify_tray.gui.themes import set_theme
 from gotify_tray.utils import get_icon, verify_server
 from PyQt6 import QtCore, QtGui, QtWidgets
 
@@ -60,6 +61,8 @@ def init_logger(logger: logging.Logger):
 
 class MainApplication(QtWidgets.QApplication):
     def init_ui(self):
+        set_theme(self, settings.value("theme", type=str))
+
         self.gotify_client = gotify.GotifyClient(
             settings.value("Server/url", type=str),
             settings.value("Server/client_token", type=str),
@@ -83,7 +86,7 @@ class MainApplication(QtWidgets.QApplication):
             new_message_callback=self.new_message_callback,
             opened_callback=self.listener_opened_callback,
             closed_callback=self.listener_closed_callback,
-            error_callback=self.listener_error_callback
+            error_callback=self.listener_error_callback,
         )
 
         self.watchdog = ServerConnectionWatchdogTask(self.gotify_client)
@@ -164,7 +167,7 @@ class MainApplication(QtWidgets.QApplication):
         QtCore.QTimer.singleShot(
             self.gotify_client.get_wait_time() * 1000, self.gotify_client.reconnect
         )
-    
+
     def listener_error_callback(self, exception: Exception):
         self.main_window.set_connecting()
         self.tray.set_icon_error()
@@ -349,7 +352,7 @@ class MainApplication(QtWidgets.QApplication):
                 new_message_callback=self.new_message_callback,
                 opened_callback=self.listener_opened_callback,
                 closed_callback=self.listener_closed_callback,
-                error_callback=self.listener_error_callback
+                error_callback=self.listener_error_callback,
             )
 
     def tray_notification_clicked_callback(self):
@@ -417,7 +420,6 @@ def start_gui():
     app.setApplicationName(title)
     app.setQuitOnLastWindowClosed(False)
     app.setWindowIcon(QtGui.QIcon(get_icon("gotify-small")))
-    app.setStyle("fusion")
 
     init_logger(logger)
 

@@ -1,0 +1,12 @@
+QPushButton:!default:hover {
+    background: #5c24b6;
+}
+
+QPushButton:default:hover, QPushButton:checked:hover {
+    background: #5c24b6;
+}
+
+QToolTip {
+    color: #BFBFBF;
+    background-color: #5522a8;
+}

@@ -1,7 +1,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from gotify_tray.database import Settings
-from gotify_tray.utils import get_abs_path
+from gotify_tray.gui.themes import get_theme_file
 
 
 settings = Settings("gotify-tray")
@@ -15,7 +15,9 @@ class StatusWidget(QtWidgets.QLabel):
         self.set_connecting()
 
     def set_status(self, image: str):
-        self.setPixmap(QtGui.QPixmap(get_abs_path(f"gotify_tray/gui/images/{image}")))
+        self.setPixmap(
+            QtGui.QPixmap(get_theme_file(image, settings.value("theme", type=str)))
+        )
 
     def set_active(self):
         self.setToolTip("Listening for new messages")

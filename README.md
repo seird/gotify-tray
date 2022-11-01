@@ -37,14 +37,14 @@ A tray notification application for receiving messages from a [Gotify server](ht
 
 Windows 10                                         |  KDE                                                      |  MacOS 12
 :-------------------------------------------------:|:---------------------------------------------------------:|:---------------------------------------------------------:
-![notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/notification.png)            |  ![kde_notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/kde_notification.png)      |  ![macos_notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/macos_notification.png)
-![notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/notification_centre.png)     |  ![kde_notification](https://raw.githubusercontent.com/seird/gotify-tray/master/images/kde_notification_centre.png) |  
+![notification](https://raw.githubusercontent.com/seird/gotify-tray/develop/images/notification.png)            |  ![kde_notification](https://raw.githubusercontent.com/seird/gotify-tray/develop/images/kde_notification.png)      |  ![macos_notification](https://raw.githubusercontent.com/seird/gotify-tray/develop/images/macos_notification.png)
+![notification](https://raw.githubusercontent.com/seird/gotify-tray/develop/images/notification_centre.png)     |  ![kde_notification](https://raw.githubusercontent.com/seird/gotify-tray/develop/images/kde_notification_centre.png) |  
 
 ### Main window
-![main window](https://raw.githubusercontent.com/seird/gotify-tray/master/images/main_window.png)
+![main window](https://raw.githubusercontent.com/seird/gotify-tray/develop/images/main_window.png)
 
 ### Settings window
-![settings](https://raw.githubusercontent.com/seird/gotify-tray/master/images/settings.png)
+![settings](https://raw.githubusercontent.com/seird/gotify-tray/develop/images/settings.png)
 
 
 ## Build instructions

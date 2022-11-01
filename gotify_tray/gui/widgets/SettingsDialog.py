@@ -6,7 +6,7 @@ from gotify_tray.database import Settings
 from gotify_tray.gotify import GotifyMessageModel
 from gotify_tray.gui.models import MessagesModelItem
 from . import MessageWidget
-from gotify_tray.utils import verify_server, open_file
+from gotify_tray.utils import get_icon, verify_server, open_file
 from gotify_tray.tasks import ExportSettingsTask, ImportSettingsTask
 from PyQt6 import QtCore, QtGui, QtWidgets
 
@@ -82,12 +82,15 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
                         "title": "Title",
                     }
                 )
-            )
+            ),
+            get_icon("gotify-small"),
         )
         self.layout_fonts_message.addWidget(self.message_widget)
 
         # Advanced
-        self.groupbox_image_popup.setChecked(settings.value("ImagePopup/enabled", type=bool))
+        self.groupbox_image_popup.setChecked(
+            settings.value("ImagePopup/enabled", type=bool)
+        )
         self.spin_popup_w.setValue(settings.value("ImagePopup/w", type=int))
         self.spin_popup_h.setValue(settings.value("ImagePopup/h", type=int))
 

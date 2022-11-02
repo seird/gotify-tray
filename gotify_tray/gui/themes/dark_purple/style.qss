@@ -10,3 +10,11 @@ QToolTip {
     color: #BFBFBF;
     background-color: #5522a8;
 }
+
+MessageWidget QPushButton {
+    border: 0px;
+}
+
+MessageWidget QPushButton:!default:hover {
+    background: #7249b5;
+}

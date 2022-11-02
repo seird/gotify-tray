@@ -63,7 +63,10 @@ setup(
     # If your package is a single module, use this instead of 'packages':
     packages=find_packages(),
     package_data={
-        'gotify_tray.gui.images': ['*.svg', '*.png']
+        'gotify_tray.gui.images': ['*.ico', '*.png'],
+        'gotify_tray.gui.themes.default': ['*.qss', '*.svg', '*.png'],
+        'gotify_tray.gui.themes.dark_purple': ['*.qss', '*.svg', '*.png'],
+        'gotify_tray.gui.themes.light_purple': ['*.qss', '*.svg', '*.png'],
     },
     data_files = [
     ],

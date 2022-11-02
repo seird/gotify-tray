@@ -8,6 +8,7 @@ from gotify_tray.gui.models import MessagesModelItem
 from . import MessageWidget
 from gotify_tray.utils import get_icon, verify_server, open_file
 from gotify_tray.tasks import ExportSettingsTask, ImportSettingsTask
+from gotify_tray.gui.themes import get_themes
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from ..designs.widget_settings import Ui_Dialog
@@ -19,6 +20,7 @@ settings = Settings("gotify-tray")
 
 class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
     quit_requested = QtCore.pyqtSignal()
+    theme_change_requested = QtCore.pyqtSignal(str)
 
     def __init__(self):
         super(SettingsDialog, self).__init__()
@@ -59,6 +61,10 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.cb_notification_click.setChecked(
             settings.value("tray/notifications/click", type=bool)
         )
+
+        # Theme
+        self.combo_theme.addItems(get_themes())
+        self.combo_theme.setCurrentText(settings.value("theme", type=str))
 
         # Logging
         self.combo_logging.addItems(
@@ -163,6 +169,9 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.cb_notify.stateChanged.connect(self.settings_changed_callback)
         self.cb_notification_click.stateChanged.connect(self.settings_changed_callback)
 
+        # Theme
+        self.combo_theme.currentTextChanged.connect(self.settings_changed_callback)
+
         # Server info
         self.pb_change_server_info.clicked.connect(self.change_server_info_callback)
 
@@ -199,6 +208,13 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         settings.setValue(
             "tray/notifications/click", self.cb_notification_click.isChecked()
         )
+
+        # Theme
+        current_theme = settings.value("theme", type=str)
+        selected_theme = self.combo_theme.currentText()
+        if current_theme != selected_theme:
+            settings.setValue("theme", selected_theme)
+            self.theme_change_requested.emit(selected_theme)
 
         # Logging
         selected_level = self.combo_logging.currentText()

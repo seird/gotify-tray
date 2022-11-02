@@ -9,7 +9,7 @@ logo = "gotify_tray/gui/images/logo.ico" if platform.system() != "Darwin" else "
 a = Analysis(['gotify_tray/__main__.py'],
              pathex=[os.getcwd()],
              binaries=[],
-             datas=[('gotify_tray/gui/images', 'gotify_tray/gui/images')],
+             datas=[('gotify_tray/gui/images', 'gotify_tray/gui/images'), ('gotify_tray/gui/themes', 'gotify_tray/gui/themes')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],

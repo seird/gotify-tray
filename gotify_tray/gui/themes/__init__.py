@@ -11,8 +11,8 @@ logger = logging.getLogger("gotify-tray")
 
 styles = {
     "default": default,
-    "dark_purple": dark_purple,
-    "light_purple": light_purple,
+    "dark purple": dark_purple,
+    "light purple": light_purple,
 }
 
 
@@ -24,7 +24,7 @@ def set_theme(app: QtWidgets.QApplication, style: str = "default"):
         return
 
     stylesheet = ""
-    with open(get_abs_path(f"gotify_tray/gui/themes/{style}/style.qss"), "r") as f:
+    with open(get_abs_path(f"gotify_tray/gui/themes/{style.replace(' ', '_')}/style.qss"), "r") as f:
         stylesheet += f.read()
 
     app.setPalette(styles[style].get_palette())
@@ -35,4 +35,4 @@ def get_themes():
     
 def get_theme_file(file: str, theme: str = None) -> str:
     theme = settings.value("theme", type=str) if not theme else theme
-    return get_abs_path(f"gotify_tray/gui/themes/{theme}/{file}")
+    return get_abs_path(f"gotify_tray/gui/themes/{theme.replace(' ', '_')}/{file}")

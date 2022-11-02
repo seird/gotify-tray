@@ -10,9 +10,9 @@ jobs:
   build-win64:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
           python-version: '3.9.5'
     - name: Upgrade pip and enable wheel support
@@ -28,7 +28,7 @@ jobs:
         mv inno-output\gotify-tray-installer.exe gotify-tray-installer-win.exe
       shell: cmd
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: gotify-tray-installer-win.exe
         path: gotify-tray-installer-win.exe
@@ -39,9 +39,9 @@ jobs:
         tag: [focal, jammy]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
           python-version: '3.9.5'
     - name: Upgrade pip and enable wheel support
@@ -51,7 +51,7 @@ jobs:
         make build
         cp dist/gotify-tray_amd64.deb gotify-tray_amd64_ubuntu_${{ matrix.tag }}.deb
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: gotify-tray_amd64_ubuntu_${{ matrix.tag }}.deb
         path: gotify-tray_amd64_ubuntu_${{ matrix.tag }}.deb
@@ -62,9 +62,9 @@ jobs:
         tag: [bullseye, bookworm]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
           python-version: '3.9.5'
     - name: Upgrade pip and enable wheel support
@@ -74,7 +74,7 @@ jobs:
         make build
         cp dist/gotify-tray_amd64.deb gotify-tray_amd64_debian_${{ matrix.tag }}.deb
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: gotify-tray_amd64_debian_${{ matrix.tag }}.deb
         path: gotify-tray_amd64_debian_${{ matrix.tag }}.deb
@@ -82,9 +82,9 @@ jobs:
   build-macos:
     runs-on: macos-12
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
           python-version: '3.9.5'
     - name: Upgrade pip and enable wheel support
@@ -95,7 +95,7 @@ jobs:
         brew install create-dmg
         create-dmg --volname "Gotify Tray" --app-drop-link 0 0 --no-internet-enable "gotify-tray.dmg" "./dist/Gotify Tray.app"
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: gotify-tray.dmg
         path: gotify-tray.dmg
@@ -103,9 +103,9 @@ jobs:
   pypi:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
           python-version: '3.9.5'
     - name: Upgrade pip and enable wheel support
@@ -121,7 +121,7 @@ jobs:
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: gotify_tray-${{ github.ref_name }}-py3-none-any.whl
         path: dist/gotify_tray-${{ github.ref_name }}-py3-none-any.whl
@@ -130,7 +130,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-win64, build-ubuntu, build-debian, build-macos, pypi]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: actions/download-artifact@master
     - name: Release
       uses: marvinpinto/action-automatic-releases@latest

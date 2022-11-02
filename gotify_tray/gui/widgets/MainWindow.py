@@ -23,12 +23,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     application_selection_changed = QtCore.pyqtSignal(QtGui.QStandardItem)
     image_popup = QtCore.pyqtSignal(str, QtCore.QPoint)
     hidden = QtCore.pyqtSignal()
+    activated = QtCore.pyqtSignal()
 
     def __init__(
         self, application_model: ApplicationModel, messages_model: MessagesModel
     ):
         super(MainWindow, self).__init__()
         self.setupUi(self)
+        
+        self.installEventFilter(self)
 
         self.setWindowTitle(__title__)
 
@@ -177,3 +180,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def closeEvent(self, e: QtGui.QCloseEvent) -> None:
         self.hide()
         self.hidden.emit()
+
+    def eventFilter(self, object: QtCore.QObject, event: QtCore.QEvent) -> bool:
+        if event.type() == QtCore.QEvent.Type.WindowActivate:
+            self.activated.emit()
+
+        return super().eventFilter(object, event)

@@ -266,6 +266,10 @@ class MainApplication(QtWidgets.QApplication):
     def new_message_callback(self, message: gotify.GotifyMessageModel):
         self.add_message_to_model(message)
 
+        # Change the tray icon to show there are unread notifications
+        if not self.main_window.isActiveWindow():
+            self.tray.set_icon_unread()
+
         # Show a notification
         if (
             message.priority < settings.value("tray/notifications/priority", type=int)
@@ -385,6 +389,7 @@ class MainApplication(QtWidgets.QApplication):
         self.main_window.delete_message.connect(self.delete_message_callback)
         self.main_window.image_popup.connect(self.image_popup_callback)
         self.main_window.hidden.connect(self.main_window_hidden_callback)
+        self.main_window.activated.connect(self.tray.revert_icon)
 
         self.watchdog.closed.connect(lambda: self.listener_closed_callback(None, None))
 

@@ -18,3 +18,7 @@ MessageWidget QPushButton {
 MessageWidget QPushButton:!default:hover {
     background: #9662ea;
 }
+
+MessageWidget QPushButton:!default:pressed {
+    background: #7a4dc2;
+}

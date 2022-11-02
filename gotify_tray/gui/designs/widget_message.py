@@ -27,7 +27,7 @@ class Ui_Form(object):
         self.gridLayout_frame.setObjectName("gridLayout_frame")
         self.pb_delete = QtWidgets.QPushButton(self.frame)
         self.pb_delete.setText("")
-        self.pb_delete.setFlat(False)
+        self.pb_delete.setFlat(True)
         self.pb_delete.setObjectName("pb_delete")
         self.gridLayout_frame.addWidget(self.pb_delete, 0, 4, 1, 1)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Minimum)

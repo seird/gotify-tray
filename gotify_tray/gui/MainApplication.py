@@ -426,6 +426,7 @@ def start_gui():
     app.setApplicationName(title)
     app.setQuitOnLastWindowClosed(False)
     app.setWindowIcon(QtGui.QIcon(get_icon("gotify-small")))
+    app.setStyle("fusion")
 
     init_logger(logger)
 

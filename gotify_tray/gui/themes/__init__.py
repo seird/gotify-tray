@@ -16,9 +16,7 @@ styles = {
 }
 
 
-def set_theme(app: QtWidgets.QApplication, style: str = "default"):
-    app.setStyle("fusion")
-    
+def set_theme(app: QtWidgets.QApplication, style: str = "default"):    
     if style not in styles.keys():
         logger.error(f"set_style: style {style} is unsupported.")
         return

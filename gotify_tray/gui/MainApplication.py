@@ -336,6 +336,7 @@ class MainApplication(QtWidgets.QApplication):
     def settings_callback(self):
         settings_dialog = SettingsDialog()
         settings_dialog.quit_requested.connect(self.quit)
+        settings_dialog.theme_change_requested.connect(lambda theme: set_theme(self, theme))
         accepted = settings_dialog.exec()
 
         if accepted and settings_dialog.settings_changed:

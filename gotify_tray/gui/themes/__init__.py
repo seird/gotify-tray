@@ -29,6 +29,9 @@ def set_theme(app: QtWidgets.QApplication, style: str = "default"):
 
     app.setPalette(styles[style].get_palette())
     app.setStyleSheet(stylesheet)
+
+def get_themes():
+    return styles.keys()
     
 def get_theme_file(file: str, theme: str = None) -> str:
     theme = settings.value("theme", type=str) if not theme else theme

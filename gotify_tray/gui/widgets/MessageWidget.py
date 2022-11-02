@@ -61,11 +61,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         size_hint = self.message_item.sizeHint()
         self.message_item.setSizeHint(QtCore.QSize(size_hint.width(), self.height()))
 
-        self.pb_delete.setIcon(
-            QtGui.QIcon(
-                get_theme_file("trashcan.svg", settings.value("theme", type=str))
-            )
-        )
+        self.pb_delete.setIcon(QtGui.QIcon(get_theme_file("trashcan.svg")))
         self.pb_delete.setIconSize(QtCore.QSize(24, 24))
 
         self.link_callbacks()

@@ -2,8 +2,10 @@ import logging
 from PyQt6 import QtGui, QtWidgets
 from gotify_tray.utils import get_abs_path
 from . import default, dark_purple, light_purple
+from gotify_tray.database import Settings
 
 
+settings = Settings("gotify-tray")
 logger = logging.getLogger("gotify-tray")
 
 
@@ -32,5 +34,6 @@ def set_theme(app: QtWidgets.QApplication, style: str = "default"):
     app.setPalette(styles[style].get_palette())
     app.setStyleSheet(stylesheet)
     
-def get_theme_file(file: str, theme: str) -> str:
+def get_theme_file(file: str, theme: str = None) -> str:
+    theme = settings.value("theme", type=str) if not theme else theme
     return get_abs_path(f"gotify_tray/gui/themes/{theme}/{file}")

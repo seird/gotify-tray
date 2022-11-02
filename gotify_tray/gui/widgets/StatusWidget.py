@@ -15,9 +15,7 @@ class StatusWidget(QtWidgets.QLabel):
         self.set_connecting()
 
     def set_status(self, image: str):
-        self.setPixmap(
-            QtGui.QPixmap(get_theme_file(image, settings.value("theme", type=str)))
-        )
+        self.setPixmap(QtGui.QPixmap(get_theme_file(image)))
 
     def set_active(self):
         self.setToolTip("Listening for new messages")

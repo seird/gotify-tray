@@ -10,7 +10,6 @@ from . import MessageWidget
 
 from gotify_tray.__version__ import __title__
 from gotify_tray.database import Settings
-from gotify_tray.utils import get_abs_path
 from gotify_tray.gui.themes import get_theme_file
 
 
@@ -67,11 +66,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.link_callbacks()
 
     def set_icons(self):
-        theme = settings.value("theme", type=str)
-
         # Set button icons
-        self.pb_refresh.setIcon(QtGui.QIcon(get_theme_file("refresh.svg", theme)))
-        self.pb_delete_all.setIcon(QtGui.QIcon(get_theme_file("trashcan.svg", theme)))
+        self.pb_refresh.setIcon(QtGui.QIcon(get_theme_file("refresh.svg")))
+        self.pb_delete_all.setIcon(QtGui.QIcon(get_theme_file("trashcan.svg")))
 
         # Resize the labels and icons
         size = settings.value("MainWindow/label/size", type=int)

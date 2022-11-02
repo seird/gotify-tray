@@ -43,8 +43,14 @@ class Tray(QtWidgets.QSystemTrayIcon):
 
         self.setContextMenu(menu)
 
+    def set_icon_unread(self):
+        self.setIcon(QtGui.QIcon(get_icon("tray-unread")))
+
     def set_icon_ok(self):
         self.setIcon(QtGui.QIcon(get_icon("tray")))
 
     def set_icon_error(self):
         self.setIcon(QtGui.QIcon(get_icon("tray-error")))
+
+    def discard_icon_unread(self):
+        self.set_icon_ok()

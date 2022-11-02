@@ -185,6 +185,7 @@ class MainApplication(QtWidgets.QApplication):
         message: gotify.GotifyMessageModel,
         application: gotify.GotifyApplicationModel,
     ):
+        self.tray.set_icon_unread()
         self.update_last_id(message.id)
         message_item = MessagesModelItem(message)
         self.messages_model.insertRow(row, message_item)
@@ -286,6 +287,7 @@ class MainApplication(QtWidgets.QApplication):
         else:
             icon = QtWidgets.QSystemTrayIcon.MessageIcon.Information
 
+        self.tray.set_icon_unread()
         self.tray.showMessage(
             message.title,
             message.message,
@@ -385,6 +387,7 @@ class MainApplication(QtWidgets.QApplication):
         self.main_window.delete_message.connect(self.delete_message_callback)
         self.main_window.image_popup.connect(self.image_popup_callback)
         self.main_window.hidden.connect(self.main_window_hidden_callback)
+        self.main_window.activated.connect(self.tray.discard_icon_unread)
 
         self.watchdog.closed.connect(lambda: self.listener_closed_callback(None, None))
 

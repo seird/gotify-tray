@@ -26,10 +26,6 @@ def set_theme(app: QtWidgets.QApplication, style: str = "default"):
     stylesheet = ""
     with open(get_abs_path(f"gotify_tray/gui/themes/{style}/style.qss"), "r") as f:
         stylesheet += f.read()
-    # with open(get_abs_path(f"gotify_tray/gui/themes/{style}/MainWindow.css"), "r") as f:
-    #     s = f.read()
-    #     s = s.replace("gotify_tray", get_abs_path("gotify_tray"))
-    #     stylesheet += s
 
     app.setPalette(styles[style].get_palette())
     app.setStyleSheet(stylesheet)

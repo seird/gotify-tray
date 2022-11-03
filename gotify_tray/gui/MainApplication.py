@@ -267,7 +267,10 @@ class MainApplication(QtWidgets.QApplication):
         self.add_message_to_model(message)
 
         # Change the tray icon to show there are unread notifications
-        if not self.main_window.isActiveWindow():
+        if (
+            settings.value("tray/icon/unread", type=bool)
+            and not self.main_window.isActiveWindow()
+        ):
             self.tray.set_icon_unread()
 
         # Show a notification
@@ -340,7 +343,9 @@ class MainApplication(QtWidgets.QApplication):
     def settings_callback(self):
         settings_dialog = SettingsDialog()
         settings_dialog.quit_requested.connect(self.quit)
-        settings_dialog.theme_change_requested.connect(lambda theme: set_theme(self, theme))
+        settings_dialog.theme_change_requested.connect(
+            lambda theme: set_theme(self, theme)
+        )
         accepted = settings_dialog.exec()
 
         if accepted and settings_dialog.settings_changed:

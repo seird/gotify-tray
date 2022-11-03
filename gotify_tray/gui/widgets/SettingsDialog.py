@@ -62,6 +62,10 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             settings.value("tray/notifications/click", type=bool)
         )
 
+        self.cb_tray_icon_unread.setChecked(
+            settings.value("tray/icon/unread", type=bool)
+        )
+
         # Theme
         self.combo_theme.addItems(get_themes())
         self.combo_theme.setCurrentText(settings.value("theme", type=str))
@@ -168,6 +172,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.spin_duration.valueChanged.connect(self.settings_changed_callback)
         self.cb_notify.stateChanged.connect(self.settings_changed_callback)
         self.cb_notification_click.stateChanged.connect(self.settings_changed_callback)
+        self.cb_tray_icon_unread.stateChanged.connect(self.settings_changed_callback)
 
         # Theme
         self.combo_theme.currentTextChanged.connect(self.settings_changed_callback)
@@ -208,6 +213,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         settings.setValue(
             "tray/notifications/click", self.cb_notification_click.isChecked()
         )
+        settings.setValue("tray/icon/unread", self.cb_tray_icon_unread.isChecked())
 
         # Theme
         current_theme = settings.value("theme", type=str)

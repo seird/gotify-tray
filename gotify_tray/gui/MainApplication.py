@@ -32,7 +32,7 @@ from .models import (
     MessagesModelItem,
     MessageItemDataRole,
 )
-from .widgets import ImagePopup, MainWindow, SettingsDialog, Tray
+from .widgets import ImagePopup, MainWindow, MessageWidget, SettingsDialog, Tray
 
 
 settings = Settings("gotify-tray")
@@ -340,11 +340,21 @@ class MainApplication(QtWidgets.QApplication):
         Cache().clear()
         self.refresh_applications()
 
+    def theme_change_requested_callback(self, theme: str):
+        # Set the theme, update the main window and message widget icons
+        set_theme(self, theme)
+        self.main_window.set_icons()
+        for r in range(self.messages_model.rowCount()):
+            message_widget: MessageWidget = self.main_window.listView_messages.indexWidget(
+                self.messages_model.index(r, 0)
+            )
+            message_widget.set_icons()
+
     def settings_callback(self):
         settings_dialog = SettingsDialog()
         settings_dialog.quit_requested.connect(self.quit)
         settings_dialog.theme_change_requested.connect(
-            lambda theme: set_theme(self, theme)
+            self.theme_change_requested_callback
         )
         accepted = settings_dialog.exec()
 

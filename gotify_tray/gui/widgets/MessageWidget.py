@@ -61,8 +61,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         size_hint = self.message_item.sizeHint()
         self.message_item.setSizeHint(QtCore.QSize(size_hint.width(), self.height()))
 
-        self.pb_delete.setIcon(QtGui.QIcon(get_theme_file("trashcan.svg")))
-        self.pb_delete.setIconSize(QtCore.QSize(24, 24))
+        self.set_icons()
 
         self.link_callbacks()
 
@@ -87,6 +86,10 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         self.label_title.setFont(font_title)
         self.label_date.setFont(font_date)
         self.label_message.setFont(font_content)
+
+    def set_icons(self):
+        self.pb_delete.setIcon(QtGui.QIcon(get_theme_file("trashcan.svg")))
+        self.pb_delete.setIconSize(QtCore.QSize(24, 24))
 
     def link_hovered_callback(self, link: str):
         if not settings.value("ImagePopup/enabled", type=bool):

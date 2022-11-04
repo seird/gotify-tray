@@ -85,6 +85,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         size = settings.value("MainWindow/application/icon/size", type=int)
         self.listView_applications.setIconSize(QtCore.QSize(size, size))
+        
+        # Refresh the status widget
+        self.status_widget.refresh()
 
     def set_active(self):
         self.status_widget.set_active()

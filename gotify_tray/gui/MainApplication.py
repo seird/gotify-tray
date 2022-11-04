@@ -341,9 +341,13 @@ class MainApplication(QtWidgets.QApplication):
         self.refresh_applications()
 
     def theme_change_requested_callback(self, theme: str):
-        # Set the theme, update the main window and message widget icons
+        # Set the theme
         set_theme(self, theme)
+
+        # Update the main window icons
         self.main_window.set_icons()
+        
+        # Update the message widget icons
         for r in range(self.messages_model.rowCount()):
             message_widget: MessageWidget = self.main_window.listView_messages.indexWidget(
                 self.messages_model.index(r, 0)

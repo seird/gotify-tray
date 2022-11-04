@@ -83,6 +83,16 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.combo_logging.setCurrentText(settings.value("logging/level", type=str))
 
         # Fonts
+        self.add_message_widget()
+
+        # Advanced
+        self.groupbox_image_popup.setChecked(
+            settings.value("ImagePopup/enabled", type=bool)
+        )
+        self.spin_popup_w.setValue(settings.value("ImagePopup/w", type=int))
+        self.spin_popup_h.setValue(settings.value("ImagePopup/h", type=int))
+
+    def add_message_widget(self):
         self.message_widget = MessageWidget(
             MessagesModelItem(
                 GotifyMessageModel(
@@ -96,13 +106,6 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             get_icon("gotify-small"),
         )
         self.layout_fonts_message.addWidget(self.message_widget)
-
-        # Advanced
-        self.groupbox_image_popup.setChecked(
-            settings.value("ImagePopup/enabled", type=bool)
-        )
-        self.spin_popup_w.setValue(settings.value("ImagePopup/w", type=int))
-        self.spin_popup_h.setValue(settings.value("ImagePopup/h", type=int))
 
     def change_server_info_callback(self):
         self.server_changed = verify_server(force_new=True, enable_import=False)
@@ -149,6 +152,20 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             self.import_settings_task.success.connect(self.import_success_callback)
             self.import_settings_task.start()
 
+    def reset_fonts_callback(self):
+        response = QtWidgets.QMessageBox.warning(
+            self,
+            "Are you sure?",
+            "Reset all fonts?",
+            QtWidgets.QMessageBox.StandardButton.Ok
+            | QtWidgets.QMessageBox.StandardButton.Cancel,
+            defaultButton=QtWidgets.QMessageBox.StandardButton.Cancel,
+        )
+        if response == QtWidgets.QMessageBox.StandardButton.Ok:
+            settings.remove("MessageWidget/font")
+            self.layout_fonts_message.removeWidget(self.message_widget)
+            self.add_message_widget()
+
     def reset_callback(self):
         response = QtWidgets.QMessageBox.warning(
             self,
@@ -187,6 +204,8 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         )
 
         # Fonts
+        self.pb_reset_fonts.clicked.connect(self.reset_fonts_callback)
+
         self.pb_font_message_title.clicked.connect(
             lambda: self.change_font_callback("title")
         )

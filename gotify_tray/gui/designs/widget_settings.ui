@@ -210,6 +210,17 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QPushButton" name="pb_reset_fonts">
+           <property name="text">
+            <string>Reset all fonts</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
         <widget class="QGroupBox" name="groupBox_fonts_message">
          <property name="title">
           <string>Message</string>

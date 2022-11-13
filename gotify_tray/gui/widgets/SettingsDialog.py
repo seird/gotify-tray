@@ -163,7 +163,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         )
         if response == QtWidgets.QMessageBox.StandardButton.Ok:
             settings.remove("MessageWidget/font")
-            self.layout_fonts_message.removeWidget(self.message_widget)
+            self.message_widget.deleteLater()
             self.add_message_widget()
 
     def reset_callback(self):

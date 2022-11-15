@@ -25,7 +25,6 @@ class Listener(QtCore.QThread):
         qurl.setScheme("wss" if qurl.scheme() == "https" else "ws")
         qurl.setPath(qurl.path() + "stream")
         qurl.setQuery(f"token={client_token}")
-        self.qurl = qurl
 
         self.ws = websocket.WebSocketApp(
             qurl.toString(),
@@ -80,10 +79,10 @@ class Listener(QtCore.QThread):
     def run(self):
         self.running = True
         try:
-            sslopt = None
-            if platform.system() == "Darwin" and self.qurl.scheme() == "wss":
-                sslopt = {"cert_reqs": ssl.CERT_NONE}
-            self.ws.run_forever(sslopt=sslopt)
+            if platform.system() == "Darwin":
+                self.ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
+            else:
+                self.ws.run_forever()
         finally:
             logger.debug("Listener: stopped.")
             self.running = False

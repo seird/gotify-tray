@@ -30,7 +30,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     ):
         super(MainWindow, self).__init__()
         self.setupUi(self)
-        
+
         self.installEventFilter(self)
 
         self.setWindowTitle(__title__)
@@ -85,7 +85,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         size = settings.value("MainWindow/application/icon/size", type=int)
         self.listView_applications.setIconSize(QtCore.QSize(size, size))
-        
+
         # Refresh the status widget
         self.status_widget.refresh()
 
@@ -104,7 +104,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def insert_message_widget(
         self, message_item: MessagesModelItem, image_path: str = ""
     ):
-        message_widget = MessageWidget(message_item, image_path=image_path)
+        message_widget = MessageWidget(
+            self.listView_messages, message_item, image_path=image_path
+        )
         self.listView_messages.setIndexWidget(
             self.messages_model.indexFromItem(message_item), message_widget
         )

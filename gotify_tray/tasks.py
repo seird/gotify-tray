@@ -5,9 +5,10 @@ import time
 from PyQt6 import QtCore
 from PyQt6.QtCore import pyqtSignal
 
-from gotify_tray.database import Settings
+from gotify_tray.database import Downloader, Settings
 from gotify_tray.gotify.api import GotifyClient
 from gotify_tray.gotify.models import GotifyVersionModel
+from gotify_tray.utils import get_image
 
 from . import gotify
 
@@ -199,3 +200,28 @@ class ImportSettingsTask(BaseTask):
     def task(self):
         settings.load(self.path)
         self.success.emit()
+
+
+class ProcessMessageTask(BaseTask):
+    def __init__(self, message: gotify.GotifyMessageModel):
+        super(ProcessMessageTask, self).__init__()
+        self.message = message
+
+    def task(self):
+        if image_url := get_image(self.message.message):
+            downloader = Downloader()
+            downloader.get_filename(image_url)
+
+
+class ProcessMessagesTask(BaseTask):
+    message_processed = pyqtSignal(int, gotify.GotifyMessageModel)
+    def __init__(self, page: gotify.GotifyPagedMessagesModel):
+        super(ProcessMessagesTask, self).__init__()
+        self.page = page
+
+    def task(self):
+        downloader = Downloader()
+        for i, message in enumerate(self.page.messages):
+            if image_url := get_image(message.message):
+                downloader.get_filename(image_url)
+            self.message_processed.emit(i, message)

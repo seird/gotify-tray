@@ -4,6 +4,7 @@ import re
 import subprocess
 
 from pathlib import Path
+from typing import Optional
 
 
 def verify_server(force_new: bool = False, enable_import: bool = True) -> bool:
@@ -42,6 +43,25 @@ def convert_links(text):
         )
 
     return _link.sub(replace, text)
+
+
+def get_image(s: str) -> Optional[str]:
+    """If `s` contains only an image URL, this function returns that URL.
+        This function also extracts a URL in the `![](<url>)` markdown image format.
+    """
+    s = s.strip()
+
+    # Return True if 's' is a url and has an image extension
+    RE = r'(?:(https://|http://)|(www\.))(\S+\b/?)([!"#$%&\'()*+,\-./:;<=>?@[\\\]^_`{|}~]*).(jpg|jpeg|png|bmp|gif)(\s|$)'
+    if re.compile(RE, re.I).fullmatch(s) is not None:
+        return s
+
+    # Return True if 's' has the markdown image format
+    RE = r'!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)'
+    if re.compile(RE, re.I).fullmatch(s) is not None:
+        return re.compile(RE, re.I).findall(s)[0][0]
+
+    return None
 
 
 def get_abs_path(s) -> str:

@@ -4,9 +4,11 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 
 from ..models.MessagesModel import MessageItemDataRole, MessagesModelItem
 from ..designs.widget_message import Ui_Form
+from gotify_tray.database import Downloader
 from gotify_tray.database import Settings
-from gotify_tray.utils import convert_links
+from gotify_tray.utils import convert_links, get_image
 from gotify_tray.gui.themes import get_theme_file
+from gotify_tray.gotify.models import GotifyMessageModel
 
 
 settings = Settings("gotify-tray")
@@ -16,13 +18,18 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
     deletion_requested = QtCore.pyqtSignal(MessagesModelItem)
     image_popup = QtCore.pyqtSignal(str, QtCore.QPoint)
 
-    def __init__(self, message_item: MessagesModelItem, image_path: str = ""):
+    def __init__(
+        self,
+        parent: QtWidgets.QWidget,
+        message_item: MessagesModelItem,
+        image_path: str = "",
+    ):
         super(MessageWidget, self).__init__()
+        self.parent = parent
         self.setupUi(self)
         self.setAutoFillBackground(True)
-
         self.message_item = message_item
-        message = message_item.data(MessageItemDataRole.MessageRole)
+        message: GotifyMessageModel = message_item.data(MessageItemDataRole.MessageRole)
 
         # Fonts
         self.set_fonts()
@@ -31,14 +38,20 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         self.label_title.setText(message.title)
         self.label_date.setText(message.date.strftime("%Y-%m-%d, %H:%M"))
 
-        if (
-            markdown := message.get("extras", {})
-            .get("client::display", {})
-            .get("contentType")
-        ) == "text/markdown":
+        if markdown := (
+            message.get("extras", {}).get("client::display", {}).get("contentType")
+            == "text/markdown"
+        ):
             self.label_message.setTextFormat(QtCore.Qt.TextFormat.MarkdownText)
 
-        self.label_message.setText(convert_links(message.message))
+        # If the message is only an image URL, then instead of showing the message,
+        # download the image and show it in the message label
+        if image_url := get_image(message.message):
+            downloader = Downloader()
+            filename = downloader.get_filename(image_url)
+            self.set_message_image(filename)
+        else:
+            self.label_message.setText(convert_links(message.message))
 
         # Show the application icon
         if image_path:
@@ -90,6 +103,21 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
     def set_icons(self):
         self.pb_delete.setIcon(QtGui.QIcon(get_theme_file("trashcan.svg")))
         self.pb_delete.setIconSize(QtCore.QSize(24, 24))
+    
+    def set_message_image(self, filename: str):
+        pixmap = QtGui.QPixmap(filename)
+
+        # Make sure the image fits within the listView
+        W = self.parent.width() - self.label_image.width() - 50
+        if pixmap.width() > W:
+            pixmap = pixmap.scaled(
+                W,
+                0.5 * self.parent.height(),
+                aspectRatioMode=QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                transformMode=QtCore.Qt.TransformationMode.SmoothTransformation,
+            )
+
+        self.label_message.setPixmap(pixmap)
 
     def link_hovered_callback(self, link: str):
         if not settings.value("ImagePopup/enabled", type=bool):

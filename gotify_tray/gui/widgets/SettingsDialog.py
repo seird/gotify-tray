@@ -94,6 +94,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
 
     def add_message_widget(self):
         self.message_widget = MessageWidget(
+            self,
             MessagesModelItem(
                 GotifyMessageModel(
                     {

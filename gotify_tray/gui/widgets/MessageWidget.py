@@ -112,7 +112,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         if pixmap.width() > W:
             pixmap = pixmap.scaled(
                 W,
-                0.5 * self.parent.height(),
+                int(0.5 * self.parent.height()),
                 aspectRatioMode=QtCore.Qt.AspectRatioMode.KeepAspectRatio,
                 transformMode=QtCore.Qt.TransformationMode.SmoothTransformation,
             )

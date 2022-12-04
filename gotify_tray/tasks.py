@@ -1,11 +1,14 @@
 import abc
+import glob
 import logging
 import time
+import os
 
+from functools import reduce
 from PyQt6 import QtCore
 from PyQt6.QtCore import pyqtSignal
 
-from gotify_tray.database import Downloader, Settings
+from gotify_tray.database import Cache, Downloader, Settings
 from gotify_tray.gotify.api import GotifyClient
 from gotify_tray.gotify.models import GotifyVersionModel
 from gotify_tray.utils import get_image
@@ -229,3 +232,19 @@ class ProcessMessagesTask(BaseTask):
 
             # Prevent locking up the UI when there are a lot of messages with images ready at the same time
             time.sleep(0.001)
+
+
+class CacheSizeTask(BaseTask):
+    size = pyqtSignal(int)
+
+    def task(self):        
+        cache_dir = Cache().directory()
+        if os.path.exists(cache_dir):
+            cache_size_bytes = reduce(lambda x, f: x + os.path.getsize(f), glob.glob(os.path.join(cache_dir, "*")), 0)
+            self.size.emit(cache_size_bytes)
+
+class ClearCacheTask(BaseTask):        
+    def task(self):
+        cache = Cache()
+        cache.clear()
+        

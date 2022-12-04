@@ -2,12 +2,12 @@ import logging
 import platform
 import os
 
-from gotify_tray.database import Settings
+from gotify_tray.database import Cache, Settings
 from gotify_tray.gotify import GotifyMessageModel
 from gotify_tray.gui.models import MessagesModelItem
 from . import MessageWidget
 from gotify_tray.utils import get_icon, verify_server, open_file
-from gotify_tray.tasks import ExportSettingsTask, ImportSettingsTask
+from gotify_tray.tasks import ExportSettingsTask, ImportSettingsTask, CacheSizeTask, ClearCacheTask
 from gotify_tray.gui.themes import get_themes
 from PyQt6 import QtCore, QtGui, QtWidgets
 
@@ -91,6 +91,8 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         )
         self.spin_popup_w.setValue(settings.value("ImagePopup/w", type=int))
         self.spin_popup_h.setValue(settings.value("ImagePopup/h", type=int))
+        self.label_cache.setText("0 MB")
+        self.compute_cache_size()
 
     def add_message_widget(self):
         self.message_widget = MessageWidget(
@@ -107,6 +109,11 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             get_icon("gotify-small"),
         )
         self.layout_fonts_message.addWidget(self.message_widget)
+
+    def compute_cache_size(self):
+        self.cache_size_task = CacheSizeTask()
+        self.cache_size_task.size.connect(lambda size: self.label_cache.setText(f"{round(size/1e6, 1)} MB"))
+        self.cache_size_task.start()
 
     def change_server_info_callback(self):
         self.server_changed = verify_server(force_new=True, enable_import=False)
@@ -180,6 +187,11 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             settings.clear()
             self.quit_requested.emit()
 
+    def clear_cache_callback(self):
+        self.clear_cache_task = ClearCacheTask()        
+        self.clear_cache_task.start()
+        self.label_cache.setText("0 MB")
+
     def link_callbacks(self):
         self.buttonBox.button(
             QtWidgets.QDialogButtonBox.StandardButton.Apply
@@ -224,6 +236,8 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.groupbox_image_popup.toggled.connect(self.settings_changed_callback)
         self.spin_popup_w.valueChanged.connect(self.settings_changed_callback)
         self.spin_popup_h.valueChanged.connect(self.settings_changed_callback)
+        self.pb_clear_cache.clicked.connect(self.clear_cache_callback)
+        self.pb_open_cache_dir.clicked.connect(lambda: open_file(Cache().directory()))
 
     def apply_settings(self):
         # Priority

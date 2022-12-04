@@ -350,11 +350,6 @@ class MainApplication(QtWidgets.QApplication):
         if image_popup := getattr(self, "image_popup", None):
             image_popup.close()
 
-    def refresh_callback(self):
-        # Manual refresh -> also reset the image cache
-        Cache().clear()
-        self.refresh_applications()
-
     def theme_change_requested_callback(self, theme: str):
         # Set the theme
         set_theme(self, theme)
@@ -415,7 +410,7 @@ class MainApplication(QtWidgets.QApplication):
         self.tray.messageClicked.connect(self.tray_notification_clicked_callback)
         self.tray.activated.connect(self.tray_activated_callback)
 
-        self.main_window.refresh.connect(self.refresh_callback)
+        self.main_window.refresh.connect(self.refresh_applications)
         self.main_window.delete_all.connect(self.delete_all_messages_callback)
         self.main_window.application_selection_changed.connect(
             self.application_selection_changed_callback

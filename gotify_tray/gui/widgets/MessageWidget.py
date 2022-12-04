@@ -103,16 +103,22 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
     def set_icons(self):
         self.pb_delete.setIcon(QtGui.QIcon(get_theme_file("trashcan.svg")))
         self.pb_delete.setIconSize(QtCore.QSize(24, 24))
-    
+
     def set_message_image(self, filename: str):
         pixmap = QtGui.QPixmap(filename)
 
         # Make sure the image fits within the listView
-        W = self.parent.width() - self.label_image.width() - 50
-        if pixmap.width() > W:
+        W = settings.value("MessageWidget/content_image/W_percentage", type=float) * (
+            self.parent.width() - self.label_image.width()
+        )
+        H = (
+            settings.value("MessageWidget/content_image/H_percentage", type=float)
+            * self.parent.height()
+        )
+
+        if pixmap.width() > W or pixmap.height() > H:
             pixmap = pixmap.scaled(
-                W,
-                int(0.5 * self.parent.height()),
+                QtCore.QSize(int(W), int(H)),
                 aspectRatioMode=QtCore.Qt.AspectRatioMode.KeepAspectRatio,
                 transformMode=QtCore.Qt.TransformationMode.SmoothTransformation,
             )

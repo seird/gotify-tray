@@ -77,7 +77,7 @@ class MainApplication(QtWidgets.QApplication):
 
         self.main_window = MainWindow(self.application_model, self.messages_model)
         self.main_window.show()  # The initial .show() is necessary to get the correct sizes when adding MessageWigets
-        self.main_window.hide()
+        QtCore.QTimer.singleShot(0, self.main_window.hide)
 
         self.refresh_applications()
 

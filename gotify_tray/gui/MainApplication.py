@@ -16,6 +16,8 @@ from gotify_tray.tasks import (
     GetApplicationsTask,
     GetApplicationMessagesTask,
     GetMessagesTask,
+    ProcessMessageTask,
+    ProcessMessagesTask,
     ServerConnectionWatchdogTask,
 )
 from gotify_tray.gui.themes import set_theme
@@ -74,6 +76,8 @@ class MainApplication(QtWidgets.QApplication):
         self.application_model = ApplicationModel()
 
         self.main_window = MainWindow(self.application_model, self.messages_model)
+        self.main_window.show()  # The initial .show() is necessary to get the correct sizes when adding MessageWigets
+        QtCore.QTimer.singleShot(0, self.main_window.hide)
 
         self.refresh_applications()
 
@@ -195,43 +199,39 @@ class MainApplication(QtWidgets.QApplication):
             ),
         )
 
+    def get_messages_finished_callback(self, page: gotify.GotifyPagedMessagesModel):
+        """Process messages before inserting them into the main window
+        """
+
+        def insert_helper(row: int, message: gotify.GotifyMessageModel):
+            if item := self.application_model.itemFromId(message.appid):
+                self.insert_message(
+                    row, message, item.data(ApplicationItemDataRole.ApplicationRole),
+                )
+                self.processEvents()
+
+        self.process_messages_task = ProcessMessagesTask(page)
+        self.process_messages_task.message_processed.connect(insert_helper)
+        self.process_messages_task.start()
+
     def application_selection_changed_callback(
         self, item: Union[ApplicationModelItem, ApplicationAllMessagesItem]
     ):
         self.messages_model.clear()
 
         if isinstance(item, ApplicationModelItem):
-
-            def get_application_messages_callback(
-                page: gotify.GotifyPagedMessagesModel,
-            ):
-                for i, message in enumerate(page.messages):
-                    self.insert_message(
-                        i, message, item.data(ApplicationItemDataRole.ApplicationRole),
-                    )
-
             self.get_application_messages_task = GetApplicationMessagesTask(
                 item.data(ApplicationItemDataRole.ApplicationRole).id,
                 self.gotify_client,
             )
             self.get_application_messages_task.success.connect(
-                get_application_messages_callback
+                self.get_messages_finished_callback
             )
             self.get_application_messages_task.start()
 
         elif isinstance(item, ApplicationAllMessagesItem):
-
-            def get_messages_callback(page: gotify.GotifyPagedMessagesModel):
-                for i, message in enumerate(page.messages):
-                    if item := self.application_model.itemFromId(message.appid):
-                        self.insert_message(
-                            i,
-                            message,
-                            item.data(ApplicationItemDataRole.ApplicationRole),
-                        )
-
             self.get_messages_task = GetMessagesTask(self.gotify_client)
-            self.get_messages_task.success.connect(get_messages_callback)
+            self.get_messages_task.success.connect(self.get_messages_finished_callback)
             self.get_messages_task.start()
 
     def add_message_to_model(self, message: gotify.GotifyMessageModel):
@@ -240,14 +240,27 @@ class MainApplication(QtWidgets.QApplication):
             if selected_application_item := self.application_model.itemFromIndex(
                 application_index
             ):
-                if isinstance(selected_application_item, ApplicationModelItem):
-                    # A single application is selected
-                    if (
-                        message.appid
-                        == selected_application_item.data(
-                            ApplicationItemDataRole.ApplicationRole
-                        ).id
+
+                def insert_message_helper():
+                    if isinstance(selected_application_item, ApplicationModelItem):
+                        # A single application is selected
+                        if (
+                            message.appid
+                            == selected_application_item.data(
+                                ApplicationItemDataRole.ApplicationRole
+                            ).id
+                        ):
+                            self.insert_message(
+                                0,
+                                message,
+                                application_item.data(
+                                    ApplicationItemDataRole.ApplicationRole
+                                ),
+                            )
+                    elif isinstance(
+                        selected_application_item, ApplicationAllMessagesItem
                     ):
+                        # "All messages' is selected
                         self.insert_message(
                             0,
                             message,
@@ -255,13 +268,15 @@ class MainApplication(QtWidgets.QApplication):
                                 ApplicationItemDataRole.ApplicationRole
                             ),
                         )
-                elif isinstance(selected_application_item, ApplicationAllMessagesItem):
-                    # "All messages' is selected
-                    self.insert_message(
-                        0,
-                        message,
-                        application_item.data(ApplicationItemDataRole.ApplicationRole),
-                    )
+
+                self.process_message_task = ProcessMessageTask(message)
+                self.process_message_task.finished.connect(insert_message_helper)
+                self.process_message_task.start()
+        else:
+            logger.error(
+                f"App id {message.appid} could not be found. Refreshing applications."
+            )
+            self.refresh_applications()
 
     def new_message_callback(self, message: gotify.GotifyMessageModel):
         self.add_message_to_model(message)
@@ -335,18 +350,13 @@ class MainApplication(QtWidgets.QApplication):
         if image_popup := getattr(self, "image_popup", None):
             image_popup.close()
 
-    def refresh_callback(self):
-        # Manual refresh -> also reset the image cache
-        Cache().clear()
-        self.refresh_applications()
-
     def theme_change_requested_callback(self, theme: str):
         # Set the theme
         set_theme(self, theme)
 
         # Update the main window icons
         self.main_window.set_icons()
-        
+
         # Update the message widget icons
         for r in range(self.messages_model.rowCount()):
             message_widget: MessageWidget = self.main_window.listView_messages.indexWidget(
@@ -400,7 +410,7 @@ class MainApplication(QtWidgets.QApplication):
         self.tray.messageClicked.connect(self.tray_notification_clicked_callback)
         self.tray.activated.connect(self.tray_activated_callback)
 
-        self.main_window.refresh.connect(self.refresh_callback)
+        self.main_window.refresh.connect(self.refresh_applications)
         self.main_window.delete_all.connect(self.delete_all_messages_callback)
         self.main_window.application_selection_changed.connect(
             self.application_selection_changed_callback

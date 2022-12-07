@@ -32,6 +32,9 @@ class Cache(object):
         self.cache_dir = os.path.join(path, "cache")
         os.makedirs(self.cache_dir, exist_ok=True)
 
+    def directory(self) -> str:
+        return self.cache_dir
+    
     def clear(self):
         self.cursor.execute("DELETE FROM cache")
         self.database.commit()

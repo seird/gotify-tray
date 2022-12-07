@@ -19,6 +19,8 @@ DEFAULT_SETTINGS = {
     "tray/icon/unread": False,
     "watchdog/interval/s": 60,
     "MessageWidget/image/size": 33,
+    "MessageWidget/content_image/W_percentage": 1.0,
+    "MessageWidget/content_image/H_percentage": 0.5,
     "MainWindow/label/size": 25,
     "MainWindow/button/size": 33,
     "MainWindow/application/icon/size": 40,

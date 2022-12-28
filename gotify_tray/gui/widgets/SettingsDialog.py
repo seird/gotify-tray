@@ -71,9 +71,12 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             settings.value("tray/icon/unread", type=bool)
         )
 
-        # Theme
+        # Interface
         self.combo_theme.addItems(get_themes())
         self.combo_theme.setCurrentText(settings.value("theme", type=str))
+        self.cb_priority_colors.setChecked(
+            settings.value("MessageWidget/priority_color", type=bool)
+        )
 
         # Logging
         self.combo_logging.addItems(
@@ -108,6 +111,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
                         "date": "2021-01-01T11:11:00.928224+01:00",
                         "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin luctus.",
                         "title": "Title",
+                        "priority": 4,
                     }
                 )
             ),
@@ -209,8 +213,9 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.cb_notification_click.stateChanged.connect(self.settings_changed_callback)
         self.cb_tray_icon_unread.stateChanged.connect(self.settings_changed_callback)
 
-        # Theme
+        # Interface
         self.combo_theme.currentTextChanged.connect(self.settings_changed_callback)
+        self.cb_priority_colors.stateChanged.connect(self.settings_changed_callback)
 
         # Server info
         self.pb_change_server_info.clicked.connect(self.change_server_info_callback)
@@ -254,12 +259,16 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         )
         settings.setValue("tray/icon/unread", self.cb_tray_icon_unread.isChecked())
 
-        # Theme
+        # Interface
         current_theme = settings.value("theme", type=str)
         selected_theme = self.combo_theme.currentText()
         if current_theme != selected_theme:
             settings.setValue("theme", selected_theme)
             self.theme_change_requested.emit(selected_theme)
+
+        settings.setValue(
+            "MessageWidget/priority_color", self.cb_priority_colors.isChecked()
+        )
 
         # Logging
         selected_level = self.combo_logging.currentText()

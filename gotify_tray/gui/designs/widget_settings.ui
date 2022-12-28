@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>402</width>
-    <height>369</height>
+    <height>392</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -156,6 +156,17 @@
              </spacer>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cb_priority_colors">
+            <property name="toolTip">
+             <string>4..7   -&gt; orange
+8..10 -&gt; red</string>
+            </property>
+            <property name="text">
+             <string>Show message priority colors</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

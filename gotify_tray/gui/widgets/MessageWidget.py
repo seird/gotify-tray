@@ -34,6 +34,9 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         # Fonts
         self.set_fonts()
 
+        # Display the message priority as a color
+        self.set_priority_color(message.priority)
+
         # Display message contents
         self.label_title.setText(message.title)
         self.label_date.setText(message.date.strftime("%Y-%m-%d, %H:%M"))
@@ -68,7 +71,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
             self.label_image.hide()
 
         # Set MessagesModelItem's size hint based on the size of this widget
-        self.gridLayout_frame.setContentsMargins(5, 5, 5, 5)
+        self.gridLayout_frame.setContentsMargins(0, 0, 5, 0)
         self.gridLayout.setContentsMargins(4, 5, 4, 0)
         self.adjustSize()
         size_hint = self.message_item.sizeHint()
@@ -124,6 +127,16 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
             )
 
         self.label_message.setPixmap(pixmap)
+
+    def set_priority_color(self, priority: int):
+        if not settings.value("MessageWidget/priority_color", type=bool):
+            self.label_priority.setFixedWidth(0) # set width to 0 instead of hiding, so we still get the content margins
+            return
+
+        if priority >= 4 and priority <= 7:
+                self.label_priority.setStyleSheet("background-color: rgba(230, 126, 34, 0.7);")
+        elif priority > 7:
+            self.label_priority.setStyleSheet("background-color: #e74c3c;")
 
     def link_hovered_callback(self, link: str):
         if not settings.value("ImagePopup/enabled", type=bool):

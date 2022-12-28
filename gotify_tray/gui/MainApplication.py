@@ -8,8 +8,9 @@ from typing import List, Union
 
 from gotify_tray import gotify
 from gotify_tray.__version__ import __title__
-from gotify_tray.database import Cache, Downloader, Settings
+from gotify_tray.database import Downloader, Settings
 from gotify_tray.tasks import (
+    ClearCacheTask,
     DeleteApplicationMessagesTask,
     DeleteAllMessagesTask,
     DeleteMessageTask,
@@ -332,6 +333,9 @@ class MainApplication(QtWidgets.QApplication):
             )
             self.delete_application_messages_task.start()
         elif isinstance(item, ApplicationAllMessagesItem):
+            self.clear_cache_task = ClearCacheTask()        
+            self.clear_cache_task.start()
+        
             self.delete_all_messages_task = DeleteAllMessagesTask(self.gotify_client)
             self.delete_all_messages_task.start()
         else:

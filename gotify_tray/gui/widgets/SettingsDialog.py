@@ -7,7 +7,12 @@ from gotify_tray.gotify import GotifyMessageModel
 from gotify_tray.gui.models import MessagesModelItem
 from . import MessageWidget
 from gotify_tray.utils import get_icon, verify_server, open_file
-from gotify_tray.tasks import ExportSettingsTask, ImportSettingsTask, CacheSizeTask, ClearCacheTask
+from gotify_tray.tasks import (
+    ExportSettingsTask,
+    ImportSettingsTask,
+    CacheSizeTask,
+    ClearCacheTask,
+)
 from gotify_tray.gui.themes import get_themes
 from PyQt6 import QtCore, QtGui, QtWidgets
 
@@ -188,7 +193,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             self.quit_requested.emit()
 
     def clear_cache_callback(self):
-        self.clear_cache_task = ClearCacheTask()        
+        self.clear_cache_task = ClearCacheTask()
         self.clear_cache_task.start()
         self.label_cache.setText("0 MB")
 

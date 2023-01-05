@@ -11,6 +11,14 @@ QToolTip {
     background-color: #5522a8;
 }
 
+QListView[objectName^="listView_applications"] {
+    background-color: #2E2E30;
+}
+
+MessageWidget QFrame {
+    background-color: #2E2E30;
+}
+
 MessageWidget QPushButton {
     border: 0px;
 }

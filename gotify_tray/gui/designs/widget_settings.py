@@ -237,8 +237,8 @@ class Ui_Dialog(object):
         self.cb_tray_icon_unread.setText(_translate("Dialog", "Change the tray icon color when there are unread notifications"))
         self.groupBox_2.setTitle(_translate("Dialog", "Interface"))
         self.label_theme.setText(_translate("Dialog", "Theme:"))
-        self.cb_priority_colors.setToolTip(_translate("Dialog", "4..7   -> orange\n"
-"8..10 -> red"))
+        self.cb_priority_colors.setToolTip(_translate("Dialog", "4..7   -> medium\n"
+"8..10 -> high"))
         self.cb_priority_colors.setText(_translate("Dialog", "Show message priority colors"))
         self.groupBox_server_info.setTitle(_translate("Dialog", "Server info"))
         self.pb_change_server_info.setText(_translate("Dialog", "Change server info"))

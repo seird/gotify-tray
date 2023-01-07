@@ -160,8 +160,8 @@
           <item>
            <widget class="QCheckBox" name="cb_priority_colors">
             <property name="toolTip">
-             <string>4..7   -&gt; orange
-8..10 -&gt; red</string>
+             <string>4..7   -&gt; medium
+8..10 -&gt; high</string>
             </property>
             <property name="text">
              <string>Show message priority colors</string>

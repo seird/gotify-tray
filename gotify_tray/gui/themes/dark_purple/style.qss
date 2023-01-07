@@ -30,3 +30,7 @@ MessageWidget QPushButton:!default:hover {
 MessageWidget QPushButton:!default:pressed {
     background: #5c3b91;
 }
+
+QCheckBox::indicator:unchecked {
+    border: 2px solid #4A4A4A;
+}

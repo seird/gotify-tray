@@ -1,4 +1,4 @@
-## Get the source and install the requirements:
+Get the source and install the requirements:
 
 ```shell
 $ git clone https://github.com/seird/gotify-tray.git
@@ -7,13 +7,9 @@ $ pip install -r requirements.txt
 ```
 
 
-### Run from source
+# Windows
 
-```shell
-$ python -m gotify_tray
-```
-
-### Create a pyinstaller executable
+## Create a stand-alone executable with pyinstaller
 
 ```shell
 $ pip install pyinstaller
@@ -21,14 +17,7 @@ $ pyinstaller gotify-tray.spec
 ```
 An executable is created at `dist/gotify-tray/`.
 
-### Create a macos .app
-
-```shell
-$ pip install pyinstaller Pillow
-$ pyinstaller gotify-tray.spec
-```
-
-### Inno setup (Windows)
+## Create an installer with Inno Setup
 
 Create an installer for windows with inno setup from pyinstaller output:
 
@@ -36,7 +25,32 @@ Create an installer for windows with inno setup from pyinstaller output:
 $ iscc gotify-tray.iss
 ```
 
-### Create and install a pip package
+The installer is created at `inno-output/gotify-tray-installer.exe`.
+
+
+# Linux
+
+## Create a deb package
+
+```shell
+$ make build
+
+# or install
+
+$ sudo make install
+```
+
+
+# MacOS
+
+## Create a macos .app
+
+```shell
+$ pip install pyinstaller Pillow
+$ pyinstaller gotify-tray.spec
+```
+
+# Create and install a pip package
 
 - Create the pip package:
     ```shell
@@ -48,17 +62,7 @@ $ iscc gotify-tray.iss
     $ pip install dist/gotify_tray-0.1.14-py3-none-any.whl
     ```
 
-- Launch:
+- Launch from the command line:
     ```shell
     $ gotify-tray
     ```
-
-### Create a deb package
-
-```shell
-$ make build
-
-# or install
-
-$ sudo make install
-```

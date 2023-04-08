@@ -38,8 +38,7 @@ A tray notification application for receiving messages from a [Gotify server](ht
 
 Default                                         |  Dark                                                      
 :-------------------------------------------------:|:---------------------------------------------------------:
-![main window default](https://raw.githubusercontent.com/seird/gotify-tray/develop/images/main_default.png)            |  ![main window dark](https://raw.githubusercontent.com/seird/gotify-tray/develop/images/main_dark.png)      
-![settings window default](https://raw.githubusercontent.com/seird/gotify-tray/develop/images/settings_default.png)    |  ![settings window dark](https://raw.githubusercontent.com/seird/gotify-tray/develop/images/settings_dark.png)  
+![main window default](https://raw.githubusercontent.com/seird/gotify-tray/develop/images/main_default.png)            |  ![main window dark](https://raw.githubusercontent.com/seird/gotify-tray/develop/images/main_dark.png)
 
 
 ### Notification banners

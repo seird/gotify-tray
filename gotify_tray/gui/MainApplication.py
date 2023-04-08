@@ -190,9 +190,21 @@ class MainApplication(QtWidgets.QApplication):
         message: gotify.GotifyMessageModel,
         application: gotify.GotifyApplicationModel,
     ):
+        """Insert a message gotify message into the messages model. Also add the message widget to the listview
+
+        Args:
+            row (int): >=0: insert message at specified position, <0: append message to the end of the model
+            message (gotify.GotifyMessageModel): message
+            application (gotify.GotifyApplicationModel): application
+        """
         self.update_last_id(message.id)
         message_item = MessagesModelItem(message)
-        self.messages_model.insertRow(row, message_item)
+
+        if row >= 0:
+            self.messages_model.insertRow(row, message_item)
+        else:
+            self.messages_model.appendRow(message_item)
+
         self.main_window.insert_message_widget(
             message_item,
             self.downloader.get_filename(
@@ -204,10 +216,10 @@ class MainApplication(QtWidgets.QApplication):
         """Process messages before inserting them into the main window
         """
 
-        def insert_helper(row: int, message: gotify.GotifyMessageModel):
+        def insert_helper(message: gotify.GotifyMessageModel):
             if item := self.application_model.itemFromId(message.appid):
                 self.insert_message(
-                    row, message, item.data(ApplicationItemDataRole.ApplicationRole),
+                    -1, message, item.data(ApplicationItemDataRole.ApplicationRole)
                 )
                 self.processEvents()
 

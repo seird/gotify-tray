@@ -217,7 +217,7 @@ class ProcessMessageTask(BaseTask):
 
 
 class ProcessMessagesTask(BaseTask):
-    message_processed = pyqtSignal(int, gotify.GotifyMessageModel)
+    message_processed = pyqtSignal(gotify.GotifyMessageModel)
 
     def __init__(self, page: gotify.GotifyPagedMessagesModel):
         super(ProcessMessagesTask, self).__init__()
@@ -225,10 +225,10 @@ class ProcessMessagesTask(BaseTask):
 
     def task(self):
         downloader = Downloader()
-        for i, message in enumerate(self.page.messages):
+        for message in self.page.messages:
             if image_url := get_image(message.message):
                 downloader.get_filename(image_url)
-            self.message_processed.emit(i, message)
+            self.message_processed.emit(message)
 
             # Prevent locking up the UI when there are a lot of messages with images ready at the same time
             time.sleep(0.001)

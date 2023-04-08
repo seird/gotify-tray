@@ -54,18 +54,21 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setEnabled(
             True
         )
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setFocus()
 
     def incorrect_token_callback(self, version: GotifyVersionModel):
         self.pb_test.setEnabled(True)
         self.label_server_info.setText(f"Version: {version.version}")
         self.pb_test.setStyleSheet("background-color: rgba(255, 0, 0, 100);")
         self.line_token.setStyleSheet("border: 1px solid red;")
+        self.line_token.setFocus()
 
     def incorrect_url_callback(self):
         self.pb_test.setEnabled(True)
         self.label_server_info.clear()
         self.pb_test.setStyleSheet("background-color: rgba(255, 0, 0, 100);")
         self.line_url.setStyleSheet("border: 1px solid red;")
+        self.line_url.setFocus()
 
     def import_success_callback(self):
         self.line_url.setText(settings.value("Server/url", type=str))

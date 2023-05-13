@@ -43,10 +43,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         self.label_title.setText(message.title)
         self.label_date.setText(message.date.strftime("%Y-%m-%d, %H:%M"))
 
-        if markdown := (
-            message.get("extras", {}).get("client::display", {}).get("contentType")
-            == "text/markdown"
-        ):
+        if message.get("extras", {}).get("client::display", {}).get("contentType") == "text/markdown":
             self.label_message.setTextFormat(QtCore.Qt.TextFormat.MarkdownText)
 
         # If the message is only an image URL, then instead of showing the message,
@@ -107,13 +104,10 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         pixmap = QtGui.QPixmap(filename)
 
         # Make sure the image fits within the listView
-        W = settings.value("MessageWidget/content_image/W_percentage", type=float) * (
-            self._parent.width() - self.label_image.width()
-        )
-        H = (
-            settings.value("MessageWidget/content_image/H_percentage", type=float)
-            * self._parent.height()
-        )
+        W = settings.value("MessageWidget/content_image/W_percentage", type=float)
+        H = settings.value("MessageWidget/content_image/H_percentage", type=float)
+        W *= self._parent.width() - self.label_image.width()
+        H *= self._parent.height()
 
         if pixmap.width() > W or pixmap.height() > H:
             pixmap = pixmap.scaled(
@@ -144,7 +138,5 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
             self.image_popup.emit(link, QtGui.QCursor.pos())
 
     def link_callbacks(self):
-        self.pb_delete.clicked.connect(
-            lambda: self.deletion_requested.emit(self.message_item)
-        )
+        self.pb_delete.clicked.connect(lambda: self.deletion_requested.emit(self.message_item))
         self.label_message.linkHovered.connect(self.link_hovered_callback)

@@ -49,9 +49,7 @@ def init_logger(logger: logging.Logger):
     else:
         logging.disable()
 
-    logdir = QtCore.QStandardPaths.standardLocations(
-        QtCore.QStandardPaths.StandardLocation.AppDataLocation
-    )[0]
+    logdir = QtCore.QStandardPaths.standardLocations(QtCore.QStandardPaths.StandardLocation.AppDataLocation)[0]
     if not os.path.exists(logdir):
         os.mkdir(logdir)
     logging.basicConfig(
@@ -106,29 +104,17 @@ class MainApplication(QtWidgets.QApplication):
         self.application_model.setItem(0, 0, ApplicationAllMessagesItem())
 
         self.get_applications_task = GetApplicationsTask(self.gotify_client)
-        self.get_applications_task.success.connect(
-            self.get_applications_success_callback
-        )
-        self.get_applications_task.started.connect(
-            self.main_window.disable_applications
-        )
-        self.get_applications_task.finished.connect(
-            self.main_window.enable_applications
-        )
+        self.get_applications_task.success.connect(self.get_applications_success_callback)
+        self.get_applications_task.started.connect(self.main_window.disable_applications)
+        self.get_applications_task.finished.connect(self.main_window.enable_applications)
         self.get_applications_task.start()
 
     def get_applications_success_callback(
         self, applications: list[gotify.GotifyApplicationModel],
     ):
         for i, application in enumerate(applications):
-            icon = QtGui.QIcon(
-                self.downloader.get_filename(
-                    f"{self.gotify_client.url}/{application.image}"
-                )
-            )
-            self.application_model.setItem(
-                i + 1, 0, ApplicationModelItem(application, icon),
-            )
+            icon = QtGui.QIcon(self.downloader.get_filename(f"{self.gotify_client.url}/{application.image}"))
+            self.application_model.setItem(i + 1, 0, ApplicationModelItem(application, icon))
 
     def update_last_id(self, i: int):
         if i > settings.value("message/last", type=int):
@@ -167,9 +153,7 @@ class MainApplication(QtWidgets.QApplication):
         self.main_window.set_connecting()
         self.tray.set_icon_error()
         self.gotify_client.increase_wait_time()
-        QtCore.QTimer.singleShot(
-            self.gotify_client.get_wait_time() * 1000, self.gotify_client.reconnect
-        )
+        QtCore.QTimer.singleShot(self.gotify_client.get_wait_time() * 1000, self.gotify_client.reconnect)
 
     def listener_error_callback(self, exception: Exception):
         self.main_window.set_connecting()
@@ -308,17 +292,13 @@ class MainApplication(QtWidgets.QApplication):
 
         # Update the message widget icons
         for r in range(self.messages_model.rowCount()):
-            message_widget: MessageWidget = self.main_window.listView_messages.indexWidget(
-                self.messages_model.index(r, 0)
-            )
+            message_widget: MessageWidget = self.main_window.listView_messages.indexWidget(self.messages_model.index(r, 0))
             message_widget.set_icons()
 
     def settings_callback(self):
         settings_dialog = SettingsDialog(self)
         settings_dialog.quit_requested.connect(self.quit)
-        settings_dialog.theme_change_requested.connect(
-            self.theme_change_requested_callback
-        )
+        settings_dialog.theme_change_requested.connect(self.theme_change_requested_callback)
         accepted = settings_dialog.exec()
 
         if accepted and settings_dialog.settings_changed:
@@ -361,9 +341,7 @@ class MainApplication(QtWidgets.QApplication):
 
         self.main_window.refresh.connect(self.refresh_applications)
         self.main_window.delete_all.connect(self.delete_all_messages_callback)
-        self.main_window.application_selection_changed.connect(
-            self.application_selection_changed_callback
-        )
+        self.main_window.application_selection_changed.connect(self.application_selection_changed_callback)
         self.main_window.delete_message.connect(self.delete_message_callback)
         self.main_window.image_popup.connect(self.image_popup_callback)
         self.main_window.hidden.connect(self.main_window_hidden_callback)
@@ -384,9 +362,7 @@ class MainApplication(QtWidgets.QApplication):
 
     def acquire_lock(self) -> bool:
         temp_dir = tempfile.gettempdir()
-        lock_filename = os.path.join(
-            temp_dir, __title__ + "-" + getpass.getuser() + ".lock"
-        )
+        lock_filename = os.path.join(temp_dir, __title__ + "-" + getpass.getuser() + ".lock")
         self.lock_file = QtCore.QLockFile(lock_filename)
         self.lock_file.setStaleLockTime(0)
         return self.lock_file.tryLock()

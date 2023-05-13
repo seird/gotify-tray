@@ -54,9 +54,7 @@ class ApplicationAllMessagesItem(QtGui.QStandardItem):
 class ApplicationModel(QtGui.QStandardItemModel):
     def __init__(self):
         super(ApplicationModel, self).__init__()
-        self.setItemPrototype(
-            ApplicationModelItem(gotify.GotifyApplicationModel({"name": ""}), None)
-        )
+        self.setItemPrototype(ApplicationModelItem(gotify.GotifyApplicationModel({"name": ""}), None))
 
     def setItem(
         self,

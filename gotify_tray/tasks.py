@@ -195,9 +195,7 @@ class ServerConnectionWatchdogTask(BaseTask):
             time.sleep(settings.value("watchdog/interval/s", type=int))
             if not self.gotify_client.is_listening():
                 self.closed.emit()
-                logger.debug(
-                    "ServerConnectionWatchdogTask: gotify_client is not listening"
-                )
+                logger.debug("ServerConnectionWatchdogTask: gotify_client is not listening")
 
 
 class ExportSettingsTask(BaseTask):

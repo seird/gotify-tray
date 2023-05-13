@@ -27,7 +27,7 @@ class GotifySession(object):
             self.url = url
         if token:
             self.token = token
-        self.session.headers.update({"X-Gotify-Key": token})
+            self.session.headers.update({"X-Gotify-Key": token})
 
     def _get(self, endpoint: str = "/", **kwargs) -> requests.Response:
         return self.session.get(self.url + endpoint, **kwargs)

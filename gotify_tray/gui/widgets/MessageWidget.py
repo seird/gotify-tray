@@ -23,9 +23,9 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         app: QtWidgets.QApplication,
         parent: QtWidgets.QWidget,
         message_item: MessagesModelItem,
-        image_path: str = "",
+        icon: QtGui.QIcon = None,
     ):
-        super(MessageWidget, self).__init__()
+        super(MessageWidget, self).__init__(parent)
         self.app = app
         self.parent = parent
         self.setupUi(self)
@@ -59,15 +59,9 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
             self.label_message.setText(convert_links(message.message))
 
         # Show the application icon
-        if image_path:
+        if icon:
             image_size = settings.value("MessageWidget/image/size", type=int)
-            self.label_image.setFixedSize(QtCore.QSize(image_size, image_size))
-            pixmap = QtGui.QPixmap(image_path).scaled(
-                image_size,
-                image_size,
-                aspectRatioMode=QtCore.Qt.AspectRatioMode.KeepAspectRatioByExpanding,
-                transformMode=QtCore.Qt.TransformationMode.SmoothTransformation,
-            )
+            pixmap = icon.pixmap(QtCore.QSize(image_size, image_size))
             self.label_image.setPixmap(pixmap)
         else:
             self.label_image.hide()

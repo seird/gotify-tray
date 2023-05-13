@@ -4,7 +4,10 @@ import re
 import subprocess
 
 from pathlib import Path
-from typing import Optional
+from typing import Iterator, List, Optional
+
+from gotify_tray import gotify
+from gotify_tray.database import Downloader
 
 
 def verify_server(force_new: bool = False, enable_import: bool = True) -> bool:
@@ -26,6 +29,14 @@ def verify_server(force_new: bool = False, enable_import: bool = True) -> bool:
             return False
     else:
         return True
+
+
+def process_messages(messages: List[gotify.GotifyMessageModel]) -> Iterator[gotify.GotifyMessageModel]:
+    downloader = Downloader()
+    for message in messages:
+        if image_url := get_image(message.message):
+            downloader.get_filename(image_url)
+        yield message
 
 
 def convert_links(text):

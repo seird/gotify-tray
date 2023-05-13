@@ -8,10 +8,10 @@ from functools import reduce
 from PyQt6 import QtCore
 from PyQt6.QtCore import pyqtSignal
 
-from gotify_tray.database import Cache, Downloader, Settings
+from gotify_tray.database import Cache, Settings
 from gotify_tray.gotify.api import GotifyClient
 from gotify_tray.gotify.models import GotifyVersionModel
-from gotify_tray.utils import get_image
+from gotify_tray.utils import process_messages
 
 from . import gotify
 
@@ -97,7 +97,7 @@ class GetApplicationsTask(BaseTask):
 
 
 class GetApplicationMessagesTask(BaseTask):
-    success = pyqtSignal(gotify.GotifyPagedMessagesModel)
+    message = pyqtSignal(gotify.GotifyMessageModel)
     error = pyqtSignal(gotify.GotifyErrorModel)
 
     def __init__(self, appid: int, gotify_client: gotify.GotifyClient):
@@ -110,10 +110,16 @@ class GetApplicationMessagesTask(BaseTask):
         if isinstance(result, gotify.GotifyErrorModel):
             self.error.emit(result)
         else:
-            self.success.emit(result)
+            for message in process_messages(result.messages):
+                self.message.emit(message)
+                
+                # Prevent locking up the UI when there are a lot of messages ready at the same time
+                # -- side effect: switching application while the previous messages are still being inserted causes mixing of messages
+                time.sleep(0.001)
 
 
 class GetMessagesTask(BaseTask):
+    message = pyqtSignal(gotify.GotifyMessageModel)
     success = pyqtSignal(gotify.GotifyPagedMessagesModel)
     error = pyqtSignal(gotify.GotifyErrorModel)
 
@@ -126,7 +132,20 @@ class GetMessagesTask(BaseTask):
         if isinstance(result, gotify.GotifyErrorModel):
             self.error.emit(result)
         else:
+            for message in process_messages(result.messages):
+                self.message.emit(message)
+                time.sleep(0.001)
             self.success.emit(result)
+
+
+class ProcessMessageTask(BaseTask):
+    def __init__(self, message: gotify.GotifyMessageModel):
+        super(ProcessMessageTask, self).__init__()
+        self.message = message
+
+    def task(self):
+        for _ in process_messages([self.message]):
+            pass
 
 
 class VerifyServerInfoTask(BaseTask):
@@ -203,35 +222,6 @@ class ImportSettingsTask(BaseTask):
     def task(self):
         settings.load(self.path)
         self.success.emit()
-
-
-class ProcessMessageTask(BaseTask):
-    def __init__(self, message: gotify.GotifyMessageModel):
-        super(ProcessMessageTask, self).__init__()
-        self.message = message
-
-    def task(self):
-        if image_url := get_image(self.message.message):
-            downloader = Downloader()
-            downloader.get_filename(image_url)
-
-
-class ProcessMessagesTask(BaseTask):
-    message_processed = pyqtSignal(gotify.GotifyMessageModel)
-
-    def __init__(self, page: gotify.GotifyPagedMessagesModel):
-        super(ProcessMessagesTask, self).__init__()
-        self.page = page
-
-    def task(self):
-        downloader = Downloader()
-        for message in self.page.messages:
-            if image_url := get_image(message.message):
-                downloader.get_filename(image_url)
-            self.message_processed.emit(message)
-
-            # Prevent locking up the UI when there are a lot of messages with images ready at the same time
-            time.sleep(0.001)
 
 
 class CacheSizeTask(BaseTask):

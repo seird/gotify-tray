@@ -118,7 +118,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
                     }
                 )
             ),
-            get_icon("gotify-small"),
+            QtGui.QIcon(get_icon("gotify-small")),
         )
         self.layout_fonts_message.addWidget(self.message_widget)
 

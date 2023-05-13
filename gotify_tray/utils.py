@@ -4,7 +4,7 @@ import re
 import subprocess
 
 from pathlib import Path
-from typing import Iterator, List, Optional
+from typing import Iterator
 
 from gotify_tray import gotify
 from gotify_tray.database import Downloader
@@ -31,7 +31,7 @@ def verify_server(force_new: bool = False, enable_import: bool = True) -> bool:
         return True
 
 
-def process_messages(messages: List[gotify.GotifyMessageModel]) -> Iterator[gotify.GotifyMessageModel]:
+def process_messages(messages: list[gotify.GotifyMessageModel]) -> Iterator[gotify.GotifyMessageModel]:
     downloader = Downloader()
     for message in messages:
         if image_url := get_image(message.message):
@@ -56,7 +56,7 @@ def convert_links(text):
     return _link.sub(replace, text)
 
 
-def get_image(s: str) -> Optional[str]:
+def get_image(s: str) -> str | None:
     """If `s` contains only an image URL, this function returns that URL.
         This function also extracts a URL in the `![](<url>)` markdown image format.
     """

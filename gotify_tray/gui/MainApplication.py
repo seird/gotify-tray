@@ -4,7 +4,6 @@ import os
 import platform
 import sys
 import tempfile
-from typing import List, Union
 
 from gotify_tray import gotify
 from gotify_tray.__version__ import __title__
@@ -87,9 +86,9 @@ class MainApplication(QtWidgets.QApplication):
         self.first_connect = True
 
         self.gotify_client.listen(
-            new_message_callback=self.new_message_callback,
             opened_callback=self.listener_opened_callback,
             closed_callback=self.listener_closed_callback,
+            new_message_callback=self.new_message_callback,
             error_callback=self.listener_error_callback,
         )
 
@@ -119,7 +118,7 @@ class MainApplication(QtWidgets.QApplication):
         self.get_applications_task.start()
 
     def get_applications_success_callback(
-        self, applications: List[gotify.GotifyApplicationModel],
+        self, applications: list[gotify.GotifyApplicationModel],
     ):
         for i, application in enumerate(applications):
             icon = QtGui.QIcon(
@@ -184,7 +183,7 @@ class MainApplication(QtWidgets.QApplication):
             self.gotify_client.stop(reset_wait=True)
 
     def application_selection_changed_callback(
-        self, item: Union[ApplicationModelItem, ApplicationAllMessagesItem]
+        self, item: ApplicationModelItem | ApplicationAllMessagesItem
     ):
         self.messages_model.clear()
 
@@ -270,7 +269,7 @@ class MainApplication(QtWidgets.QApplication):
         self.delete_message_task.start()
 
     def delete_all_messages_callback(
-        self, item: Union[ApplicationModelItem, ApplicationAllMessagesItem]
+        self, item: ApplicationModelItem | ApplicationAllMessagesItem
     ):
         if isinstance(item, ApplicationModelItem):
             self.delete_application_messages_task = DeleteApplicationMessagesTask(
@@ -374,7 +373,7 @@ class MainApplication(QtWidgets.QApplication):
 
         self.messages_model.rowsInserted.connect(self.main_window.display_message_widgets)
 
-        self.watchdog.closed.connect(lambda: self.listener_closed_callback(None, None))
+        self.watchdog.closed.connect(lambda: self.listener_closed_callback(0, 0))
 
     def init_shortcuts(self):
         self.shortcut_quit = QtGui.QShortcut(

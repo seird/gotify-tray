@@ -23,7 +23,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         app: QtWidgets.QApplication,
         parent: QtWidgets.QWidget,
         message_item: MessagesModelItem,
-        icon: QtGui.QIcon = None,
+        icon: QtGui.QIcon | None = None,
     ):
         super(MessageWidget, self).__init__(parent)
         self.app = app

@@ -8,7 +8,7 @@ settings = Settings("gotify-tray")
 
 
 class ImagePopup(QtWidgets.QLabel):
-    def __init__(self, filename: str, pos: QtCore.QPoint, link: str = None):
+    def __init__(self, filename: str, pos: QtCore.QPoint, link: str | None = None):
         """Create and show a pop-up image under the cursor
 
         Args:

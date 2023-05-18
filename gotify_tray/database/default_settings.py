@@ -5,7 +5,7 @@ from ..__version__ import __title__
 
 
 DEFAULT_SETTINGS = {
-    "theme": "default",
+    "theme": "automatic",
     "message/check_missed/notify": True,
     "logging/level": "Disabled",
     "export/path": os.path.join(

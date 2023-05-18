@@ -8,8 +8,9 @@ settings = Settings("gotify-tray")
 
 
 class StatusWidget(QtWidgets.QLabel):
-    def __init__(self):
+    def __init__(self, app: QtWidgets.QApplication):
         super(StatusWidget, self).__init__()
+        self.app = app
         self.setFixedSize(QtCore.QSize(20, 20))
         self.setScaledContents(True)
         self.set_connecting()
@@ -17,7 +18,7 @@ class StatusWidget(QtWidgets.QLabel):
 
     def set_status(self, image: str):
         self.image = image
-        self.setPixmap(QtGui.QPixmap(get_theme_file(image)))
+        self.setPixmap(QtGui.QPixmap(get_theme_file(self.app, image)))
 
     def set_active(self):
         self.setToolTip("Listening for new messages")

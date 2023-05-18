@@ -44,6 +44,6 @@ def get_themes():
     
 def get_theme_file(app: QtWidgets.QApplication, file: str, theme: str = None) -> str:
     theme = settings.value("theme", type=str) if not theme else theme
-    if theme == "automatic":
+    if theme in ("automatic", "default"):
         theme = automatic_to_theme(app)
     return get_abs_path(f"gotify_tray/gui/themes/{theme.replace(' ', '_')}/{file}")

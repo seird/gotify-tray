@@ -6,6 +6,22 @@ QPushButton:default:hover, QPushButton:checked:hover {
     background: #5c24b6;
 }
 
+QPushButton[state="success"] {
+    background-color: #6400FF00;
+    color: black;
+}
+
+QPushButton[state="failed"] {
+    background-color: #64FF0000;
+    color: black;
+}
+
+QLineEdit[state="success"] {}
+
+QLineEdit[state="failed"] {
+    border: 1px solid red;
+}
+
 QToolTip {
     color: #BFBFBF;
     background-color: #5522a8;

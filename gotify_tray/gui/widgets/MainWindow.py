@@ -26,7 +26,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     activated = QtCore.pyqtSignal()
 
     def __init__(
-        self, application_model: ApplicationModel, messages_model: MessagesModel
+        self, app: QtWidgets.QApplication,
+        application_model: ApplicationModel, messages_model: MessagesModel
     ):
         super(MainWindow, self).__init__()
         self.setupUi(self)
@@ -34,6 +35,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.installEventFilter(self)
 
         self.setWindowTitle(__title__)
+
+        self.app = app
 
         self.application_model = application_model
         self.messages_model = messages_model
@@ -47,7 +50,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Do not collapse the message list
         self.splitter.setCollapsible(1, False)
-        self.status_widget = StatusWidget()
+        self.status_widget = StatusWidget(app)
         self.horizontalLayout.insertWidget(0, self.status_widget)
 
         self.set_icons()
@@ -70,8 +73,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def set_icons(self):
         # Set button icons
-        self.pb_refresh.setIcon(QtGui.QIcon(get_theme_file("refresh.svg")))
-        self.pb_delete_all.setIcon(QtGui.QIcon(get_theme_file("trashcan.svg")))
+        self.pb_refresh.setIcon(QtGui.QIcon(get_theme_file(self.app, "refresh.svg")))
+        self.pb_delete_all.setIcon(QtGui.QIcon(get_theme_file(self.app, "trashcan.svg")))
 
         # Resize the labels and icons
         size = settings.value("MainWindow/label/size", type=int)
@@ -105,7 +108,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self, message_item: MessagesModelItem, image_path: str = ""
     ):
         message_widget = MessageWidget(
-            self.listView_messages, message_item, image_path=image_path
+            self.app, self.listView_messages, message_item, image_path=image_path
         )
         self.listView_messages.setIndexWidget(
             self.messages_model.indexFromItem(message_item), message_widget

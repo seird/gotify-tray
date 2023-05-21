@@ -68,7 +68,12 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         self.gridLayout.setContentsMargins(4, 5, 4, 0)
         self.adjustSize()
         size_hint = self.message_item.sizeHint()
-        self.message_item.setSizeHint(QtCore.QSize(size_hint.width(), self.height()))
+        self.message_item.setSizeHint(
+            QtCore.QSize(
+                size_hint.width(),
+                max(settings.value("MessageWidget/height/min", type=int), self.height())
+            )
+        )
 
         self.set_icons()
 

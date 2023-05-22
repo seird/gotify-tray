@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(402, 392)
+        Dialog.resize(415, 450)
         self.gridLayout = QtWidgets.QGridLayout(Dialog)
         self.gridLayout.setObjectName("gridLayout")
         self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
@@ -81,6 +81,9 @@ class Ui_Dialog(object):
         self.cb_priority_colors = QtWidgets.QCheckBox(self.groupBox_2)
         self.cb_priority_colors.setObjectName("cb_priority_colors")
         self.verticalLayout_2.addWidget(self.cb_priority_colors)
+        self.cb_locale = QtWidgets.QCheckBox(self.groupBox_2)
+        self.cb_locale.setObjectName("cb_locale")
+        self.verticalLayout_2.addWidget(self.cb_locale)
         self.verticalLayout_4.addWidget(self.groupBox_2)
         self.groupBox_server_info = QtWidgets.QGroupBox(self.tab_general)
         self.groupBox_server_info.setObjectName("groupBox_server_info")
@@ -240,6 +243,7 @@ class Ui_Dialog(object):
         self.cb_priority_colors.setToolTip(_translate("Dialog", "4..7   -> medium\n"
 "8..10 -> high"))
         self.cb_priority_colors.setText(_translate("Dialog", "Show message priority colors"))
+        self.cb_locale.setText(_translate("Dialog", "Display date in the system locale format"))
         self.groupBox_server_info.setTitle(_translate("Dialog", "Server info"))
         self.pb_change_server_info.setText(_translate("Dialog", "Change server info"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_general), _translate("Dialog", "General"))

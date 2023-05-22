@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>402</width>
-    <height>392</height>
+    <width>415</width>
+    <height>450</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -165,6 +165,13 @@
             </property>
             <property name="text">
              <string>Show message priority colors</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cb_locale">
+            <property name="text">
+             <string>Display date in the system locale format</string>
             </property>
            </widget>
           </item>

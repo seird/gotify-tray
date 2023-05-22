@@ -7,6 +7,7 @@ from ..__version__ import __title__
 DEFAULT_SETTINGS = {
     "theme": "automatic",
     "message/check_missed/notify": True,
+    "locale": False,
     "logging/level": "Disabled",
     "export/path": os.path.join(
         Path.home(), f"{__title__.replace(' ', '-').lower()}-settings.bytes"

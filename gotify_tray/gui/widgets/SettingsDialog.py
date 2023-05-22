@@ -65,6 +65,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.combo_theme.addItems(get_themes())
         self.combo_theme.setCurrentText(settings.value("theme", type=str))
         self.cb_priority_colors.setChecked(settings.value("MessageWidget/priority_color", type=bool))
+        self.cb_locale.setChecked(settings.value("locale", type=bool))
 
         # Logging
         self.combo_logging.addItems(
@@ -197,6 +198,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         # Interface
         self.combo_theme.currentTextChanged.connect(self.settings_changed_callback)
         self.cb_priority_colors.stateChanged.connect(self.settings_changed_callback)
+        self.cb_locale.stateChanged.connect(self.settings_changed_callback)
 
         # Server info
         self.pb_change_server_info.clicked.connect(self.change_server_info_callback)
@@ -238,6 +240,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             self.theme_change_requested.emit(selected_theme)
 
         settings.setValue("MessageWidget/priority_color", self.cb_priority_colors.isChecked())
+        settings.setValue("locale", self.cb_locale.isChecked())
 
         # Logging
         selected_level = self.combo_logging.currentText()

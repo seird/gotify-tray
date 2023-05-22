@@ -4,7 +4,6 @@ import os
 import platform
 import sys
 import tempfile
-from typing import List, Union
 
 from gotify_tray import gotify
 from gotify_tray.__version__ import __title__
@@ -18,7 +17,6 @@ from gotify_tray.tasks import (
     GetApplicationMessagesTask,
     GetMessagesTask,
     ProcessMessageTask,
-    ProcessMessagesTask,
     ServerConnectionWatchdogTask,
 )
 from gotify_tray.gui.themes import set_theme
@@ -51,9 +49,7 @@ def init_logger(logger: logging.Logger):
     else:
         logging.disable()
 
-    logdir = QtCore.QStandardPaths.standardLocations(
-        QtCore.QStandardPaths.StandardLocation.AppDataLocation
-    )[0]
+    logdir = QtCore.QStandardPaths.standardLocations(QtCore.QStandardPaths.StandardLocation.AppDataLocation)[0]
     if not os.path.exists(logdir):
         os.mkdir(logdir)
     logging.basicConfig(
@@ -88,9 +84,9 @@ class MainApplication(QtWidgets.QApplication):
         self.first_connect = True
 
         self.gotify_client.listen(
-            new_message_callback=self.new_message_callback,
             opened_callback=self.listener_opened_callback,
             closed_callback=self.listener_closed_callback,
+            new_message_callback=self.new_message_callback,
             error_callback=self.listener_error_callback,
         )
 
@@ -108,29 +104,17 @@ class MainApplication(QtWidgets.QApplication):
         self.application_model.setItem(0, 0, ApplicationAllMessagesItem())
 
         self.get_applications_task = GetApplicationsTask(self.gotify_client)
-        self.get_applications_task.success.connect(
-            self.get_applications_success_callback
-        )
-        self.get_applications_task.started.connect(
-            self.main_window.disable_applications
-        )
-        self.get_applications_task.finished.connect(
-            self.main_window.enable_applications
-        )
+        self.get_applications_task.success.connect(self.get_applications_success_callback)
+        self.get_applications_task.started.connect(self.main_window.disable_applications)
+        self.get_applications_task.finished.connect(self.main_window.enable_applications)
         self.get_applications_task.start()
 
     def get_applications_success_callback(
-        self, applications: List[gotify.GotifyApplicationModel],
+        self, applications: list[gotify.GotifyApplicationModel],
     ):
         for i, application in enumerate(applications):
-            icon = QtGui.QIcon(
-                self.downloader.get_filename(
-                    f"{self.gotify_client.url}/{application.image}"
-                )
-            )
-            self.application_model.setItem(
-                i + 1, 0, ApplicationModelItem(application, icon),
-            )
+            icon = QtGui.QIcon(self.downloader.get_filename(f"{self.gotify_client.url}/{application.image}"))
+            self.application_model.setItem(i + 1, 0, ApplicationModelItem(application, icon))
 
     def update_last_id(self, i: int):
         if i > settings.value("message/last", type=int):
@@ -153,9 +137,9 @@ class MainApplication(QtWidgets.QApplication):
             for message in page.messages:
                 if message.id > last_id:
                     if settings.value("message/check_missed/notify", type=bool):
-                        self.new_message_callback(message)
+                        self.new_message_callback(message, process=False)
                     else:
-                        self.add_message_to_model(message)
+                        self.add_message_to_model(message, process=False)
                     ids.append(message.id)
 
             if ids:
@@ -169,9 +153,7 @@ class MainApplication(QtWidgets.QApplication):
         self.main_window.set_connecting()
         self.tray.set_icon_error()
         self.gotify_client.increase_wait_time()
-        QtCore.QTimer.singleShot(
-            self.gotify_client.get_wait_time() * 1000, self.gotify_client.reconnect
-        )
+        QtCore.QTimer.singleShot(self.gotify_client.get_wait_time() * 1000, self.gotify_client.reconnect)
 
     def listener_error_callback(self, exception: Exception):
         self.main_window.set_connecting()
@@ -184,51 +166,8 @@ class MainApplication(QtWidgets.QApplication):
         else:
             self.gotify_client.stop(reset_wait=True)
 
-    def insert_message(
-        self,
-        row: int,
-        message: gotify.GotifyMessageModel,
-        application: gotify.GotifyApplicationModel,
-    ):
-        """Insert a message gotify message into the messages model. Also add the message widget to the listview
-
-        Args:
-            row (int): >=0: insert message at specified position, <0: append message to the end of the model
-            message (gotify.GotifyMessageModel): message
-            application (gotify.GotifyApplicationModel): application
-        """
-        self.update_last_id(message.id)
-        message_item = MessagesModelItem(message)
-
-        if row >= 0:
-            self.messages_model.insertRow(row, message_item)
-        else:
-            self.messages_model.appendRow(message_item)
-
-        self.main_window.insert_message_widget(
-            message_item,
-            self.downloader.get_filename(
-                f"{self.gotify_client.url}/{application.image}"
-            ),
-        )
-
-    def get_messages_finished_callback(self, page: gotify.GotifyPagedMessagesModel):
-        """Process messages before inserting them into the main window
-        """
-
-        def insert_helper(message: gotify.GotifyMessageModel):
-            if item := self.application_model.itemFromId(message.appid):
-                self.insert_message(
-                    -1, message, item.data(ApplicationItemDataRole.ApplicationRole)
-                )
-                self.processEvents()
-
-        self.process_messages_task = ProcessMessagesTask(page)
-        self.process_messages_task.message_processed.connect(insert_helper)
-        self.process_messages_task.start()
-
     def application_selection_changed_callback(
-        self, item: Union[ApplicationModelItem, ApplicationAllMessagesItem]
+        self, item: ApplicationModelItem | ApplicationAllMessagesItem
     ):
         self.messages_model.clear()
 
@@ -237,62 +176,44 @@ class MainApplication(QtWidgets.QApplication):
                 item.data(ApplicationItemDataRole.ApplicationRole).id,
                 self.gotify_client,
             )
-            self.get_application_messages_task.success.connect(
-                self.get_messages_finished_callback
-            )
+            self.get_application_messages_task.message.connect(self.messages_model.append_message)
             self.get_application_messages_task.start()
 
         elif isinstance(item, ApplicationAllMessagesItem):
             self.get_messages_task = GetMessagesTask(self.gotify_client)
-            self.get_messages_task.success.connect(self.get_messages_finished_callback)
+            self.get_messages_task.message.connect(self.messages_model.append_message)
             self.get_messages_task.start()
 
-    def add_message_to_model(self, message: gotify.GotifyMessageModel):
-        if application_item := self.application_model.itemFromId(message.appid):
+    def add_message_to_model(self, message: gotify.GotifyMessageModel, process: bool = True):
+        if self.application_model.itemFromId(message.appid):
             application_index = self.main_window.currentApplicationIndex()
-            if selected_application_item := self.application_model.itemFromIndex(
-                application_index
-            ):
+            if selected_application_item := self.application_model.itemFromIndex(application_index):
 
                 def insert_message_helper():
                     if isinstance(selected_application_item, ApplicationModelItem):
                         # A single application is selected
+                        # -> Only insert the message if the appid matches the selected appid
                         if (
-                            message.appid
-                            == selected_application_item.data(
-                                ApplicationItemDataRole.ApplicationRole
-                            ).id
+                            message.appid 
+                            == selected_application_item.data(ApplicationItemDataRole.ApplicationRole).id
                         ):
-                            self.insert_message(
-                                0,
-                                message,
-                                application_item.data(
-                                    ApplicationItemDataRole.ApplicationRole
-                                ),
-                            )
-                    elif isinstance(
-                        selected_application_item, ApplicationAllMessagesItem
-                    ):
+                            self.messages_model.insert_message(0, message)
+                    elif isinstance(selected_application_item, ApplicationAllMessagesItem):
                         # "All messages' is selected
-                        self.insert_message(
-                            0,
-                            message,
-                            application_item.data(
-                                ApplicationItemDataRole.ApplicationRole
-                            ),
-                        )
+                        self.messages_model.insert_message(0, message)
 
-                self.process_message_task = ProcessMessageTask(message)
-                self.process_message_task.finished.connect(insert_message_helper)
-                self.process_message_task.start()
+                if process:
+                    self.process_message_task = ProcessMessageTask(message)
+                    self.process_message_task.finished.connect(insert_message_helper)
+                    self.process_message_task.start()
+                else:
+                    insert_message_helper()
         else:
-            logger.error(
-                f"App id {message.appid} could not be found. Refreshing applications."
-            )
+            logger.error(f"App id {message.appid} could not be found. Refreshing applications.")
             self.refresh_applications()
 
-    def new_message_callback(self, message: gotify.GotifyMessageModel):
-        self.add_message_to_model(message)
+    def new_message_callback(self, message: gotify.GotifyMessageModel, process: bool = True):
+        self.add_message_to_model(message, process=process)
 
         # Change the tray icon to show there are unread notifications
         if (
@@ -301,23 +222,19 @@ class MainApplication(QtWidgets.QApplication):
         ):
             self.tray.set_icon_unread()
 
-        # Show a notification
+        # Don't show a notification if it's low priority or the window is active
         if (
             message.priority < settings.value("tray/notifications/priority", type=int)
             or self.main_window.isActiveWindow()
         ):
             return
 
-        if settings.value("tray/notifications/icon/show", type=bool):
-            if application_item := self.application_model.itemFromId(message.appid):
-                image_url = f"{self.gotify_client.url}/{application_item.data(ApplicationItemDataRole.ApplicationRole).image}"
-                icon = QtGui.QIcon(self.downloader.get_filename(image_url))
-            else:
-                logger.error(
-                    f"MainWindow.new_message_callback: App id {message.appid} could not be found. Refreshing applications."
-                )
-                self.refresh_applications()
-                icon = QtWidgets.QSystemTrayIcon.MessageIcon.Information
+        # Get the application icon
+        if (
+            settings.value("tray/notifications/icon/show", type=bool)
+            and (application_item := self.application_model.itemFromId(message.appid))
+        ):
+            icon = application_item.icon()
         else:
             icon = QtWidgets.QSystemTrayIcon.MessageIcon.Information
 
@@ -336,7 +253,7 @@ class MainApplication(QtWidgets.QApplication):
         self.delete_message_task.start()
 
     def delete_all_messages_callback(
-        self, item: Union[ApplicationModelItem, ApplicationAllMessagesItem]
+        self, item: ApplicationModelItem | ApplicationAllMessagesItem
     ):
         if isinstance(item, ApplicationModelItem):
             self.delete_application_messages_task = DeleteApplicationMessagesTask(
@@ -375,17 +292,13 @@ class MainApplication(QtWidgets.QApplication):
 
         # Update the message widget icons
         for r in range(self.messages_model.rowCount()):
-            message_widget: MessageWidget = self.main_window.listView_messages.indexWidget(
-                self.messages_model.index(r, 0)
-            )
+            message_widget: MessageWidget = self.main_window.listView_messages.indexWidget(self.messages_model.index(r, 0))
             message_widget.set_icons()
 
     def settings_callback(self):
         settings_dialog = SettingsDialog(self)
         settings_dialog.quit_requested.connect(self.quit)
-        settings_dialog.theme_change_requested.connect(
-            self.theme_change_requested_callback
-        )
+        settings_dialog.theme_change_requested.connect(self.theme_change_requested_callback)
         accepted = settings_dialog.exec()
 
         if accepted and settings_dialog.settings_changed:
@@ -428,9 +341,7 @@ class MainApplication(QtWidgets.QApplication):
 
         self.main_window.refresh.connect(self.refresh_applications)
         self.main_window.delete_all.connect(self.delete_all_messages_callback)
-        self.main_window.application_selection_changed.connect(
-            self.application_selection_changed_callback
-        )
+        self.main_window.application_selection_changed.connect(self.application_selection_changed_callback)
         self.main_window.delete_message.connect(self.delete_message_callback)
         self.main_window.image_popup.connect(self.image_popup_callback)
         self.main_window.hidden.connect(self.main_window_hidden_callback)
@@ -438,7 +349,9 @@ class MainApplication(QtWidgets.QApplication):
         
         self.styleHints().colorSchemeChanged.connect(lambda _: self.theme_change_requested_callback(settings.value("theme", type=str)))
 
-        self.watchdog.closed.connect(lambda: self.listener_closed_callback(None, None))
+        self.messages_model.rowsInserted.connect(self.main_window.display_message_widgets)
+
+        self.watchdog.closed.connect(lambda: self.listener_closed_callback(0, 0))
 
     def init_shortcuts(self):
         self.shortcut_quit = QtGui.QShortcut(
@@ -449,9 +362,7 @@ class MainApplication(QtWidgets.QApplication):
 
     def acquire_lock(self) -> bool:
         temp_dir = tempfile.gettempdir()
-        lock_filename = os.path.join(
-            temp_dir, __title__ + "-" + getpass.getuser() + ".lock"
-        )
+        lock_filename = os.path.join(temp_dir, __title__ + "-" + getpass.getuser() + ".lock")
         self.lock_file = QtCore.QLockFile(lock_filename)
         self.lock_file.setStaleLockTime(0)
         return self.lock_file.tryLock()

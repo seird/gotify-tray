@@ -1,7 +1,6 @@
 import datetime
 from dateutil.parser import isoparse
 import logging
-from typing import List, Optional
 
 import requests
 
@@ -33,7 +32,7 @@ class GotifyApplicationModel(AttributeDict):
 
 class GotifyPagingModel(AttributeDict):
     limit: int
-    next: Optional[str] = None
+    next: str | None = None
     since: int
     size: int
 
@@ -41,11 +40,11 @@ class GotifyPagingModel(AttributeDict):
 class GotifyMessageModel(AttributeDict):
     appid: int
     date: datetime.datetime
-    extras: Optional[dict] = None
+    extras: dict | None = None
     id: int
     message: str
-    priority: Optional[int] = None
-    title: Optional[str] = None
+    priority: int | None = None
+    title: str | None = None
 
     def __init__(self, d: dict, *args, **kwargs):
         d.update(
@@ -55,7 +54,7 @@ class GotifyMessageModel(AttributeDict):
 
 
 class GotifyPagedMessagesModel(AttributeDict):
-    messages: List[GotifyMessageModel]
+    messages: list[GotifyMessageModel]
     paging: GotifyPagingModel
 
 

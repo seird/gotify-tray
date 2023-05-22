@@ -1,6 +1,5 @@
 import enum
 
-from typing import Optional, Union
 from PyQt6 import QtCore, QtGui
 from gotify_tray import gotify
 from gotify_tray.database import Settings
@@ -18,7 +17,7 @@ class ApplicationModelItem(QtGui.QStandardItem):
     def __init__(
         self,
         application: gotify.GotifyApplicationModel,
-        icon: Optional[QtGui.QIcon] = None,
+        icon: QtGui.QIcon | None = None,
         *args,
         **kwargs,
     ):
@@ -55,24 +54,22 @@ class ApplicationAllMessagesItem(QtGui.QStandardItem):
 class ApplicationModel(QtGui.QStandardItemModel):
     def __init__(self):
         super(ApplicationModel, self).__init__()
-        self.setItemPrototype(
-            ApplicationModelItem(gotify.GotifyApplicationModel({"name": ""}), None)
-        )
+        self.setItemPrototype(ApplicationModelItem(gotify.GotifyApplicationModel({"name": ""}), None))
 
     def setItem(
         self,
         row: int,
         column: int,
-        item: Union[ApplicationModelItem, ApplicationAllMessagesItem],
+        item: ApplicationModelItem | ApplicationAllMessagesItem,
     ) -> None:
         super(ApplicationModel, self).setItem(row, column, item)
 
     def itemFromIndex(
         self, index: QtCore.QModelIndex
-    ) -> Union[ApplicationModelItem, ApplicationAllMessagesItem]:
+    ) -> ApplicationModelItem | ApplicationAllMessagesItem:
         return super(ApplicationModel, self).itemFromIndex(index)
 
-    def itemFromId(self, appid: int) -> Optional[ApplicationModelItem]:
+    def itemFromId(self, appid: int) -> ApplicationModelItem | None:
         for row in range(self.rowCount()):
             item = self.item(row, 0)
             if not isinstance(item, ApplicationModelItem):

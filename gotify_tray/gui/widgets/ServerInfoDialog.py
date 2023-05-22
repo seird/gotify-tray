@@ -19,9 +19,7 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         self.line_url.setPlaceholderText("https://gotify.example.com")
         self.line_url.setText(url)
         self.line_token.setText(token)
-        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(
-            True
-        )
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(True)
         self.pb_import.setVisible(enable_import)
         self.link_callbacks()
 
@@ -37,9 +35,7 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
             return
 
         self.pb_test.setDisabled(True)
-        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(
-            True
-        )
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(True)
 
         self.task = VerifyServerInfoTask(url, client_token)
         self.task.success.connect(self.server_info_success)
@@ -59,9 +55,7 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         self.update_widget_state(self.pb_test, "success")
         self.update_widget_state(self.line_token, "success")
         self.update_widget_state(self.line_url, "success")
-        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setEnabled(
-            True
-        )
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setEnabled(True)
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setFocus()
 
     def incorrect_token_callback(self, version: GotifyVersionModel):
@@ -80,6 +74,10 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         self.update_widget_state(self.line_url, "failed")
         self.line_url.setFocus()
 
+    def input_changed_callback(self):
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(True)
+        self.update_widget_state(self.pb_test, "")
+
     def import_success_callback(self):
         self.line_url.setText(settings.value("Server/url", type=str))
         self.line_token.setText(settings.value("Server/client_token"))
@@ -95,14 +93,6 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
 
     def link_callbacks(self):
         self.pb_test.clicked.connect(self.test_server_info)
-        self.line_url.textChanged.connect(
-            lambda: self.buttonBox.button(
-                QtWidgets.QDialogButtonBox.StandardButton.Ok
-            ).setDisabled(True)
-        )
-        self.line_token.textChanged.connect(
-            lambda: self.buttonBox.button(
-                QtWidgets.QDialogButtonBox.StandardButton.Ok
-            ).setDisabled(True)
-        )
+        self.line_url.textChanged.connect(self.input_changed_callback)
+        self.line_token.textChanged.connect(self.input_changed_callback)
         self.pb_import.clicked.connect(self.import_callback)

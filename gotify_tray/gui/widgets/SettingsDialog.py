@@ -43,42 +43,28 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.link_callbacks()
 
     def initUI(self):
-        self.buttonBox.button(
-            QtWidgets.QDialogButtonBox.StandardButton.Apply
-        ).setEnabled(False)
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Apply).setEnabled(False)
 
         # Notifications
-        self.spin_priority.setValue(
-            settings.value("tray/notifications/priority", type=int)
-        )
+        self.spin_priority.setValue(settings.value("tray/notifications/priority", type=int))
 
-        self.spin_duration.setValue(
-            settings.value("tray/notifications/duration_ms", type=int)
-        )
+        self.spin_duration.setValue(settings.value("tray/notifications/duration_ms", type=int))
         if platform.system() == "Windows":
             # The notification duration setting is ignored by windows
             self.label_notification_duration.hide()
             self.spin_duration.hide()
             self.label_notification_duration_ms.hide()
 
-        self.cb_notify.setChecked(
-            settings.value("message/check_missed/notify", type=bool)
-        )
+        self.cb_notify.setChecked(settings.value("message/check_missed/notify", type=bool))
 
-        self.cb_notification_click.setChecked(
-            settings.value("tray/notifications/click", type=bool)
-        )
+        self.cb_notification_click.setChecked(settings.value("tray/notifications/click", type=bool))
 
-        self.cb_tray_icon_unread.setChecked(
-            settings.value("tray/icon/unread", type=bool)
-        )
+        self.cb_tray_icon_unread.setChecked(settings.value("tray/icon/unread", type=bool))
 
         # Interface
         self.combo_theme.addItems(get_themes())
         self.combo_theme.setCurrentText(settings.value("theme", type=str))
-        self.cb_priority_colors.setChecked(
-            settings.value("MessageWidget/priority_color", type=bool)
-        )
+        self.cb_priority_colors.setChecked(settings.value("MessageWidget/priority_color", type=bool))
 
         # Logging
         self.combo_logging.addItems(
@@ -96,9 +82,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.add_message_widget()
 
         # Advanced
-        self.groupbox_image_popup.setChecked(
-            settings.value("ImagePopup/enabled", type=bool)
-        )
+        self.groupbox_image_popup.setChecked(settings.value("ImagePopup/enabled", type=bool))
         self.spin_popup_w.setValue(settings.value("ImagePopup/w", type=int))
         self.spin_popup_h.setValue(settings.value("ImagePopup/h", type=int))
         self.label_cache.setText("0 MB")
@@ -118,7 +102,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
                     }
                 )
             ),
-            get_icon("gotify-small"),
+            QtGui.QIcon(get_icon("gotify-small")),
         )
         self.layout_fonts_message.addWidget(self.message_widget)
 
@@ -132,16 +116,12 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
 
     def settings_changed_callback(self, *args, **kwargs):
         self.settings_changed = True
-        self.buttonBox.button(
-            QtWidgets.QDialogButtonBox.StandardButton.Apply
-        ).setEnabled(True)
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Apply).setEnabled(True)
 
     def change_font_callback(self, name: str):
         label: QtWidgets.QLabel = getattr(self.message_widget, "label_" + name)
 
-        font, accepted = QtWidgets.QFontDialog.getFont(
-            label.font(), self, f"Select a {name} font"
-        )
+        font, accepted = QtWidgets.QFontDialog.getFont(label.font(), self, f"Select a {name} font")
 
         if accepted:
             self.settings_changed_callback()
@@ -205,9 +185,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.label_cache.setText("0 MB")
 
     def link_callbacks(self):
-        self.buttonBox.button(
-            QtWidgets.QDialogButtonBox.StandardButton.Apply
-        ).clicked.connect(self.apply_settings)
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Apply).clicked.connect(self.apply_settings)
 
         # Notifications
         self.spin_priority.valueChanged.connect(self.settings_changed_callback)
@@ -225,22 +203,14 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
 
         # Logging
         self.combo_logging.currentTextChanged.connect(self.settings_changed_callback)
-        self.pb_open_log.clicked.connect(
-            lambda: open_file(logger.root.handlers[0].baseFilename)
-        )
+        self.pb_open_log.clicked.connect(lambda: open_file(logger.root.handlers[0].baseFilename))
 
         # Fonts
         self.pb_reset_fonts.clicked.connect(self.reset_fonts_callback)
 
-        self.pb_font_message_title.clicked.connect(
-            lambda: self.change_font_callback("title")
-        )
-        self.pb_font_message_date.clicked.connect(
-            lambda: self.change_font_callback("date")
-        )
-        self.pb_font_message_content.clicked.connect(
-            lambda: self.change_font_callback("message")
-        )
+        self.pb_font_message_title.clicked.connect(lambda: self.change_font_callback("title"))
+        self.pb_font_message_date.clicked.connect(lambda: self.change_font_callback("date"))
+        self.pb_font_message_content.clicked.connect(lambda: self.change_font_callback("message"))
 
         # Advanced
         self.pb_export.clicked.connect(self.export_callback)
@@ -257,9 +227,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         settings.setValue("tray/notifications/priority", self.spin_priority.value())
         settings.setValue("tray/notifications/duration_ms", self.spin_duration.value())
         settings.setValue("message/check_missed/notify", self.cb_notify.isChecked())
-        settings.setValue(
-            "tray/notifications/click", self.cb_notification_click.isChecked()
-        )
+        settings.setValue("tray/notifications/click", self.cb_notification_click.isChecked())
         settings.setValue("tray/icon/unread", self.cb_tray_icon_unread.isChecked())
 
         # Interface
@@ -269,9 +237,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             settings.setValue("theme", selected_theme)
             self.theme_change_requested.emit(selected_theme)
 
-        settings.setValue(
-            "MessageWidget/priority_color", self.cb_priority_colors.isChecked()
-        )
+        settings.setValue("MessageWidget/priority_color", self.cb_priority_colors.isChecked())
 
         # Logging
         selected_level = self.combo_logging.currentText()
@@ -283,17 +249,9 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             logger.setLevel(selected_level)
 
         # Fonts
-        settings.setValue(
-            "MessageWidget/font/title",
-            self.message_widget.label_title.font().toString(),
-        )
-        settings.setValue(
-            "MessageWidget/font/date", self.message_widget.label_date.font().toString()
-        )
-        settings.setValue(
-            "MessageWidget/font/message",
-            self.message_widget.label_message.font().toString(),
-        )
+        settings.setValue("MessageWidget/font/title", self.message_widget.label_title.font().toString())
+        settings.setValue("MessageWidget/font/date", self.message_widget.label_date.font().toString())
+        settings.setValue("MessageWidget/font/message", self.message_widget.label_message.font().toString())
 
         # Advanced
         settings.setValue("ImagePopup/enabled", self.groupbox_image_popup.isChecked())

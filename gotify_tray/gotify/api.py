@@ -1,5 +1,5 @@
 import logging
-from typing import Callable, List, Optional, Union
+from typing import Callable
 
 import requests
 
@@ -22,12 +22,12 @@ class GotifySession(object):
         self.session = requests.Session()
         self.update_auth(url.rstrip("/"), token)
 
-    def update_auth(self, url: str = None, token: str = None):
+    def update_auth(self, url: str | None = None, token: str | None = None):
         if url:
             self.url = url
         if token:
             self.token = token
-        self.session.headers.update({"X-Gotify-Key": token})
+            self.session.headers.update({"X-Gotify-Key": token})
 
     def _get(self, endpoint: str = "/", **kwargs) -> requests.Response:
         return self.session.get(self.url + endpoint, **kwargs)
@@ -50,8 +50,8 @@ class GotifyApplication(GotifySession):
         super(GotifyApplication, self).__init__(url, application_token)
 
     def push(
-        self, title: str = "", message: str = "", priority: int = 0, extras: dict = None
-    ) -> Union[GotifyMessageModel, GotifyErrorModel]:
+        self, title: str = "", message: str = "", priority: int = 0, extras: dict | None = None
+    ) -> GotifyMessageModel | GotifyErrorModel:
         response = self._post(
             "/message",
             json={
@@ -77,7 +77,7 @@ class GotifyClient(GotifySession):
     Application
     """
 
-    def get_applications(self) -> Union[List[GotifyApplicationModel], GotifyErrorModel]:
+    def get_applications(self) -> list[GotifyApplicationModel] | GotifyErrorModel:
         response = self._get("/application")
         return (
             [GotifyApplicationModel(x) for x in response.json()]
@@ -87,7 +87,7 @@ class GotifyClient(GotifySession):
 
     def create_application(
         self, name: str, description: str = ""
-    ) -> Union[GotifyApplicationModel, GotifyErrorModel]:
+    ) -> GotifyApplicationModel | GotifyErrorModel:
         response = self._post(
             "/application", json={"name": name, "description": description}
         )
@@ -99,7 +99,7 @@ class GotifyClient(GotifySession):
 
     def update_application(
         self, application_id: int, name: str, description: str = ""
-    ) -> Union[GotifyApplicationModel, GotifyErrorModel]:
+    ) -> GotifyApplicationModel | GotifyErrorModel:
         response = self._put(
             f"/application/{application_id}",
             json={"name": name, "description": description},
@@ -115,7 +115,7 @@ class GotifyClient(GotifySession):
 
     def upload_application_image(
         self, application_id: int, img_path: str
-    ) -> Optional[Union[GotifyApplicationModel, GotifyErrorModel]]:
+    ) -> GotifyApplicationModel | GotifyErrorModel | None:
         try:
             with open(img_path, "rb") as f:
                 response = self._post(
@@ -137,8 +137,8 @@ class GotifyClient(GotifySession):
     """
 
     def get_application_messages(
-        self, application_id: int, limit: int = 100, since: int = None
-    ) -> Union[GotifyPagedMessagesModel, GotifyErrorModel]:
+        self, application_id: int, limit: int = 100, since: int | None = None
+    ) -> GotifyPagedMessagesModel | GotifyErrorModel:
         response = self._get(
             f"/application/{application_id}/message",
             params={"limit": limit, "since": since},
@@ -155,8 +155,8 @@ class GotifyClient(GotifySession):
         return self._delete(f"/application/{application_id}/message").ok
 
     def get_messages(
-        self, limit: int = 100, since: int = None
-    ) -> Union[GotifyPagedMessagesModel, GotifyErrorModel]:
+        self, limit: int = 100, since: int | None = None
+    ) -> GotifyPagedMessagesModel | GotifyErrorModel:
         response = self._get("/message", params={"limit": limit, "since": since})
         if not response.ok:
             return GotifyErrorModel(response)
@@ -174,10 +174,10 @@ class GotifyClient(GotifySession):
 
     def listen(
         self,
-        opened_callback: Callable[[], None] = None,
-        closed_callback: Callable[[int, str], None] = None,
-        new_message_callback: Callable[[GotifyMessageModel], None] = None,
-        error_callback: Callable[[Exception], None] = None,
+        opened_callback: (Callable[[], None]) | None = None,
+        closed_callback: Callable[[int, str], None] | None = None,
+        new_message_callback: Callable[[GotifyMessageModel], None] | None = None,
+        error_callback: Callable[[Exception], None] | None = None,
     ):
         def dummy(*args):
             ...
@@ -189,7 +189,7 @@ class GotifyClient(GotifySession):
         self.listener.error.connect(error_callback or dummy)
         self.listener.start()
 
-    def opened_callback(self, user_callback: Callable[[], None] = None):
+    def opened_callback(self, user_callback: Callable[[], None] | None = None):
         self.reset_wait_time()
         if user_callback:
             user_callback()
@@ -222,7 +222,7 @@ class GotifyClient(GotifySession):
     Health
     """
 
-    def health(self) -> Union[GotifyHealthModel, GotifyErrorModel]:
+    def health(self) -> GotifyHealthModel | GotifyErrorModel:
         response = self._get("/health")
         return (
             GotifyHealthModel(response.json())
@@ -234,7 +234,7 @@ class GotifyClient(GotifySession):
     Version
     """
 
-    def version(self) -> Union[GotifyVersionModel, GotifyErrorModel]:
+    def version(self) -> GotifyVersionModel | GotifyErrorModel:
         response = self._get("/version")
         return (
             GotifyVersionModel(response.json())

@@ -23,11 +23,11 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         app: QtWidgets.QApplication,
         parent: QtWidgets.QWidget,
         message_item: MessagesModelItem,
-        image_path: str = "",
+        icon: QtGui.QIcon | None = None,
     ):
-        super(MessageWidget, self).__init__()
+        super(MessageWidget, self).__init__(parent)
         self.app = app
-        self.parent = parent
+        self._parent = parent
         self.setupUi(self)
         self.setAutoFillBackground(True)
         self.message_item = message_item
@@ -43,10 +43,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         self.label_title.setText(message.title)
         self.label_date.setText(message.date.strftime("%Y-%m-%d, %H:%M"))
 
-        if markdown := (
-            message.get("extras", {}).get("client::display", {}).get("contentType")
-            == "text/markdown"
-        ):
+        if message.get("extras", {}).get("client::display", {}).get("contentType") == "text/markdown":
             self.label_message.setTextFormat(QtCore.Qt.TextFormat.MarkdownText)
 
         # If the message is only an image URL, then instead of showing the message,
@@ -59,15 +56,9 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
             self.label_message.setText(convert_links(message.message))
 
         # Show the application icon
-        if image_path:
+        if icon:
             image_size = settings.value("MessageWidget/image/size", type=int)
-            self.label_image.setFixedSize(QtCore.QSize(image_size, image_size))
-            pixmap = QtGui.QPixmap(image_path).scaled(
-                image_size,
-                image_size,
-                aspectRatioMode=QtCore.Qt.AspectRatioMode.KeepAspectRatioByExpanding,
-                transformMode=QtCore.Qt.TransformationMode.SmoothTransformation,
-            )
+            pixmap = icon.pixmap(QtCore.QSize(image_size, image_size))
             self.label_image.setPixmap(pixmap)
         else:
             self.label_image.hide()
@@ -77,7 +68,12 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         self.gridLayout.setContentsMargins(4, 5, 4, 0)
         self.adjustSize()
         size_hint = self.message_item.sizeHint()
-        self.message_item.setSizeHint(QtCore.QSize(size_hint.width(), self.height()))
+        self.message_item.setSizeHint(
+            QtCore.QSize(
+                size_hint.width(),
+                max(settings.value("MessageWidget/height/min", type=int), self.height())
+            )
+        )
 
         self.set_icons()
 
@@ -113,13 +109,10 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         pixmap = QtGui.QPixmap(filename)
 
         # Make sure the image fits within the listView
-        W = settings.value("MessageWidget/content_image/W_percentage", type=float) * (
-            self.parent.width() - self.label_image.width()
-        )
-        H = (
-            settings.value("MessageWidget/content_image/H_percentage", type=float)
-            * self.parent.height()
-        )
+        W = settings.value("MessageWidget/content_image/W_percentage", type=float)
+        H = settings.value("MessageWidget/content_image/H_percentage", type=float)
+        W *= self._parent.width() - self.label_image.width()
+        H *= self._parent.height()
 
         if pixmap.width() > W or pixmap.height() > H:
             pixmap = pixmap.scaled(
@@ -150,7 +143,5 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
             self.image_popup.emit(link, QtGui.QCursor.pos())
 
     def link_callbacks(self):
-        self.pb_delete.clicked.connect(
-            lambda: self.deletion_requested.emit(self.message_item)
-        )
+        self.pb_delete.clicked.connect(lambda: self.deletion_requested.emit(self.message_item))
         self.label_message.linkHovered.connect(self.link_hovered_callback)

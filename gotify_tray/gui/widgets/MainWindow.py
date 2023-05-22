@@ -11,6 +11,8 @@ from . import MessageWidget
 from gotify_tray.__version__ import __title__
 from gotify_tray.database import Settings
 from gotify_tray.gui.themes import get_theme_file
+from gotify_tray.gui.models import MessageItemDataRole
+from gotify_tray import gotify
 
 
 settings = Settings("gotify-tray")
@@ -104,17 +106,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def set_error(self):
         self.status_widget.set_error()
 
-    def insert_message_widget(
-        self, message_item: MessagesModelItem, image_path: str = ""
-    ):
-        message_widget = MessageWidget(
-            self.app, self.listView_messages, message_item, image_path=image_path
-        )
-        self.listView_messages.setIndexWidget(
-            self.messages_model.indexFromItem(message_item), message_widget
-        )
-        message_widget.deletion_requested.connect(self.delete_message.emit)
-        message_widget.image_popup.connect(self.image_popup.emit)
+    def display_message_widgets(self, parent: QtCore.QModelIndex, first: int, last: int):
+        for i in range(first, last+1):
+            if index := self.messages_model.index(i, 0, parent):
+                message_item = self.messages_model.itemFromIndex(index)
+
+                message: gotify.GotifyMessageModel = self.messages_model.data(index, MessageItemDataRole.MessageRole)
+
+                application_item = self.application_model.itemFromId(message.appid)
+                
+                message_widget = MessageWidget(self.app, self.listView_messages, message_item, icon=application_item.icon())
+                message_widget.deletion_requested.connect(self.delete_message.emit)
+                message_widget.image_popup.connect(self.image_popup.emit)
+                
+                self.listView_messages.setIndexWidget(self.messages_model.indexFromItem(message_item), message_widget)
 
     def currentApplicationIndex(self) -> QtCore.QModelIndex:
         return self.listView_applications.selectionModel().currentIndex()

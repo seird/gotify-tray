@@ -6,19 +6,27 @@ QPushButton:default:hover, QPushButton:checked:hover {
     background: #5c24b6;
 }
 
-QPushButton[state="success"] {
+ServerInfoDialog QPushButton[state="success"] {
     background-color: #6400FF00;
     color: black;
 }
 
-QPushButton[state="failed"] {
+ServerInfoDialog QPushButton[state="success"]:!default:hover {
+    background: #6400FF00;
+}
+
+ServerInfoDialog QPushButton[state="failed"] {
     background-color: #64FF0000;
     color: black;
 }
 
-QLineEdit[state="success"] {}
+ServerInfoDialog QPushButton[state="failed"]:!default:hover {
+    background: #64FF0000;
+}
 
-QLineEdit[state="failed"] {
+ServerInfoDialog QLineEdit[state="success"] {}
+
+ServerInfoDialog QLineEdit[state="failed"] {
     border: 1px solid red;
 }
 

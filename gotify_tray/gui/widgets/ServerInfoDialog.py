@@ -74,6 +74,10 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         self.update_widget_state(self.line_url, "failed")
         self.line_url.setFocus()
 
+    def input_changed_callback(self):
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(True)
+        self.update_widget_state(self.pb_test, "")
+
     def import_success_callback(self):
         self.line_url.setText(settings.value("Server/url", type=str))
         self.line_token.setText(settings.value("Server/client_token"))
@@ -89,6 +93,6 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
 
     def link_callbacks(self):
         self.pb_test.clicked.connect(self.test_server_info)
-        self.line_url.textChanged.connect(lambda: self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(True))
-        self.line_token.textChanged.connect(lambda: self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(True))
+        self.line_url.textChanged.connect(self.input_changed_callback)
+        self.line_token.textChanged.connect(self.input_changed_callback)
         self.pb_import.clicked.connect(self.import_callback)

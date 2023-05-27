@@ -1,5 +1,5 @@
 Package: gotify-tray
-Version: 0.4.2
+Version: 0.5.0
 Architecture: amd64
 Maintainer: k.dries@protonmail.com
 Description: Gotify Tray

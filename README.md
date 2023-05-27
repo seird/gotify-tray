@@ -56,4 +56,4 @@ See [BUILDING](BUILDING.md).
 
 ## Requirements
 
-- python >=3.8
+- python >=3.10

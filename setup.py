@@ -9,7 +9,7 @@ NAME = 'gotify-tray'
 DESCRIPTION = 'A tray notification application for receiving messages from a Gotify server.'
 URL = 'https://github.com/seird/gotify-tray'
 EMAIL = "k.dries@protonmail.com"
-REQUIRES_PYTHON = '>=3.8.0'
+REQUIRES_PYTHON = '>=3.10.0'
 with open("version.txt", "r") as f:
     VERSION = f.read()
 
@@ -84,8 +84,6 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10'
     ]
 )

@@ -192,6 +192,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def closeEvent(self, e: QtGui.QCloseEvent) -> None:
         self.hide()
+        e.ignore()
         self.hidden.emit()
 
     def eventFilter(self, object: QtCore.QObject, event: QtCore.QEvent) -> bool:

@@ -166,16 +166,25 @@ class MainApplication(QtWidgets.QApplication):
         else:
             self.gotify_client.stop(reset_wait=True)
 
-    def application_selection_changed_callback(
-        self, item: ApplicationModelItem | ApplicationAllMessagesItem
-    ):
+    def abort_get_messages_task(self):
+        """
+        Abort any tasks that will result in new messages getting appended to messages_model
+        """
+        aborted_tasks = []
+        for s in ["get_application_messages_task", "get_messages_task"]:
+            if task := getattr(self, s, None):
+                task.abort()
+                aborted_tasks.append(task)
+        
+        for task in aborted_tasks:
+            task.wait()
+
+    def application_selection_changed_callback(self, item: ApplicationModelItem | ApplicationAllMessagesItem):
+        self.abort_get_messages_task()
         self.messages_model.clear()
 
         if isinstance(item, ApplicationModelItem):
-            self.get_application_messages_task = GetApplicationMessagesTask(
-                item.data(ApplicationItemDataRole.ApplicationRole).id,
-                self.gotify_client,
-            )
+            self.get_application_messages_task = GetApplicationMessagesTask(item.data(ApplicationItemDataRole.ApplicationRole).id, self.gotify_client)
             self.get_application_messages_task.message.connect(self.messages_model.append_message)
             self.get_application_messages_task.start()
 

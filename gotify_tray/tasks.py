@@ -26,10 +26,17 @@ class BaseTask(QtCore.QThread):
     def __init__(self):
         super(BaseTask, self).__init__()
         self.running = False
+        self._abort = False
 
     @abc.abstractmethod
     def task(self):
         ...
+
+    def abort(self):
+        self._abort = True
+
+    def abort_requested(self) -> bool:
+        return self._abort
 
     def run(self):
         self.running = True
@@ -111,6 +118,8 @@ class GetApplicationMessagesTask(BaseTask):
             self.error.emit(result)
         else:
             for message in process_messages(result.messages):
+                if self.abort_requested():
+                    return
                 self.message.emit(message)
                 
                 # Prevent locking up the UI when there are a lot of messages ready at the same time
@@ -133,6 +142,8 @@ class GetMessagesTask(BaseTask):
             self.error.emit(result)
         else:
             for message in process_messages(result.messages):
+                if self.abort_requested():
+                    return
                 self.message.emit(message)
                 time.sleep(0.001)
             self.success.emit(result)

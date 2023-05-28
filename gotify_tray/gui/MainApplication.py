@@ -175,6 +175,10 @@ class MainApplication(QtWidgets.QApplication):
             if task := getattr(self, s, None):
                 task.abort()
                 aborted_tasks.append(task)
+                try:
+                    task.message.disconnect()
+                except TypeError:
+                    pass
         
         for task in aborted_tasks:
             task.wait()

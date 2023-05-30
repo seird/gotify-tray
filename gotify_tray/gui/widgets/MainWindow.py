@@ -153,6 +153,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.listView_applications.setEnabled(True)
         self.listView_applications.setCurrentIndex(self.application_model.index(0, 0))
 
+    def disable_buttons(self):
+        self.pb_delete_all.setDisabled(True)
+        self.pb_refresh.setDisabled(True)
+
+    def enable_buttons(self):
+        self.pb_delete_all.setEnabled(True)
+        self.pb_refresh.setEnabled(True)
+
     def bring_to_front(self):
         self.ensurePolished()
         self.setWindowState(

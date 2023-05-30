@@ -184,17 +184,20 @@ class MainApplication(QtWidgets.QApplication):
             task.wait()
 
     def application_selection_changed_callback(self, item: ApplicationModelItem | ApplicationAllMessagesItem):
+        self.main_window.disable_buttons()
         self.abort_get_messages_task()
         self.messages_model.clear()
 
         if isinstance(item, ApplicationModelItem):
             self.get_application_messages_task = GetApplicationMessagesTask(item.data(ApplicationItemDataRole.ApplicationRole).id, self.gotify_client)
             self.get_application_messages_task.message.connect(self.messages_model.append_message)
+            self.get_application_messages_task.finished.connect(self.main_window.enable_buttons)
             self.get_application_messages_task.start()
 
         elif isinstance(item, ApplicationAllMessagesItem):
             self.get_messages_task = GetMessagesTask(self.gotify_client)
             self.get_messages_task.message.connect(self.messages_model.append_message)
+            self.get_messages_task.finished.connect(self.main_window.enable_buttons)
             self.get_messages_task.start()
 
     def add_message_to_model(self, message: gotify.GotifyMessageModel, process: bool = True):

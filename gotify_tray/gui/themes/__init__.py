@@ -29,7 +29,7 @@ def is_valid_theme(theme: str) -> bool:
     return theme in get_themes()
 
 
-def set_theme(app: QtWidgets.QApplication, theme: str = "automatic"):
+def set_theme(app: QtWidgets.QApplication, theme: str = "automatic"):    
     if not is_valid_theme(theme):
         logger.warning(f"set_theme: theme {theme} is unsupported.")
         theme = "automatic"
@@ -45,7 +45,7 @@ def set_theme(app: QtWidgets.QApplication, theme: str = "automatic"):
     app.setStyleSheet(stylesheet)
 
 
-def get_theme_file(app: QtWidgets.QApplication, file: str, theme: str | None = None) -> str:
+def get_theme_file(file: str, theme: str | None = None) -> str:
     theme = settings.value("theme", type=str) if not theme else theme
 
     if not is_valid_theme(theme):
@@ -53,6 +53,7 @@ def get_theme_file(app: QtWidgets.QApplication, file: str, theme: str | None = N
         theme = "automatic"
 
     if theme in ("automatic", "default"):
+        app = QtCore.QCoreApplication.instance()
         theme = "dark purple" if is_dark_mode(app) else "light purple"
 
     return get_abs_path(f"gotify_tray/gui/themes/{theme.replace(' ', '_')}/{file}")

@@ -72,7 +72,7 @@ class MainApplication(QtWidgets.QApplication):
         self.messages_model = MessagesModel()
         self.application_model = ApplicationModel()
 
-        self.main_window = MainWindow(self, self.application_model, self.messages_model)
+        self.main_window = MainWindow(self.application_model, self.messages_model)
         self.main_window.show()  # The initial .show() is necessary to get the correct sizes when adding MessageWigets
         QtCore.QTimer.singleShot(0, self.main_window.hide)
 
@@ -309,7 +309,7 @@ class MainApplication(QtWidgets.QApplication):
             message_widget.set_icons()
 
     def settings_callback(self):
-        settings_dialog = SettingsDialog(self)
+        settings_dialog = SettingsDialog()
         settings_dialog.quit_requested.connect(self.quit)
         settings_dialog.theme_change_requested.connect(self.theme_change_requested_callback)
         accepted = settings_dialog.exec()

@@ -27,18 +27,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     hidden = QtCore.pyqtSignal()
     activated = QtCore.pyqtSignal()
 
-    def __init__(
-        self, app: QtWidgets.QApplication,
-        application_model: ApplicationModel, messages_model: MessagesModel
-    ):
+    def __init__(self, application_model: ApplicationModel, messages_model: MessagesModel):
         super(MainWindow, self).__init__()
         self.setupUi(self)
 
         self.installEventFilter(self)
 
         self.setWindowTitle(__title__)
-
-        self.app = app
 
         self.application_model = application_model
         self.messages_model = messages_model
@@ -52,7 +47,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Do not collapse the message list
         self.splitter.setCollapsible(1, False)
-        self.status_widget = StatusWidget(app)
+        self.status_widget = StatusWidget()
         self.horizontalLayout.insertWidget(0, self.status_widget)
 
         self.set_icons()
@@ -75,8 +70,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def set_icons(self):
         # Set button icons
-        self.pb_refresh.setIcon(QtGui.QIcon(get_theme_file(self.app, "refresh.svg")))
-        self.pb_delete_all.setIcon(QtGui.QIcon(get_theme_file(self.app, "trashcan.svg")))
+        self.pb_refresh.setIcon(QtGui.QIcon(get_theme_file("refresh.svg")))
+        self.pb_delete_all.setIcon(QtGui.QIcon(get_theme_file("trashcan.svg")))
 
         # Resize the labels and icons
         size = settings.value("MainWindow/label/size", type=int)
@@ -115,7 +110,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
                 application_item = self.application_model.itemFromId(message.appid)
                 
-                message_widget = MessageWidget(self.app, self.listView_messages, message_item, icon=application_item.icon())
+                message_widget = MessageWidget(self.listView_messages, message_item, icon=application_item.icon())
                 message_widget.deletion_requested.connect(self.delete_message.emit)
                 message_widget.image_popup.connect(self.image_popup.emit)
                 

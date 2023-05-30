@@ -20,13 +20,11 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
 
     def __init__(
         self,
-        app: QtWidgets.QApplication,
         parent: QtWidgets.QWidget,
         message_item: MessagesModelItem,
         icon: QtGui.QIcon | None = None,
     ):
         super(MessageWidget, self).__init__(parent)
-        self.app = app
         self._parent = parent
         self.setupUi(self)
         self.setAutoFillBackground(True)
@@ -102,7 +100,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         self.label_message.setFont(font_content)
 
     def set_icons(self):
-        self.pb_delete.setIcon(QtGui.QIcon(get_theme_file(self.app, "trashcan.svg")))
+        self.pb_delete.setIcon(QtGui.QIcon(get_theme_file("trashcan.svg")))
         self.pb_delete.setIconSize(QtCore.QSize(24, 24))
 
     def set_message_image(self, filename: str):

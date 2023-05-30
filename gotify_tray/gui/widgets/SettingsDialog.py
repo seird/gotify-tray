@@ -27,13 +27,11 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
     quit_requested = QtCore.pyqtSignal()
     theme_change_requested = QtCore.pyqtSignal(str)
 
-    def __init__(self, app: QtWidgets.QApplication):
+    def __init__(self):
         super(SettingsDialog, self).__init__()
         self.setupUi(self)
         self.setWindowTitle("Settings")
         
-        self.app = app
-
         self.settings_changed = False
         self.changes_applied = False
         self.server_changed = False
@@ -91,7 +89,6 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
 
     def add_message_widget(self):
         self.message_widget = MessageWidget(
-            self.app,
             self,
             MessagesModelItem(
                 GotifyMessageModel(

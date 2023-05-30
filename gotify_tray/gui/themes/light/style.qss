@@ -1,11 +1,3 @@
-QPushButton:!default:hover {
-    background: #5c24b6;
-}
-
-QPushButton:default:hover, QPushButton:checked:hover {
-    background: #5c24b6;
-}
-
 ServerInfoDialog QPushButton[state="success"] {
     background-color: #6400FF00;
     color: black;
@@ -28,21 +20,4 @@ ServerInfoDialog QLineEdit[state="success"] {}
 
 ServerInfoDialog QLineEdit[state="failed"] {
     border: 1px solid red;
-}
-
-QToolTip {
-    color: #BFBFBF;
-    background-color: #5522a8;
-}
-
-MessageWidget QPushButton {
-    border: 0px;
-}
-
-MessageWidget QPushButton:!default:hover {
-    background: #9662ea;
-}
-
-MessageWidget QPushButton:!default:pressed {
-    background: #7a4dc2;
 }

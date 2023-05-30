@@ -60,8 +60,6 @@ def init_logger(logger: logging.Logger):
 
 class MainApplication(QtWidgets.QApplication):
     def init_ui(self):
-        set_theme(self, settings.value("theme", type=str))
-
         self.gotify_client = gotify.GotifyClient(
             settings.value("Server/url", type=str),
             settings.value("Server/client_token", type=str),
@@ -96,6 +94,9 @@ class MainApplication(QtWidgets.QApplication):
         self.init_shortcuts()
 
         self.watchdog.start()
+
+    def set_theme(self):
+        set_theme(self)
 
     def refresh_applications(self):
         self.messages_model.clear()
@@ -299,9 +300,9 @@ class MainApplication(QtWidgets.QApplication):
         if image_popup := getattr(self, "image_popup", None):
             image_popup.close()
 
-    def theme_change_requested_callback(self, theme: str):
+    def theme_change_requested_callback(self, *args):
         # Set the theme
-        set_theme(self, theme)
+        self.set_theme()
 
         # Update the main window icons
         self.main_window.set_icons()
@@ -314,7 +315,6 @@ class MainApplication(QtWidgets.QApplication):
     def settings_callback(self):
         settings_dialog = SettingsDialog()
         settings_dialog.quit_requested.connect(self.quit)
-        settings_dialog.theme_change_requested.connect(self.theme_change_requested_callback)
         accepted = settings_dialog.exec()
 
         if accepted and settings_dialog.settings_changed:
@@ -363,7 +363,7 @@ class MainApplication(QtWidgets.QApplication):
         self.main_window.hidden.connect(self.main_window_hidden_callback)
         self.main_window.activated.connect(self.tray.revert_icon)
         
-        self.styleHints().colorSchemeChanged.connect(lambda _: self.theme_change_requested_callback(settings.value("theme", type=str)))
+        self.styleHints().colorSchemeChanged.connect(self.theme_change_requested_callback)
 
         self.messages_model.rowsInserted.connect(self.main_window.display_message_widgets)
 
@@ -401,6 +401,7 @@ def start_gui():
     app.setQuitOnLastWindowClosed(False)
     app.setWindowIcon(QtGui.QIcon(get_icon("gotify-small")))
     app.setStyle("fusion")
+    app.set_theme()
 
     init_logger(logger)
 

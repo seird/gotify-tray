@@ -64,9 +64,9 @@ setup(
     packages=find_packages(),
     package_data={
         'gotify_tray.gui.images': ['*.ico', '*.png'],
-        'gotify_tray.gui.themes.default': ['*.qss', '*.svg', '*.png'],
-        'gotify_tray.gui.themes.dark_purple': ['*.qss', '*.svg', '*.png'],
-        'gotify_tray.gui.themes.light_purple': ['*.qss', '*.svg', '*.png'],
+        'gotify_tray.gui.themes': ['*.qss'],
+        'gotify_tray.gui.themes.dark': ['*.qss', '*.svg', '*.png'],
+        'gotify_tray.gui.themes.light': ['*.qss', '*.svg', '*.png'],
     },
     data_files = [
     ],

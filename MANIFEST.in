@@ -1,9 +1,8 @@
 include README.md version.txt
 include gotify_tray/gui/images/*.png
 include gotify_tray/gui/images/*.svg
-include gotify_tray/gui/themes/default/*.svg
-include gotify_tray/gui/themes/default/*.qss
-include gotify_tray/gui/themes/dark_purple/*.svg
-include gotify_tray/gui/themes/dark_purple/*.qss
-include gotify_tray/gui/themes/light_purple/*.svg
-include gotify_tray/gui/themes/light_purple/*.qss
+include gotify_tray/gui/themes/base.qss
+include gotify_tray/gui/themes/dark/*.svg
+include gotify_tray/gui/themes/dark/*.qss
+include gotify_tray/gui/themes/light/*.svg
+include gotify_tray/gui/themes/light/*.qss

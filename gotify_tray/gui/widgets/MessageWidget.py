@@ -101,7 +101,6 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
 
     def set_icons(self):
         self.pb_delete.setIcon(QtGui.QIcon(get_theme_file("trashcan.svg")))
-        self.pb_delete.setIconSize(QtCore.QSize(24, 24))
 
     def set_message_image(self, filename: str):
         pixmap = QtGui.QPixmap(filename)

@@ -1,0 +1,7 @@
+MessageWidget QPushButton[objectName^="pb_delete"] {
+    qproperty-iconSize: 24px;
+}
+
+MessageWidget QLabel[objectName^="label_date"] {
+    margin-right: 1px;
+}

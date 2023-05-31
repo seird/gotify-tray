@@ -3,6 +3,7 @@ import os
 from gotify_tray.database import Settings
 from gotify_tray.gotify.models import GotifyVersionModel
 from gotify_tray.tasks import ImportSettingsTask, VerifyServerInfoTask
+from gotify_tray.utils import update_widget_property
 from PyQt6 import QtWidgets
 
 from ..designs.widget_server import Ui_Dialog
@@ -24,9 +25,9 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         self.link_callbacks()
 
     def test_server_info(self):
-        self.pb_test.setStyleSheet("")
-        self.line_url.setStyleSheet("")
-        self.line_token.setStyleSheet("")
+        update_widget_property(self.pb_test, "state", "")
+        update_widget_property(self.line_url, "state", "")
+        update_widget_property(self.line_token, "state", "")
         self.label_server_info.clear()
 
         url = self.line_url.text()
@@ -43,40 +44,34 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         self.task.incorrect_url.connect(self.incorrect_url_callback)
         self.task.start()
 
-    def update_widget_state(self, widget: QtWidgets.QWidget, state: str):
-        widget.setProperty("state", state)
-        widget.style().unpolish(widget)
-        widget.style().polish(widget)
-        widget.update()
-
     def server_info_success(self, version: GotifyVersionModel):
         self.pb_test.setEnabled(True)
         self.label_server_info.setText(f"Version: {version.version}")
-        self.update_widget_state(self.pb_test, "success")
-        self.update_widget_state(self.line_token, "success")
-        self.update_widget_state(self.line_url, "success")
+        update_widget_property(self.pb_test, "state", "success")
+        update_widget_property(self.line_token, "state", "success")
+        update_widget_property(self.line_url, "state", "success")
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setEnabled(True)
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setFocus()
 
     def incorrect_token_callback(self, version: GotifyVersionModel):
         self.pb_test.setEnabled(True)
         self.label_server_info.setText(f"Version: {version.version}")
-        self.update_widget_state(self.pb_test, "failed")
-        self.update_widget_state(self.line_token, "failed")
-        self.update_widget_state(self.line_url, "success")
+        update_widget_property(self.pb_test, "state", "failed")
+        update_widget_property(self.line_token, "state", "failed")
+        update_widget_property(self.line_url, "state", "success")
         self.line_token.setFocus()
 
     def incorrect_url_callback(self):
         self.pb_test.setEnabled(True)
         self.label_server_info.clear()
-        self.update_widget_state(self.pb_test, "failed")
-        self.update_widget_state(self.line_token, "success")
-        self.update_widget_state(self.line_url, "failed")
+        update_widget_property(self.pb_test, "state", "failed")
+        update_widget_property(self.line_token, "state", "success")
+        update_widget_property(self.line_url, "state", "failed")
         self.line_url.setFocus()
 
     def input_changed_callback(self):
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(True)
-        self.update_widget_state(self.pb_test, "")
+        update_widget_property(self.pb_test, "state", "")
 
     def import_success_callback(self):
         self.line_url.setText(settings.value("Server/url", type=str))

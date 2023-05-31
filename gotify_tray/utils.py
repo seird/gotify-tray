@@ -5,6 +5,7 @@ import subprocess
 
 from pathlib import Path
 from typing import Iterator
+from PyQt6 import QtWidgets
 
 from gotify_tray import gotify
 from gotify_tray.database import Downloader
@@ -95,3 +96,9 @@ def get_icon(name: str) -> str:
         name += "-macos"
 
     return get_abs_path(f"gotify_tray/gui/images/{name}.png")
+
+def update_widget_property(widget: QtWidgets.QWidget, property: str, value: str):
+    widget.setProperty(property, value)
+    widget.style().unpolish(widget)
+    widget.style().polish(widget)
+    widget.update()

@@ -6,7 +6,7 @@ from ..models.MessagesModel import MessageItemDataRole, MessagesModelItem
 from ..designs.widget_message import Ui_Form
 from gotify_tray.database import Downloader
 from gotify_tray.database import Settings
-from gotify_tray.utils import convert_links, get_image
+from gotify_tray.utils import convert_links, get_image, update_widget_property
 from gotify_tray.gui.themes import get_theme_file
 from gotify_tray.gotify.models import GotifyMessageModel
 
@@ -126,9 +126,9 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
             return
 
         if priority >= 4 and priority <= 7:
-                self.label_priority.setStyleSheet("background-color: rgba(230, 126, 34, 0.7);")
+            update_widget_property(self.label_priority, "priority", "medium")
         elif priority > 7:
-            self.label_priority.setStyleSheet("background-color: #e74c3c;")
+            update_widget_property(self.label_priority, "priority", "high")
 
     def link_hovered_callback(self, link: str):
         if not settings.value("ImagePopup/enabled", type=bool):

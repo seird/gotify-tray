@@ -5,3 +5,11 @@ MessageWidget QPushButton[objectName^="pb_delete"] {
 MessageWidget QLabel[objectName^="label_date"] {
     margin-right: 1px;
 }
+
+MessageWidget QLabel[priority="medium"] {
+    background-color: #b3e67e22;
+}
+
+MessageWidget QLabel[priority="high"] {
+    background-color: #e74c3c;
+}

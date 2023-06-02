@@ -232,19 +232,19 @@ class MainApplication(QtWidgets.QApplication):
     def new_message_callback(self, message: gotify.GotifyMessageModel, process: bool = True):
         self.add_message_to_model(message, process=process)
 
-        # Change the tray icon to show there are unread notifications
-        if (
-            settings.value("tray/icon/unread", type=bool)
-            and not self.main_window.isActiveWindow()
-        ):
-            self.tray.set_icon_unread()
-
         # Don't show a notification if it's low priority or the window is active
         if (
             message.priority < settings.value("tray/notifications/priority", type=int)
             or self.main_window.isActiveWindow()
         ):
             return
+
+        # Change the tray icon to show there are unread notifications
+        if (
+            settings.value("tray/icon/unread", type=bool)
+            and not self.main_window.isActiveWindow()
+        ):
+            self.tray.set_icon_unread()
 
         # Get the application icon
         if (

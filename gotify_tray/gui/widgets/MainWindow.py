@@ -114,7 +114,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 message_widget.deletion_requested.connect(self.delete_message.emit)
                 message_widget.image_popup.connect(self.image_popup.emit)
                 
-                self.listView_messages.setIndexWidget(self.messages_model.indexFromItem(message_item), message_widget)
+                self.listView_messages.setIndexWidget(index, message_widget)
 
     def currentApplicationIndex(self) -> QtCore.QModelIndex:
         return self.listView_applications.selectionModel().currentIndex()

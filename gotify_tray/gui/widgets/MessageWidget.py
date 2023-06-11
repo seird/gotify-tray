@@ -25,7 +25,6 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         icon: QtGui.QIcon | None = None,
     ):
         super(MessageWidget, self).__init__(parent)
-        self._parent = parent
         self.setupUi(self)
         self.setAutoFillBackground(True)
         self.message_item = message_item
@@ -108,8 +107,8 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         # Make sure the image fits within the listView
         W = settings.value("MessageWidget/content_image/W_percentage", type=float)
         H = settings.value("MessageWidget/content_image/H_percentage", type=float)
-        W *= self._parent.width() - self.label_image.width()
-        H *= self._parent.height()
+        W *= self.parent().width() - self.label_image.width()
+        H *= self.parent().height()
 
         if pixmap.width() > W or pixmap.height() > H:
             pixmap = pixmap.scaled(

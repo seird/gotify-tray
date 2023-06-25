@@ -1,4 +1,5 @@
 import getpass
+import locale
 import logging
 import os
 import platform
@@ -404,6 +405,8 @@ def start_gui():
     app.set_theme()
 
     init_logger(logger)
+
+    locale.setlocale(locale.LC_TIME, "")
 
     # prevent multiple instances
     if (app.acquire_lock() or "--no-lock" in sys.argv) and verify_server():

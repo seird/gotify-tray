@@ -9,7 +9,6 @@ from PyQt6 import QtCore
 from PyQt6.QtCore import pyqtSignal
 
 from gotify_tray.database import Cache, Settings
-from gotify_tray.gotify.api import GotifyClient
 from gotify_tray.gotify.models import GotifyVersionModel
 from gotify_tray.utils import process_messages
 
@@ -50,7 +49,8 @@ class BaseTask(QtCore.QThread):
 
 
 class DeleteMessageTask(BaseTask):
-    deleted = pyqtSignal(bool)
+    success = pyqtSignal()
+    error = pyqtSignal(gotify.GotifyErrorModel)
 
     def __init__(self, message_id: int, gotify_client: gotify.GotifyClient):
         super(DeleteMessageTask, self).__init__()
@@ -58,12 +58,16 @@ class DeleteMessageTask(BaseTask):
         self.gotify_client = gotify_client
 
     def task(self):
-        success = self.gotify_client.delete_message(self.message_id)
-        self.deleted.emit(success)
+        result = self.gotify_client.delete_message(self.message_id)
+        if isinstance(result, gotify.GotifyErrorModel):
+            self.error.emit(result)
+        else:
+            self.success.emit()
 
 
 class DeleteApplicationMessagesTask(BaseTask):
-    deleted = pyqtSignal(bool)
+    success = pyqtSignal()
+    error = pyqtSignal(gotify.GotifyErrorModel)
 
     def __init__(self, appid: int, gotify_client: gotify.GotifyClient):
         super(DeleteApplicationMessagesTask, self).__init__()
@@ -71,20 +75,27 @@ class DeleteApplicationMessagesTask(BaseTask):
         self.gotify_client = gotify_client
 
     def task(self):
-        success = self.gotify_client.delete_application_messages(self.appid)
-        self.deleted.emit(success)
+        result = self.gotify_client.delete_application_messages(self.appid)
+        if isinstance(result, gotify.GotifyErrorModel):
+            self.error.emit(result)
+        else:
+            self.success.emit()
 
 
 class DeleteAllMessagesTask(BaseTask):
-    deleted = pyqtSignal(bool)
+    success = pyqtSignal()
+    error = pyqtSignal(gotify.GotifyErrorModel)
 
     def __init__(self, gotify_client: gotify.GotifyClient):
         super(DeleteAllMessagesTask, self).__init__()
         self.gotify_client = gotify_client
 
     def task(self):
-        success = self.gotify_client.delete_messages()
-        self.deleted.emit(success)
+        result = self.gotify_client.delete_messages()
+        if isinstance(result, gotify.GotifyErrorModel):
+            self.error.emit(result)
+        else:
+            self.success.emit()
 
 
 class GetApplicationsTask(BaseTask):
@@ -197,7 +208,7 @@ class VerifyServerInfoTask(BaseTask):
 class ServerConnectionWatchdogTask(BaseTask):
     closed = pyqtSignal()
 
-    def __init__(self, gotify_client: GotifyClient):
+    def __init__(self, gotify_client: gotify.GotifyClient):
         super(ServerConnectionWatchdogTask, self).__init__()
         self.gotify_client = gotify_client
 

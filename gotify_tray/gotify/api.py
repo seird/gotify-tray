@@ -110,8 +110,9 @@ class GotifyClient(GotifySession):
             else GotifyErrorModel(response)
         )
 
-    def delete_application(self, application_id: int) -> bool:
-        return self._delete(f"/application/{application_id}").ok
+    def delete_application(self, application_id: int) -> None | GotifyErrorModel:
+        response = self._delete(f"/application/{application_id}")
+        return None if response.ok else GotifyErrorModel(response)
 
     def upload_application_image(
         self, application_id: int, img_path: str
@@ -132,6 +133,10 @@ class GotifyClient(GotifySession):
             )
             return None
 
+    def delete_application_image(self, application_id: int) -> None | GotifyErrorModel:
+        response = self._delete(f"/application/{application_id}/image")
+        return None if response.ok else GotifyErrorModel(response)
+
     """
     Message
     """
@@ -151,8 +156,9 @@ class GotifyClient(GotifySession):
             paging=GotifyPagingModel(j["paging"]),
         )
 
-    def delete_application_messages(self, application_id: int) -> bool:
-        return self._delete(f"/application/{application_id}/message").ok
+    def delete_application_messages(self, application_id: int) -> None | GotifyErrorModel:
+        response = self._delete(f"/application/{application_id}/message")
+        return None if response.ok else GotifyErrorModel(response)
 
     def get_messages(
         self, limit: int = 100, since: int | None = None
@@ -166,11 +172,13 @@ class GotifyClient(GotifySession):
             paging=GotifyPagingModel(j["paging"]),
         )
 
-    def delete_messages(self) -> bool:
-        return self._delete("/message").ok
+    def delete_messages(self) -> None | GotifyErrorModel:
+        response = self._delete("/message")
+        return None if response.ok else GotifyErrorModel(response)
 
-    def delete_message(self, message_id: int) -> bool:
-        return self._delete(f"/message/{message_id}").ok
+    def delete_message(self, message_id: int) -> None | GotifyErrorModel:
+        response = self._delete(f"/message/{message_id}")
+        return None if response.ok else GotifyErrorModel(response)
 
     def listen(
         self,

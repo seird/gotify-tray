@@ -82,6 +82,8 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.spin_popup_h.setValue(settings.value("ImagePopup/h", type=int))
         self.label_cache.setText("0 MB")
         self.compute_cache_size()
+        self.groupbox_watchdog.setChecked(settings.value("watchdog/enabled", type=bool))
+        self.spin_watchdog_interval.setValue(settings.value("watchdog/interval/s", type=int))
 
     def add_message_widget(self):
         self.message_widget = MessageWidget(
@@ -215,6 +217,8 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.spin_popup_h.valueChanged.connect(self.settings_changed_callback)
         self.pb_clear_cache.clicked.connect(self.clear_cache_callback)
         self.pb_open_cache_dir.clicked.connect(lambda: open_file(Cache().directory()))
+        self.groupbox_watchdog.toggled.connect(self.settings_changed_callback)
+        self.spin_watchdog_interval.valueChanged.connect(self.settings_changed_callback)
 
     def apply_settings(self):
         # Priority
@@ -246,6 +250,8 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         settings.setValue("ImagePopup/enabled", self.groupbox_image_popup.isChecked())
         settings.setValue("ImagePopup/w", self.spin_popup_w.value())
         settings.setValue("ImagePopup/h", self.spin_popup_h.value())
+        settings.setValue("watchdog/enabled", self.groupbox_watchdog.isChecked())
+        settings.setValue("watchdog/interval/s", self.spin_watchdog_interval.value())
 
         self.settings_changed = False
         self.buttonBox.button(

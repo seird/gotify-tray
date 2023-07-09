@@ -94,7 +94,8 @@ class MainApplication(QtWidgets.QApplication):
         self.link_callbacks()
         self.init_shortcuts()
 
-        self.watchdog.start()
+        if settings.value("watchdog/enabled", type=bool):
+            self.watchdog.start()
 
     def set_theme(self):
         set_theme(self)

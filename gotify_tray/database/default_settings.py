@@ -17,6 +17,7 @@ DEFAULT_SETTINGS = {
     "tray/notifications/icon/show": True,
     "tray/notifications/click": True,
     "tray/icon/unread": False,
+    "watchdog/enabled": True,
     "watchdog/interval/s": 60,
     "MessageWidget/height/min": 100,
     "MessageWidget/image/size": 33,

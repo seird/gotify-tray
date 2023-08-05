@@ -81,17 +81,12 @@ class MainApplication(QtWidgets.QApplication):
 
         self.first_connect = True
 
-        self.gotify_client.listen(
-            opened_callback=self.listener_opened_callback,
-            closed_callback=self.listener_closed_callback,
-            new_message_callback=self.new_message_callback,
-            error_callback=self.listener_error_callback,
-        )
-
         self.watchdog = ServerConnectionWatchdogTask(self.gotify_client)
 
         self.link_callbacks()
         self.init_shortcuts()
+
+        self.gotify_client.listen()
 
         if settings.value("watchdog/enabled", type=bool):
             self.watchdog.start()
@@ -151,22 +146,17 @@ class MainApplication(QtWidgets.QApplication):
         self.get_missed_messages_task.success.connect(get_missed_messages_callback)
         self.get_missed_messages_task.start()
 
-    def listener_closed_callback(self, close_status_code: int, close_msg: str):
+    def listener_closed_callback(self):
         self.main_window.set_connecting()
         self.tray.set_icon_error()
-        self.gotify_client.increase_wait_time()
-        QtCore.QTimer.singleShot(self.gotify_client.get_wait_time() * 1000, self.gotify_client.reconnect)
-
-    def listener_error_callback(self, exception: Exception):
-        self.main_window.set_connecting()
-        self.tray.set_icon_error()
+        self.gotify_client.reconnect()
 
     def reconnect_callback(self):
+        self.gotify_client.reset_wait_time()
         if not self.gotify_client.is_listening():
-            self.gotify_client.listener.reset_wait_time()
             self.gotify_client.reconnect()
         else:
-            self.gotify_client.stop(reset_wait=True)
+            self.gotify_client.stop()
 
     def abort_get_messages_task(self):
         """
@@ -322,18 +312,12 @@ class MainApplication(QtWidgets.QApplication):
             settings_dialog.apply_settings()
 
         if settings_dialog.server_changed:
-            # Restart the listener
-            self.gotify_client.stop_final()
+            # Update the server parameters and trigger a listener restart
             self.gotify_client.update_auth(
                 settings.value("Server/url", type=str),
                 settings.value("Server/client_token", type=str),
             )
-            self.gotify_client.listen(
-                new_message_callback=self.new_message_callback,
-                opened_callback=self.listener_opened_callback,
-                closed_callback=self.listener_closed_callback,
-                error_callback=self.listener_error_callback,
-            )
+            self.gotify_client.stop()
 
     def tray_notification_clicked_callback(self):
         if settings.value("tray/notifications/click", type=bool):
@@ -368,7 +352,11 @@ class MainApplication(QtWidgets.QApplication):
 
         self.messages_model.rowsInserted.connect(self.main_window.display_message_widgets)
 
-        self.watchdog.closed.connect(lambda: self.listener_closed_callback(0, 0))
+        self.gotify_client.opened.connect(self.listener_opened_callback)
+        self.gotify_client.closed.connect(self.listener_closed_callback)
+        self.gotify_client.new_message.connect(self.new_message_callback)
+
+        self.watchdog.closed.connect(self.listener_closed_callback)
 
     def init_shortcuts(self):
         self.shortcut_quit = QtGui.QShortcut(
@@ -384,14 +372,16 @@ class MainApplication(QtWidgets.QApplication):
         self.lock_file.setStaleLockTime(0)
         return self.lock_file.tryLock()
 
-    def quit(self) -> None:
+    def quit(self):
+        logger.debug("Quit requested.")
+
         self.main_window.store_state()
 
         self.tray.hide()
 
         self.lock_file.unlock()
 
-        self.gotify_client.stop_final()
+        self.gotify_client.quit()
         super(MainApplication, self).quit()
         sys.exit(0)
 

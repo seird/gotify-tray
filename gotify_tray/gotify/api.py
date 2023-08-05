@@ -1,7 +1,8 @@
 import logging
-from typing import Callable
 
 import requests
+
+from PyQt6 import QtCore
 
 from .listener import Listener
 from .models import (
@@ -17,8 +18,9 @@ from .models import (
 logger = logging.getLogger("gotify-tray")
 
 
-class GotifySession(object):
+class GotifySession(QtCore.QObject):
     def __init__(self, url: str, token: str):
+        super(GotifySession, self).__init__()
         self.session = requests.Session()
         self.update_auth(url.rstrip("/"), token)
 
@@ -46,9 +48,6 @@ class GotifySession(object):
 
 
 class GotifyApplication(GotifySession):
-    def __init__(self, url: str, application_token: str):
-        super(GotifyApplication, self).__init__(url, application_token)
-
     def push(
         self, title: str = "", message: str = "", priority: int = 0, extras: dict | None = None
     ) -> GotifyMessageModel | GotifyErrorModel:
@@ -72,6 +71,23 @@ class GotifyApplication(GotifySession):
 
 
 class GotifyClient(GotifySession):
+    new_message = QtCore.pyqtSignal(GotifyMessageModel)
+    opened = QtCore.pyqtSignal()
+    closed = QtCore.pyqtSignal()
+
+    def __init__(self, url: str, client_token: str):
+        self.listener = Listener(url, client_token)
+
+        super(GotifyClient, self).__init__(url, client_token)
+
+        self.listener.opened.connect(self.opened.emit)
+        self.listener.closed.connect(self.closed.emit)
+        self.listener.new_message.connect(self.new_message.emit)
+
+    def update_auth(self, url: str | None = None, token: str | None = None):
+        super().update_auth(url, token)
+        self.listener.update_auth(url, token)
+
 
     """
     Application
@@ -180,48 +196,26 @@ class GotifyClient(GotifySession):
         response = self._delete(f"/message/{message_id}")
         return None if response.ok else GotifyErrorModel(response)
 
-    def listen(
-        self,
-        opened_callback: (Callable[[], None]) | None = None,
-        closed_callback: Callable[[int, str], None] | None = None,
-        new_message_callback: Callable[[GotifyMessageModel], None] | None = None,
-        error_callback: Callable[[Exception], None] | None = None,
-    ):
-        def dummy(*args):
-            ...
-
-        self.listener = Listener(self.url, self.token)
-        self.listener.opened.connect(lambda: self.opened_callback(opened_callback))
-        self.listener.closed.connect(closed_callback or dummy)
-        self.listener.new_message.connect(new_message_callback or dummy)
-        self.listener.error.connect(error_callback or dummy)
+    def listen(self):
         self.listener.start()
 
-    def opened_callback(self, user_callback: Callable[[], None] | None = None):
-        self.reset_wait_time()
-        if user_callback:
-            user_callback()
-
     def reconnect(self):
-        if not self.is_listening():
-            self.listener.start()
+        self.listener.reconnect()
 
-    def stop_final(self):
-        self.listener.stop_final()
+    def quit(self):
+        """Close the listener and disconnect from the closed signal so it doesn't get reopened
+        """
+        try:
+            self.listener.closed.disconnect()
+        except TypeError:
+            logger.error(f"listener.closed was already disconnected.")
+        self.listener.close()
 
-    def stop(self, reset_wait: bool = False):
-        if reset_wait:
-            self.reset_wait_time()
-        self.listener.stop()
+    def stop(self):
+        self.listener.close()
 
     def is_listening(self) -> bool:
-        return self.listener.running
-
-    def increase_wait_time(self):
-        self.listener.increase_wait_time()
-
-    def get_wait_time(self) -> int:
-        return self.listener.wait_time
+        return self.listener.is_connected()
 
     def reset_wait_time(self):
         self.listener.reset_wait_time()

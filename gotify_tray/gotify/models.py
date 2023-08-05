@@ -1,18 +1,11 @@
-import datetime
-from dateutil.parser import isoparse
 import logging
 
 import requests
 
+from PyQt6 import QtCore
+
 
 logger = logging.getLogger("gotify-tray")
-
-
-try:
-    local_timezone = datetime.datetime.utcnow().astimezone().tzinfo
-except Exception as e:
-    logger.error(f"gotify.models.local_timezone error: {e}")
-    local_timezone = None
 
 
 class AttributeDict(dict):
@@ -39,7 +32,7 @@ class GotifyPagingModel(AttributeDict):
 
 class GotifyMessageModel(AttributeDict):
     appid: int
-    date: datetime.datetime
+    date: QtCore.QDateTime
     extras: dict | None = None
     id: int
     message: str
@@ -48,7 +41,7 @@ class GotifyMessageModel(AttributeDict):
 
     def __init__(self, d: dict, *args, **kwargs):
         d.update(
-            {"date": isoparse(d["date"]).astimezone(local_timezone)}
+            {"date": QtCore.QDateTime.fromString(d["date"], format=QtCore.Qt.DateFormat.ISODate).toLocalTime()}
         )
         super(GotifyMessageModel, self).__init__(d, *args, **kwargs)
 

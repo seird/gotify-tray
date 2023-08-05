@@ -38,7 +38,12 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
 
         # Display message contents
         self.label_title.setText(message.title)
-        self.label_date.setText(message.date.strftime("%x, %X" if settings.value("locale", type=bool) else "%Y-%m-%d, %H:%M"))
+
+        if settings.value("locale", type=bool):
+            date_str = QtCore.QLocale.system().toString(message.date, QtCore.QLocale.FormatType.ShortFormat)
+        else:
+            date_str = message.date.toString("yyyy-MM-dd, hh:mm")
+        self.label_date.setText(date_str)
 
         if message.get("extras", {}).get("client::display", {}).get("contentType") == "text/markdown":
             self.label_message.setTextFormat(QtCore.Qt.TextFormat.MarkdownText)

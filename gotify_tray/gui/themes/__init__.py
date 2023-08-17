@@ -1,4 +1,4 @@
-from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtWidgets
 from gotify_tray.utils import get_abs_path
 
 
@@ -18,7 +18,7 @@ def set_theme(app: QtWidgets.QApplication):
     with open(get_abs_path(f"gotify_tray/gui/themes/{theme}/style.qss"), "r") as f:
         stylesheet += f.read()
 
-    app.setPalette(QtGui.QPalette())
+    app.setPalette(app.style().standardPalette())
     app.setStyleSheet(stylesheet)
 
 

@@ -13,6 +13,7 @@ from gotify_tray.tasks import (
     CacheSizeTask,
     ClearCacheTask,
 )
+from typing import Any
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from ..designs.widget_settings import Ui_Dialog
@@ -108,12 +109,24 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.cache_size_task.size.connect(lambda size: self.label_cache.setText(f"{round(size/1e6, 1)} MB"))
         self.cache_size_task.start()
 
+    def set_value(self, key: str, value: Any, widget: QtWidgets.QWidget):
+        """Set a Settings value, only if the widget's value_changed attribute has been set
+        """
+        if hasattr(widget, "value_changed"):
+            settings.setValue(key, value)
+
+    def connect_signal(self, signal: QtCore.pyqtBoundSignal, widget: QtWidgets.QWidget):
+        """Connect to a signal and set the value_changed attribute for a widget on trigger
+        """
+        signal.connect(lambda *args: self.settings_changed_callback(widget))
+
     def change_server_info_callback(self):
         self.server_changed = verify_server(force_new=True, enable_import=False)
 
-    def settings_changed_callback(self, *args, **kwargs):
+    def settings_changed_callback(self, widget: QtWidgets.QWidget):
         self.settings_changed = True
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Apply).setEnabled(True)
+        setattr(widget, "value_changed", True)
 
     def change_font_callback(self, name: str):
         label: QtWidgets.QLabel = getattr(self.message_widget, "label_" + name)
@@ -121,7 +134,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         font, accepted = QtWidgets.QFontDialog.getFont(label.font(), self, f"Select a {name} font")
 
         if accepted:
-            self.settings_changed_callback()
+            self.settings_changed_callback(label)
             label.setFont(font)
 
     def export_callback(self):
@@ -185,22 +198,22 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Apply).clicked.connect(self.apply_settings)
 
         # Notifications
-        self.spin_priority.valueChanged.connect(self.settings_changed_callback)
-        self.spin_duration.valueChanged.connect(self.settings_changed_callback)
-        self.cb_notify.stateChanged.connect(self.settings_changed_callback)
-        self.cb_notification_click.stateChanged.connect(self.settings_changed_callback)
-        self.cb_tray_icon_unread.stateChanged.connect(self.settings_changed_callback)
+        self.connect_signal(self.spin_priority.valueChanged, self.spin_priority)
+        self.connect_signal(self.spin_duration.valueChanged, self.spin_duration)
+        self.connect_signal(self.cb_notify.stateChanged, self.cb_notify)
+        self.connect_signal(self.cb_notification_click.stateChanged, self.cb_notification_click)
+        self.connect_signal(self.cb_tray_icon_unread.stateChanged, self.cb_tray_icon_unread)
 
         # Interface
-        self.cb_priority_colors.stateChanged.connect(self.settings_changed_callback)
-        self.cb_locale.stateChanged.connect(self.settings_changed_callback)
-        self.cb_sort_applications.stateChanged.connect(self.settings_changed_callback)
+        self.connect_signal(self.cb_priority_colors.stateChanged, self.cb_priority_colors)
+        self.connect_signal(self.cb_locale.stateChanged, self.cb_locale)
+        self.connect_signal(self.cb_sort_applications.stateChanged, self.cb_sort_applications)
 
         # Server info
         self.pb_change_server_info.clicked.connect(self.change_server_info_callback)
 
         # Logging
-        self.combo_logging.currentTextChanged.connect(self.settings_changed_callback)
+        self.connect_signal(self.combo_logging.currentTextChanged, self.combo_logging)
         self.pb_open_log.clicked.connect(lambda: open_file(logger.root.handlers[0].baseFilename))
 
         # Fonts
@@ -214,30 +227,30 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.pb_export.clicked.connect(self.export_callback)
         self.pb_import.clicked.connect(self.import_callback)
         self.pb_reset.clicked.connect(self.reset_callback)
-        self.groupbox_image_popup.toggled.connect(self.settings_changed_callback)
-        self.spin_popup_w.valueChanged.connect(self.settings_changed_callback)
-        self.spin_popup_h.valueChanged.connect(self.settings_changed_callback)
+        self.connect_signal(self.groupbox_image_popup.toggled, self.groupbox_image_popup)
+        self.connect_signal(self.spin_popup_w.valueChanged, self.spin_popup_w)
+        self.connect_signal(self.spin_popup_h.valueChanged, self.spin_popup_h)
         self.pb_clear_cache.clicked.connect(self.clear_cache_callback)
         self.pb_open_cache_dir.clicked.connect(lambda: open_file(Cache().directory()))
-        self.groupbox_watchdog.toggled.connect(self.settings_changed_callback)
-        self.spin_watchdog_interval.valueChanged.connect(self.settings_changed_callback)
+        self.connect_signal(self.groupbox_watchdog.toggled, self.groupbox_watchdog)
+        self.connect_signal(self.spin_watchdog_interval.valueChanged, self.spin_watchdog_interval)
 
     def apply_settings(self):
         # Priority
-        settings.setValue("tray/notifications/priority", self.spin_priority.value())
-        settings.setValue("tray/notifications/duration_ms", self.spin_duration.value())
-        settings.setValue("message/check_missed/notify", self.cb_notify.isChecked())
-        settings.setValue("tray/notifications/click", self.cb_notification_click.isChecked())
-        settings.setValue("tray/icon/unread", self.cb_tray_icon_unread.isChecked())
+        self.set_value("tray/notifications/priority", self.spin_priority.value(), self.spin_priority)
+        self.set_value("tray/notifications/duration_ms", self.spin_duration.value(), self.spin_duration)
+        self.set_value("message/check_missed/notify", self.cb_notify.isChecked(), self.cb_notify)
+        self.set_value("tray/notifications/click", self.cb_notification_click.isChecked(), self.cb_notification_click)
+        self.set_value("tray/icon/unread", self.cb_tray_icon_unread.isChecked(), self.cb_tray_icon_unread)
 
         # Interface
-        settings.setValue("MessageWidget/priority_color", self.cb_priority_colors.isChecked())
-        settings.setValue("locale", self.cb_locale.isChecked())
-        settings.setValue("ApplicationModel/sort", self.cb_sort_applications.isChecked())
+        self.set_value("MessageWidget/priority_color", self.cb_priority_colors.isChecked(), self.cb_priority_colors)
+        self.set_value("locale", self.cb_locale.isChecked(), self.cb_locale)
+        self.set_value("ApplicationModel/sort", self.cb_sort_applications.isChecked(), self.cb_sort_applications)
 
         # Logging
         selected_level = self.combo_logging.currentText()
-        settings.setValue("logging/level", selected_level)
+        self.set_value("logging/level", selected_level, self.combo_logging)
         if selected_level == "Disabled":
             logging.disable(logging.CRITICAL)
         else:
@@ -245,20 +258,18 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             logger.setLevel(selected_level)
 
         # Fonts
-        settings.setValue("MessageWidget/font/title", self.message_widget.label_title.font().toString())
-        settings.setValue("MessageWidget/font/date", self.message_widget.label_date.font().toString())
-        settings.setValue("MessageWidget/font/message", self.message_widget.label_message.font().toString())
+        self.set_value("MessageWidget/font/title", self.message_widget.label_title.font().toString(), self.message_widget.label_title)
+        self.set_value("MessageWidget/font/date", self.message_widget.label_date.font().toString(), self.message_widget.label_date)
+        self.set_value("MessageWidget/font/message", self.message_widget.label_message.font().toString(), self.message_widget.label_message)
 
         # Advanced
-        settings.setValue("ImagePopup/enabled", self.groupbox_image_popup.isChecked())
-        settings.setValue("ImagePopup/w", self.spin_popup_w.value())
-        settings.setValue("ImagePopup/h", self.spin_popup_h.value())
-        settings.setValue("watchdog/enabled", self.groupbox_watchdog.isChecked())
-        settings.setValue("watchdog/interval/s", self.spin_watchdog_interval.value())
+        self.set_value("ImagePopup/enabled", self.groupbox_image_popup.isChecked(), self.groupbox_image_popup)
+        self.set_value("ImagePopup/w", self.spin_popup_w.value(), self.spin_popup_w)
+        self.set_value("ImagePopup/h", self.spin_popup_h.value(), self.spin_popup_h)
+        self.set_value("watchdog/enabled", self.groupbox_watchdog.isChecked(), self.groupbox_watchdog)
+        self.set_value("watchdog/interval/s", self.spin_watchdog_interval.value(), self.spin_watchdog_interval)
 
         self.settings_changed = False
-        self.buttonBox.button(
-            QtWidgets.QDialogButtonBox.StandardButton.Apply
-        ).setEnabled(False)
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Apply).setEnabled(False)
 
         self.changes_applied = True

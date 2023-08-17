@@ -77,3 +77,22 @@ class ApplicationModel(QtGui.QStandardItemModel):
             if item.data(ApplicationItemDataRole.ApplicationRole).id == appid:
                 return item
         return None
+
+
+class ApplicationProxyModel(QtCore.QSortFilterProxyModel):
+    def __init__(self, application_model: ApplicationModel) -> None:
+        super(ApplicationProxyModel, self).__init__()
+        self.setSourceModel(application_model)
+        self.setSortCaseSensitivity(QtCore.Qt.CaseSensitivity.CaseInsensitive)
+        if settings.value("ApplicationModel/sort", type=bool):
+            self.sort(0, QtCore.Qt.SortOrder.AscendingOrder)
+
+    def lessThan(self, left: QtCore.QModelIndex, right: QtCore.QModelIndex) -> bool:
+        """Make sure ApplicationAllMessagesItem remains at the top of the model -- ApplicationAllMessagesItem doesn't have any ApplicationRole data
+        """
+        if not self.sourceModel().data(left, ApplicationItemDataRole.ApplicationRole):
+            return True
+        elif not self.sourceModel().data(right, ApplicationItemDataRole.ApplicationRole):
+            return False
+
+        return super().lessThan(left, right)

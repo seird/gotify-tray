@@ -29,6 +29,7 @@ from .models import (
     ApplicationItemDataRole,
     ApplicationModel,
     ApplicationModelItem,
+    ApplicationProxyModel,
     MessagesModel,
     MessagesModelItem,
     MessageItemDataRole,
@@ -69,8 +70,9 @@ class MainApplication(QtWidgets.QApplication):
 
         self.messages_model = MessagesModel()
         self.application_model = ApplicationModel()
+        self.application_proxy_model = ApplicationProxyModel(self.application_model)
 
-        self.main_window = MainWindow(self.application_model, self.messages_model)
+        self.main_window = MainWindow(self.application_model, self.application_proxy_model, self.messages_model)
         self.main_window.show()  # The initial .show() is necessary to get the correct sizes when adding MessageWigets
         QtCore.QTimer.singleShot(0, self.main_window.hide)
 
@@ -195,7 +197,7 @@ class MainApplication(QtWidgets.QApplication):
     def add_message_to_model(self, message: gotify.GotifyMessageModel, process: bool = True):
         if self.application_model.itemFromId(message.appid):
             application_index = self.main_window.currentApplicationIndex()
-            if selected_application_item := self.application_model.itemFromIndex(application_index):
+            if selected_application_item := self.application_model.itemFromIndex(self.application_proxy_model.mapToSource(application_index)):
 
                 def insert_message_helper():
                     if isinstance(selected_application_item, ApplicationModelItem):

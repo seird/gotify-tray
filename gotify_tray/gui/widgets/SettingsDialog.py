@@ -60,6 +60,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         # Interface
         self.cb_priority_colors.setChecked(settings.value("MessageWidget/priority_color", type=bool))
         self.cb_locale.setChecked(settings.value("locale", type=bool))
+        self.cb_sort_applications.setChecked(settings.value("ApplicationModel/sort", type=bool))
 
         # Logging
         self.combo_logging.addItems(
@@ -193,6 +194,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         # Interface
         self.cb_priority_colors.stateChanged.connect(self.settings_changed_callback)
         self.cb_locale.stateChanged.connect(self.settings_changed_callback)
+        self.cb_sort_applications.stateChanged.connect(self.settings_changed_callback)
 
         # Server info
         self.pb_change_server_info.clicked.connect(self.change_server_info_callback)
@@ -231,6 +233,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         # Interface
         settings.setValue("MessageWidget/priority_color", self.cb_priority_colors.isChecked())
         settings.setValue("locale", self.cb_locale.isChecked())
+        settings.setValue("ApplicationModel/sort", self.cb_sort_applications.isChecked())
 
         # Logging
         selected_level = self.combo_logging.currentText()

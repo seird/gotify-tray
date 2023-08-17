@@ -27,7 +27,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     hidden = QtCore.pyqtSignal()
     activated = QtCore.pyqtSignal()
 
-    def __init__(self, application_model: ApplicationModel, messages_model: MessagesModel):
+    def __init__(self, application_model: ApplicationModel, application_proxy_model: QtCore.QSortFilterProxyModel, messages_model: MessagesModel):
         super(MainWindow, self).__init__()
         self.setupUi(self)
 
@@ -36,9 +36,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setWindowTitle(__title__)
 
         self.application_model = application_model
+        self.application_proxy_model = application_proxy_model
         self.messages_model = messages_model
 
-        self.listView_applications.setModel(application_model)
+        self.listView_applications.setModel(application_proxy_model)
         self.listView_messages.setModel(messages_model)
 
         # Do not expand the applications listview when resizing
@@ -122,7 +123,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def application_selection_changed_callback(
         self, current: QtCore.QModelIndex, previous: QtCore.QModelIndex
     ):
-        if item := self.application_model.itemFromIndex(current):
+        if item := self.application_model.itemFromIndex(self.application_proxy_model.mapToSource(current)):
             self.label_application.setText(item.text())
             self.application_selection_changed.emit(item)
 
@@ -142,7 +143,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             return
 
         index = self.currentApplicationIndex()
-        if item := self.application_model.itemFromIndex(index):
+        if item := self.application_model.itemFromIndex(self.application_proxy_model.mapToSource(index)):
             self.delete_all.emit(item)
 
     def disable_applications(self):
@@ -151,7 +152,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def enable_applications(self):
         self.listView_applications.setEnabled(True)
-        self.listView_applications.setCurrentIndex(self.application_model.index(0, 0))
+        self.listView_applications.setCurrentIndex(self.application_proxy_model.index(0, 0))
 
     def disable_buttons(self):
         self.pb_delete_all.setDisabled(True)
@@ -176,9 +177,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pb_refresh.clicked.connect(self.refresh.emit)
         self.pb_delete_all.clicked.connect(self.delete_all_callback)
 
-        self.listView_applications.selectionModel().currentChanged.connect(
-            self.application_selection_changed_callback
-        )
+        self.listView_applications.selectionModel().currentChanged.connect(self.application_selection_changed_callback)
 
     def store_state(self):
         settings.setValue("MainWindow/geometry", self.saveGeometry())

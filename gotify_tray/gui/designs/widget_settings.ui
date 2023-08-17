@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>415</width>
-    <height>426</height>
+    <height>446</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -145,6 +145,13 @@
            <widget class="QCheckBox" name="cb_locale">
             <property name="text">
              <string>Display date in the system locale format</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cb_sort_applications">
+            <property name="text">
+             <string>Sort the application list alphabetically (requires restart)</string>
             </property>
            </widget>
           </item>

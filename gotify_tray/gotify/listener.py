@@ -70,4 +70,4 @@ class Listener(QtWebSockets.QWebSocket):
         self.new_message.emit(GotifyMessageModel(json.loads(message)))
 
     def _on_error(self):
-        logger.error(f"Listener socker error: {self.errorString()}")
+        logger.error(f"Listener socket error: {self.errorString()}")

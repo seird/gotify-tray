@@ -118,12 +118,12 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
     def connect_signal(self, signal: QtCore.pyqtBoundSignal, widget: QtWidgets.QWidget):
         """Connect to a signal and set the value_changed attribute for a widget on trigger
         """
-        signal.connect(lambda *args: self.settings_changed_callback(widget))
+        signal.connect(lambda *args: self.setting_changed_callback(widget))
 
     def change_server_info_callback(self):
         self.server_changed = verify_server(force_new=True, enable_import=False)
 
-    def settings_changed_callback(self, widget: QtWidgets.QWidget):
+    def setting_changed_callback(self, widget: QtWidgets.QWidget):
         self.settings_changed = True
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Apply).setEnabled(True)
         setattr(widget, "value_changed", True)
@@ -134,7 +134,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         font, accepted = QtWidgets.QFontDialog.getFont(label.font(), self, f"Select a {name} font")
 
         if accepted:
-            self.settings_changed_callback(label)
+            self.setting_changed_callback(label)
             label.setFont(font)
 
     def export_callback(self):

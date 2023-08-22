@@ -6,7 +6,7 @@ from ..models.MessagesModel import MessageItemDataRole, MessagesModelItem
 from ..designs.widget_message import Ui_Form
 from gotify_tray.database import Downloader
 from gotify_tray.database import Settings
-from gotify_tray.utils import convert_links, get_image, update_widget_property
+from gotify_tray.utils import convert_links, extract_image, update_widget_property
 from gotify_tray.gui.themes import get_theme_file
 from gotify_tray.gotify.models import GotifyMessageModel
 
@@ -50,7 +50,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
 
         # If the message is only an image URL, then instead of showing the message,
         # download the image and show it in the message label
-        if image_url := get_image(message.message):
+        if image_url := extract_image(message.message):
             downloader = Downloader()
             filename = downloader.get_filename(image_url)
             self.set_message_image(filename)

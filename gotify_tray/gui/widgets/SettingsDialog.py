@@ -2,11 +2,12 @@ import logging
 import platform
 import os
 
+from gotify_tray.__version__ import __version__
 from gotify_tray.database import Cache, Settings
 from gotify_tray.gotify import GotifyMessageModel
 from gotify_tray.gui.models import MessagesModelItem
 from . import MessageWidget
-from gotify_tray.utils import get_icon, verify_server, open_file
+from gotify_tray.utils import get_image, get_icon, verify_server, open_file
 from gotify_tray.tasks import (
     ExportSettingsTask,
     ImportSettingsTask,
@@ -86,6 +87,11 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.compute_cache_size()
         self.groupbox_watchdog.setChecked(settings.value("watchdog/enabled", type=bool))
         self.spin_watchdog_interval.setValue(settings.value("watchdog/interval/s", type=int))
+
+        self.label_app_version.setText(__version__)
+        self.label_qt_version.setText(QtCore.QT_VERSION_STR)
+        self.label_app_icon.setPixmap(QtGui.QIcon(get_image("logo.ico")).pixmap(22,22))
+        self.label_qt_icon.setPixmap(QtGui.QIcon(get_image("qt.png")).pixmap(22,22))
 
     def add_message_widget(self):
         self.message_widget = MessageWidget(

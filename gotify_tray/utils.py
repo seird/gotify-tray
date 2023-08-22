@@ -35,7 +35,7 @@ def verify_server(force_new: bool = False, enable_import: bool = True) -> bool:
 def process_messages(messages: list[gotify.GotifyMessageModel]) -> Iterator[gotify.GotifyMessageModel]:
     downloader = Downloader()
     for message in messages:
-        if image_url := get_image(message.message):
+        if image_url := extract_image(message.message):
             downloader.get_filename(image_url)
         yield message
 
@@ -57,7 +57,7 @@ def convert_links(text):
     return _link.sub(replace, text)
 
 
-def get_image(s: str) -> str | None:
+def extract_image(s: str) -> str | None:
     """If `s` contains only an image URL, this function returns that URL.
         This function also extracts a URL in the `![](<url>)` markdown image format.
     """
@@ -89,6 +89,10 @@ def open_file(filename: str):
         os.startfile(filename)
     elif platform.system() == "Darwin":
         subprocess.call(["open", filename])
+
+
+def get_image(name: str) -> str:
+    return get_abs_path(f"gotify_tray/gui/images/{name}")
 
 
 def get_icon(name: str) -> str:

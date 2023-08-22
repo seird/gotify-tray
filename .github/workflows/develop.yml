@@ -58,7 +58,7 @@ jobs:
         gem install fpm
         chmod +x build-linux.sh
         ./build-linux.sh deb
-        mv "dist/gotify-tray_${{github.ref_name}}_amd64.deb" "gotify-tray_${{github.ref_name}}_amd64_${{ matrix.tag }}.deb"
+        mv "dist/gotify-tray_$(cat version.txt)_amd64.deb" "gotify-tray_$(cat version.txt)_amd64_${{ matrix.tag }}.deb"
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:

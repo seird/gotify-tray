@@ -36,7 +36,6 @@ jobs:
         path: gotify-tray-installer-win.exe
 
   build-ubuntu:
-    if: ${{ github.actor != 'dependabot[bot]' }}
     strategy:
       matrix:
         tag: [jammy]
@@ -49,18 +48,24 @@ jobs:
           python-version: '3.10.8'
     - name: Upgrade pip and enable wheel support
       run: python -m pip install --upgrade pip setuptools wheel
+    - uses: ruby/setup-ruby@v1
+      with:
+       ruby-version: '3.0'
     - name: Build
       run: |
-        make build
-        cp dist/gotify-tray_amd64.deb gotify-tray_amd64_ubuntu_${{ matrix.tag }}.deb
+        pip install -r requirements.txt
+        pip install pyinstaller
+        gem install fpm
+        chmod +x build-linux.sh
+        ./build-linux.sh deb
+        mv "dist/gotify-tray_${{github.ref_name}}_amd64.deb" "gotify-tray_${{github.ref_name}}_amd64_${{ matrix.tag }}.deb"
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: gotify-tray_amd64_ubuntu_${{ matrix.tag }}.deb
-        path: gotify-tray_amd64_ubuntu_${{ matrix.tag }}.deb
+        path: "gotify-tray_*_amd64_${{ matrix.tag }}.deb"
+
 
   build-macos:
-    if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: macos-12
     steps:
     - uses: actions/checkout@v3

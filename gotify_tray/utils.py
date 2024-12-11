@@ -5,7 +5,7 @@ import subprocess
 
 from pathlib import Path
 from typing import Iterator
-from PyQt6 import QtWidgets
+from PyQt6 import QtGui, QtWidgets
 
 from gotify_tray import gotify
 from gotify_tray.database import Downloader
@@ -50,7 +50,7 @@ def convert_links(text):
         groups = match.groups()
         protocol = groups[0] or ""  # may be None
         www_lead = groups[1] or ""  # may be None
-        return '<a href="http://{1}{2}" rel="nofollow">{0}{1}{2}</a>{3}{4}'.format(
+        return '<a href="http://{1}{2}">{0}{1}{2}</a>{3}{4}'.format(
             protocol, www_lead, *groups[2:]
         )
 
@@ -106,3 +106,14 @@ def update_widget_property(widget: QtWidgets.QWidget, property: str, value: str)
     widget.style().unpolish(widget)
     widget.style().polish(widget)
     widget.update()
+
+def violates_width(text: str, font: QtGui.QFont, allowed_width: int) -> bool:
+    metrics = QtGui.QFontMetrics(font)
+    pattern = r"[ \n,/]" # Characters which will allow wrapping in QLabel
+    for word in re.split(pattern, text):
+        # Any word that will not auto-wrap
+        # https://doc.qt.io/qt-6/qfontmetrics.html#horizontalAdvance-1
+        if metrics.horizontalAdvance(word) > allowed_width:
+            return True
+    return False
+

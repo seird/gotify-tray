@@ -37,7 +37,9 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         self.set_priority_color(message.priority)
 
         # Display message contents
-        self.label_title.setText(message.title)
+
+        # Insert zero-width spaces into the title to avoid overflow when there are no spaces
+        self.label_title.setText("\u200B".join(message.title))
 
         if settings.value("locale", type=bool):
             date_str = QtCore.QLocale.system().toString(message.date, QtCore.QLocale.FormatType.ShortFormat)

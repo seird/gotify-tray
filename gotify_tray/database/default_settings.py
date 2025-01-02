@@ -33,4 +33,6 @@ DEFAULT_SETTINGS = {
     "ImagePopup/extensions": [".jpg", ".jpeg", ".png", ".svg"],
     "ImagePopup/w": 400,
     "ImagePopup/h": 400,
+    "tag_filter/enabled": False,
+    "tag_filter/tags": [],
 }

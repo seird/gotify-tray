@@ -196,6 +196,17 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             settings.clear()
             self.quit_requested.emit()
 
+    def add_tag_callback(self):
+        tag, ok = QtWidgets.QInputDialog.getText(self, "Add Tag", "Enter tag to filter:")
+        if ok and tag:
+            self.listWidget_tags.addItem(tag)
+            self.setting_changed_callback(self.listWidget_tags)
+
+    def remove_tag_callback(self):
+        if item := self.listWidget_tags.currentItem():
+            self.listWidget_tags.takeItem(self.listWidget_tags.row(item))
+            self.setting_changed_callback(self.listWidget_tags)
+
     def clear_cache_callback(self):
         self.clear_cache_task = ClearCacheTask()
         self.clear_cache_task.start()
@@ -242,6 +253,8 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.pb_open_cache_dir.clicked.connect(lambda: open_file(Cache().directory()))
         self.connect_signal(self.groupbox_watchdog.toggled, self.groupbox_watchdog)
         self.connect_signal(self.spin_watchdog_interval.valueChanged, self.spin_watchdog_interval)
+        self.pb_add_tag.clicked.connect(self.add_tag_callback)
+        self.pb_remove_tag.clicked.connect(self.remove_tag_callback)
 
     def apply_settings(self):
         # Priority
@@ -271,6 +284,11 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.set_value("MessageWidget/font/date", self.message_widget.label_date.font().toString(), self.message_widget.label_date)
         self.set_value("MessageWidget/font/message", self.message_widget.label_message.font().toString(), self.message_widget.label_message)
 
+        # Tag Filter
+        self.set_value("tag_filter/enabled", self.cb_tag_filter_enabled.isChecked(), self.cb_tag_filter_enabled)
+        tags = [self.listWidget_tags.item(i).text() for i in range(self.listWidget_tags.count())]
+        self.set_value("tag_filter/tags", tags, self.listWidget_tags)
+        
         # Advanced
         self.set_value("ImagePopup/enabled", self.groupbox_image_popup.isChecked(), self.groupbox_image_popup)
         self.set_value("ImagePopup/w", self.spin_popup_w.value(), self.spin_popup_w)

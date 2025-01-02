@@ -227,6 +227,25 @@ class Ui_Dialog(object):
         self.label_logging.setObjectName("label_logging")
         self.gridLayout_6.addWidget(self.label_logging, 0, 0, 1, 1)
         self.verticalLayout.addWidget(self.groupBox_logging)
+        self.groupBox_tag_filter = QtWidgets.QGroupBox(parent=self.tab_advanced)
+        self.groupBox_tag_filter.setObjectName("groupBox_tag_filter")
+        self.verticalLayout_advanced = QtWidgets.QVBoxLayout(self.groupBox_tag_filter)
+        self.verticalLayout_advanced.setObjectName("verticalLayout_advanced")
+        self.cb_tag_filter_enabled = QtWidgets.QCheckBox(parent=self.groupBox_tag_filter)
+        self.cb_tag_filter_enabled.setObjectName("cb_tag_filter_enabled")
+        self.verticalLayout_advanced.addWidget(self.cb_tag_filter_enabled)
+        self.horizontalLayout_tag_buttons = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_tag_buttons.setObjectName("horizontalLayout_tag_buttons")
+        self.pb_add_tag = QtWidgets.QPushButton(parent=self.groupBox_tag_filter)
+        self.pb_add_tag.setObjectName("pb_add_tag")
+        self.horizontalLayout_tag_buttons.addWidget(self.pb_add_tag)
+        self.pb_remove_tag = QtWidgets.QPushButton(parent=self.groupBox_tag_filter)
+        self.pb_remove_tag.setObjectName("pb_remove_tag")
+        self.horizontalLayout_tag_buttons.addWidget(self.pb_remove_tag)
+        self.verticalLayout_advanced.addLayout(self.horizontalLayout_tag_buttons)
+        self.listWidget_tags = QtWidgets.QListWidget(parent=self.groupBox_tag_filter)
+        self.verticalLayout_advanced.addWidget(self.listWidget_tags)
+        self.verticalLayout.addWidget(self.groupBox_tag_filter)
         spacerItem8 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout.addItem(spacerItem8)
         self.tabWidget.addTab(self.tab_advanced, "")
@@ -247,6 +266,9 @@ class Ui_Dialog(object):
         self.label_qt_version.setText("")
         self.label_qt_version.setObjectName("label_qt_version")
         self.gridLayout.addWidget(self.label_qt_version, 1, 3, 1, 1)
+
+        self.pb_add_tag.clicked.connect(self.add_tag)  # type: ignore
+        self.pb_remove_tag.clicked.connect(self.remove_tag)  # type: ignore
 
         self.retranslateUi(Dialog)
         self.tabWidget.setCurrentIndex(0)
@@ -306,6 +328,10 @@ class Ui_Dialog(object):
         self.pb_font_message_date.setText(_translate("Dialog", "日期"))
         self.pb_font_message_content.setText(_translate("Dialog", "消息内容"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_fonts), _translate("Dialog", "字体"))
+        self.groupBox_tag_filter.setTitle(_translate("Dialog", "标签过滤"))
+        self.cb_tag_filter_enabled.setText(_translate("Dialog", "启用标签过滤"))
+        self.pb_add_tag.setText(_translate("Dialog", "添加标签"))
+        self.pb_remove_tag.setText(_translate("Dialog", "移除标签"))
         self.groupBox.setTitle(_translate("Dialog", "设置"))
         self.pb_reset.setText(_translate("Dialog", "重置"))
         self.pb_import.setText(_translate("Dialog", "导入"))
@@ -329,6 +355,20 @@ class Ui_Dialog(object):
         self.pb_open_log.setText(_translate("Dialog", "..."))
         self.label_logging.setText(_translate("Dialog", "级别"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_advanced), _translate("Dialog", "高级"))
+
+    def add_tag(self):
+        # 添加标签的逻辑
+        tag, ok = QtWidgets.QInputDialog.getText(None, "添加标签", "输入标签名称:")
+        if ok and tag:
+            # 在这里添加标签的逻辑，例如将标签添加到某个列表中
+            print(f"标签 '{tag}' 已添加")
+
+    def remove_tag(self):
+        # 移除标签的逻辑
+        tag, ok = QtWidgets.QInputDialog.getText(None, "移除标签", "输入要移除的标签名称:")
+        if ok and tag:
+            # 在这里移除标签的逻辑，例如从某个列表中移除标签
+            print(f"标签 '{tag}' 已移除")
 
 
 if __name__ == "__main__":

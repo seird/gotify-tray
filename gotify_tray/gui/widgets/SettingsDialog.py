@@ -85,6 +85,11 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.spin_popup_w.setValue(settings.value("ImagePopup/w", type=int))
         self.spin_popup_h.setValue(settings.value("ImagePopup/h", type=int))
         self.label_cache.setText("0 MB")
+        
+        # Initialize tags
+        tags = settings.value("tag_filter/tags", [])
+        for tag in tags:
+            self.listWidget_tags.addItem(tag)
         self.compute_cache_size()
         self.groupbox_watchdog.setChecked(settings.value("watchdog/enabled", type=bool))
         self.spin_watchdog_interval.setValue(settings.value("watchdog/interval/s", type=int))
@@ -197,15 +202,10 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             self.quit_requested.emit()
 
     def add_tag_callback(self):
-        tag, ok = QtWidgets.QInputDialog.getText(self, "Add Tag", "Enter tag to filter:")
-        if ok and tag:
-            self.listWidget_tags.addItem(tag)
-            self.setting_changed_callback(self.listWidget_tags)
+        self.setting_changed_callback(self.listWidget_tags)
 
     def remove_tag_callback(self):
-        if item := self.listWidget_tags.currentItem():
-            self.listWidget_tags.takeItem(self.listWidget_tags.row(item))
-            self.setting_changed_callback(self.listWidget_tags)
+        self.setting_changed_callback(self.listWidget_tags)
 
     def clear_cache_callback(self):
         self.clear_cache_task = ClearCacheTask()
@@ -221,6 +221,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.connect_signal(self.cb_notify.stateChanged, self.cb_notify)
         self.connect_signal(self.cb_notification_click.stateChanged, self.cb_notification_click)
         self.connect_signal(self.cb_tray_icon_unread.stateChanged, self.cb_tray_icon_unread)
+        self.connect_signal(self.cb_tag_filter_enabled.stateChanged, self.cb_tag_filter_enabled)
 
         # Interface
         self.connect_signal(self.cb_priority_colors.stateChanged, self.cb_priority_colors)

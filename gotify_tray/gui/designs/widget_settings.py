@@ -357,18 +357,29 @@ class Ui_Dialog(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_advanced), _translate("Dialog", "高级"))
 
     def add_tag(self):
-        # 添加标签的逻辑
-        tag, ok = QtWidgets.QInputDialog.getText(None, "添加标签", "输入标签名称:")
+        tag, ok = QtWidgets.QInputDialog.getText(self.listWidget_tags, "添加标签", "输入标签名称:")
         if ok and tag:
-            # 在这里添加标签的逻辑，例如将标签添加到某个列表中
-            print(f"标签 '{tag}' 已添加")
+            # Check if tag already exists
+            existing_tags = [self.listWidget_tags.item(i).text() 
+                           for i in range(self.listWidget_tags.count())]
+            if tag not in existing_tags:
+                self.listWidget_tags.addItem(tag)
+            else:
+                QtWidgets.QMessageBox.warning(
+                    self.listWidget_tags,
+                    "标签已存在",
+                    f"标签 '{tag}' 已经存在"
+                )
 
     def remove_tag(self):
-        # 移除标签的逻辑
-        tag, ok = QtWidgets.QInputDialog.getText(None, "移除标签", "输入要移除的标签名称:")
-        if ok and tag:
-            # 在这里移除标签的逻辑，例如从某个列表中移除标签
-            print(f"标签 '{tag}' 已移除")
+        if item := self.listWidget_tags.currentItem():
+            self.listWidget_tags.takeItem(self.listWidget_tags.row(item))
+        else:
+            QtWidgets.QMessageBox.warning(
+                self.listWidget_tags,
+                "未选择标签",
+                "请先选择一个要移除的标签"
+            )
 
 
 if __name__ == "__main__":

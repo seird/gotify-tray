@@ -219,22 +219,7 @@ class MainApplication(QtWidgets.QApplication):
             logger.error(f"App id {message.appid} could not be found. Refreshing applications.")
             self.refresh_applications()
 
-    def should_filter_message(self, message: gotify.GotifyMessageModel) -> bool:
-        """Check if a message should be filtered based on its tags"""
-        if not settings.value("tag_filter/enabled", type=bool):
-            return False
-            
-        tags = message.extras.get("tags", []) if message.extras else []
-        filtered_tags = settings.value("tag_filter/tags", type=list)
-        
-        # Filter message if any of its tags are in the filtered tags list
-        return any(tag in filtered_tags for tag in tags)
-
     def new_message_callback(self, message: gotify.GotifyMessageModel, process: bool = True):
-        # Skip message if it matches filter criteria
-        if self.should_filter_message(message):
-            return
-            
         self.add_message_to_model(message, process=process)
 
         # Don't show a notification if it's low priority or the window is active

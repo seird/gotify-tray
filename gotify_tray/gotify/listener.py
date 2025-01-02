@@ -67,7 +67,32 @@ class Listener(QtWebSockets.QWebSocket):
         self.closed.emit()
 
     def _on_message(self, message: str):
-        self.new_message.emit(GotifyMessageModel(json.loads(message)))
+        msg = GotifyMessageModel(json.loads(message))
+        logger.debug(f"Full message: {msg}")
+        
+        # Get application filter settings
+        from gotify_tray.database import Settings
+        settings = Settings("gotify-tray")
+        enabled = settings.value("ids_filter/enabled", False, type=bool)
+        app_ids = settings.value("ids_filter/ids", [])
+        
+        logger.debug(f"Application filtering enabled: {enabled}")
+        logger.debug(f"Configured application IDs: {app_ids}")
+        
+        # Check if message should be filtered
+        if enabled and app_ids:
+            msg_app_id = msg.get("appid")
+            logger.debug(f"Message application ID: {msg_app_id}")
+            
+            # Convert configured app IDs to integers for comparison
+            app_ids_int = [int(app_id) for app_id in app_ids]
+            
+            if msg_app_id in app_ids_int:
+                logger.debug(f"Message from appid {msg_app_id} is in blacklist - filtering out")
+                return
+            logger.debug(f"Message from appid {msg_app_id} is not in blacklist - allowing through")
+                
+        self.new_message.emit(msg)
 
     def _on_error(self):
         logger.error(f"Listener socket error: {self.errorString()}")

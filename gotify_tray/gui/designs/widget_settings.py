@@ -227,25 +227,25 @@ class Ui_Dialog(object):
         self.label_logging.setObjectName("label_logging")
         self.gridLayout_6.addWidget(self.label_logging, 0, 0, 1, 1)
         self.verticalLayout.addWidget(self.groupBox_logging)
-        self.groupBox_tag_filter = QtWidgets.QGroupBox(parent=self.tab_advanced)
-        self.groupBox_tag_filter.setObjectName("groupBox_tag_filter")
-        self.verticalLayout_advanced = QtWidgets.QVBoxLayout(self.groupBox_tag_filter)
+        self.groupBox_id_filter = QtWidgets.QGroupBox(parent=self.tab_advanced)
+        self.groupBox_id_filter.setObjectName("groupBox_id_filter")
+        self.verticalLayout_advanced = QtWidgets.QVBoxLayout(self.groupBox_id_filter)
         self.verticalLayout_advanced.setObjectName("verticalLayout_advanced")
-        self.cb_tag_filter_enabled = QtWidgets.QCheckBox(parent=self.groupBox_tag_filter)
-        self.cb_tag_filter_enabled.setObjectName("cb_tag_filter_enabled")
-        self.verticalLayout_advanced.addWidget(self.cb_tag_filter_enabled)
-        self.horizontalLayout_tag_buttons = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_tag_buttons.setObjectName("horizontalLayout_tag_buttons")
-        self.pb_add_tag = QtWidgets.QPushButton(parent=self.groupBox_tag_filter)
-        self.pb_add_tag.setObjectName("pb_add_tag")
-        self.horizontalLayout_tag_buttons.addWidget(self.pb_add_tag)
-        self.pb_remove_tag = QtWidgets.QPushButton(parent=self.groupBox_tag_filter)
-        self.pb_remove_tag.setObjectName("pb_remove_tag")
-        self.horizontalLayout_tag_buttons.addWidget(self.pb_remove_tag)
-        self.verticalLayout_advanced.addLayout(self.horizontalLayout_tag_buttons)
-        self.listWidget_tags = QtWidgets.QListWidget(parent=self.groupBox_tag_filter)
-        self.verticalLayout_advanced.addWidget(self.listWidget_tags)
-        self.verticalLayout.addWidget(self.groupBox_tag_filter)
+        self.cb_id_filter_enabled = QtWidgets.QCheckBox(parent=self.groupBox_id_filter)
+        self.cb_id_filter_enabled.setObjectName("cb_id_filter_enabled")
+        self.verticalLayout_advanced.addWidget(self.cb_id_filter_enabled)
+        self.horizontalLayout_id_buttons = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_id_buttons.setObjectName("horizontalLayout_id_buttons")
+        self.pb_add_id = QtWidgets.QPushButton(parent=self.groupBox_id_filter)
+        self.pb_add_id.setObjectName("pb_add_id")
+        self.horizontalLayout_id_buttons.addWidget(self.pb_add_id)
+        self.pb_remove_id = QtWidgets.QPushButton(parent=self.groupBox_id_filter)
+        self.pb_remove_id.setObjectName("pb_remove_id")
+        self.horizontalLayout_id_buttons.addWidget(self.pb_remove_id)
+        self.verticalLayout_advanced.addLayout(self.horizontalLayout_id_buttons)
+        self.listWidget_ids = QtWidgets.QListWidget(parent=self.groupBox_id_filter)
+        self.verticalLayout_advanced.addWidget(self.listWidget_ids)
+        self.verticalLayout.addWidget(self.groupBox_id_filter)
         spacerItem8 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout.addItem(spacerItem8)
         self.tabWidget.addTab(self.tab_advanced, "")
@@ -267,8 +267,8 @@ class Ui_Dialog(object):
         self.label_qt_version.setObjectName("label_qt_version")
         self.gridLayout.addWidget(self.label_qt_version, 1, 3, 1, 1)
 
-        self.pb_add_tag.clicked.connect(self.add_tag)  # type: ignore
-        self.pb_remove_tag.clicked.connect(self.remove_tag)  # type: ignore
+        self.pb_add_id.clicked.connect(self.add_id)  # type: ignore
+        self.pb_remove_id.clicked.connect(self.remove_id)  # type: ignore
 
         self.retranslateUi(Dialog)
         self.tabWidget.setCurrentIndex(0)
@@ -328,10 +328,10 @@ class Ui_Dialog(object):
         self.pb_font_message_date.setText(_translate("Dialog", "日期"))
         self.pb_font_message_content.setText(_translate("Dialog", "消息内容"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_fonts), _translate("Dialog", "字体"))
-        self.groupBox_tag_filter.setTitle(_translate("Dialog", "标签过滤"))
-        self.cb_tag_filter_enabled.setText(_translate("Dialog", "启用标签过滤"))
-        self.pb_add_tag.setText(_translate("Dialog", "添加标签"))
-        self.pb_remove_tag.setText(_translate("Dialog", "移除标签"))
+        self.groupBox_id_filter.setTitle(_translate("Dialog", "应用id过滤"))
+        self.cb_id_filter_enabled.setText(_translate("Dialog", "启用应用id过滤"))
+        self.pb_add_id.setText(_translate("Dialog", "添加id"))
+        self.pb_remove_id.setText(_translate("Dialog", "移除id"))
         self.groupBox.setTitle(_translate("Dialog", "设置"))
         self.pb_reset.setText(_translate("Dialog", "重置"))
         self.pb_import.setText(_translate("Dialog", "导入"))
@@ -356,29 +356,29 @@ class Ui_Dialog(object):
         self.label_logging.setText(_translate("Dialog", "级别"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_advanced), _translate("Dialog", "高级"))
 
-    def add_tag(self):
-        tag, ok = QtWidgets.QInputDialog.getText(self.listWidget_tags, "添加标签", "输入标签名称:")
-        if ok and tag:
+    def add_id(self):
+        id, ok = QtWidgets.QInputDialog.getText(self.listWidget_ids, "添加应用id", "输入应用id:")
+        if ok and id:
             # Check if tag already exists
-            existing_tags = [self.listWidget_tags.item(i).text() 
-                           for i in range(self.listWidget_tags.count())]
-            if tag not in existing_tags:
-                self.listWidget_tags.addItem(tag)
+            existing_ids = [self.listWidget_ids.item(i).text() 
+                           for i in range(self.listWidget_ids.count())]
+            if id not in existing_ids:
+                self.listWidget_ids.addItem(id)
             else:
                 QtWidgets.QMessageBox.warning(
-                    self.listWidget_tags,
-                    "标签已存在",
-                    f"标签 '{tag}' 已经存在"
+                    self.listWidget_ids,
+                    "id已存在",
+                    f"id '{id}' 已经存在"
                 )
 
-    def remove_tag(self):
-        if item := self.listWidget_tags.currentItem():
-            self.listWidget_tags.takeItem(self.listWidget_tags.row(item))
+    def remove_id(self):
+        if item := self.listWidget_ids.currentItem():
+            self.listWidget_ids.takeItem(self.listWidget_ids.row(item))
         else:
             QtWidgets.QMessageBox.warning(
-                self.listWidget_tags,
-                "未选择标签",
-                "请先选择一个要移除的标签"
+                self.listWidget_ids,
+                "未选择应用id",
+                "请先选择一个要移除的id"
             )
 
 

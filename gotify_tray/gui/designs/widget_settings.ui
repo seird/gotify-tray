@@ -195,34 +195,34 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_tag_filter">
+        <widget class="QGroupBox" name="groupBox_id_filter">
          <property name="title">
-          <string>标签过滤</string>
+          <string>id过滤</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_tag_filter">
+         <layout class="QVBoxLayout" name="verticalLayout_id_filter">
           <item>
-           <widget class="QCheckBox" name="cb_tag_filter_enabled">
+           <widget class="QCheckBox" name="cb_id_filter_enabled">
             <property name="text">
-             <string>启用标签过滤</string>
+             <string>启用id过滤</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QListWidget" name="listWidget_tags"/>
+           <widget class="QListWidget" name="listWidget_ids"/>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_tag_buttons">
+           <layout class="QHBoxLayout" name="horizontalLayout_id_buttons">
             <item>
-             <widget class="QPushButton" name="pb_add_tag">
+             <widget class="QPushButton" name="pb_add_id">
               <property name="text">
-               <string>添加标签</string>
+               <string>添加id</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pb_remove_tag">
+             <widget class="QPushButton" name="pb_remove_id">
               <property name="text">
-               <string>移除标签</string>
+               <string>移除id</string>
               </property>
              </widget>
             </item>

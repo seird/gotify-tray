@@ -86,11 +86,13 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.spin_popup_h.setValue(settings.value("ImagePopup/h", type=int))
         self.label_cache.setText("0 MB")
         
-        # Initialize tags
-        tags = settings.value("tag_filter/tags", [])
-        for tag in tags:
-            self.listWidget_tags.addItem(tag)
-        self.cb_tag_filter_enabled.setChecked(settings.value("tag_filter/enabled", False, type=bool))
+        # Initialize application filter
+        app_ids = settings.value("ids_filter/ids", [], type=list)
+        if app_ids is None:
+            app_ids = []
+        for app_id in app_ids:
+            self.listWidget_ids.addItem(str(app_id))
+        self.cb_id_filter_enabled.setChecked(settings.value("ids_filter/enabled", False, type=bool))
         self.compute_cache_size()
         self.groupbox_watchdog.setChecked(settings.value("watchdog/enabled", type=bool))
         self.spin_watchdog_interval.setValue(settings.value("watchdog/interval/s", type=int))
@@ -202,11 +204,11 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
             settings.clear()
             self.quit_requested.emit()
 
-    def add_tag_callback(self):
-        self.setting_changed_callback(self.listWidget_tags)
+    def add_ids_callback(self):
+        self.setting_changed_callback(self.listWidget_ids)
 
-    def remove_tag_callback(self):
-        self.setting_changed_callback(self.listWidget_tags)
+    def remove_ids_callback(self):
+        self.setting_changed_callback(self.listWidget_ids)
 
     def clear_cache_callback(self):
         self.clear_cache_task = ClearCacheTask()
@@ -222,7 +224,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.connect_signal(self.cb_notify.stateChanged, self.cb_notify)
         self.connect_signal(self.cb_notification_click.stateChanged, self.cb_notification_click)
         self.connect_signal(self.cb_tray_icon_unread.stateChanged, self.cb_tray_icon_unread)
-        self.connect_signal(self.cb_tag_filter_enabled.stateChanged, self.cb_tag_filter_enabled)
+        self.connect_signal(self.cb_id_filter_enabled.stateChanged, self.cb_id_filter_enabled)
 
         # Interface
         self.connect_signal(self.cb_priority_colors.stateChanged, self.cb_priority_colors)
@@ -255,8 +257,8 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.pb_open_cache_dir.clicked.connect(lambda: open_file(Cache().directory()))
         self.connect_signal(self.groupbox_watchdog.toggled, self.groupbox_watchdog)
         self.connect_signal(self.spin_watchdog_interval.valueChanged, self.spin_watchdog_interval)
-        self.pb_add_tag.clicked.connect(self.add_tag_callback)
-        self.pb_remove_tag.clicked.connect(self.remove_tag_callback)
+        self.pb_add_id.clicked.connect(self.add_ids_callback)
+        self.pb_remove_id.clicked.connect(self.remove_ids_callback)
 
     def apply_settings(self):
         # Priority
@@ -286,10 +288,10 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.set_value("MessageWidget/font/date", self.message_widget.label_date.font().toString(), self.message_widget.label_date)
         self.set_value("MessageWidget/font/message", self.message_widget.label_message.font().toString(), self.message_widget.label_message)
 
-        # Tag Filter
-        self.set_value("tag_filter/enabled", self.cb_tag_filter_enabled.isChecked(), self.cb_tag_filter_enabled)
-        tags = [self.listWidget_tags.item(i).text() for i in range(self.listWidget_tags.count())]
-        self.set_value("tag_filter/tags", tags, self.listWidget_tags)
+        #id Filter
+        self.set_value("ids_filter/enabled", self.cb_id_filter_enabled.isChecked(), self.cb_id_filter_enabled)
+        ids = [self.listWidget_ids.item(i).text() for i in range(self.listWidget_ids.count())]
+        self.set_value("ids_filter/ids", ids, self.listWidget_ids)
         
         # Advanced
         self.set_value("ImagePopup/enabled", self.groupbox_image_popup.isChecked(), self.groupbox_image_popup)

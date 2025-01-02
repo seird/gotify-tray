@@ -13,9 +13,9 @@ class Tray(QtWidgets.QSystemTrayIcon):
         super(Tray, self).__init__()
 
         if not self.isSystemTrayAvailable():
-            logger.warning("System tray is not available.")
+            logger.warning("系统托盘不可用")
         if not self.supportsMessages():
-            logger.warning("System does not support notifications.")
+            logger.warning("系统不支持通知")
 
         self.set_icon_error()
         self.setToolTip(__title__)
@@ -23,22 +23,22 @@ class Tray(QtWidgets.QSystemTrayIcon):
         # Tray menu items
         menu = QtWidgets.QMenu()
 
-        self.actionShowWindow = QtGui.QAction("Show Window", self)
+        self.actionShowWindow = QtGui.QAction("显示窗口", self)
         menu.addAction(self.actionShowWindow)
 
         menu.addSeparator()
 
-        self.actionSettings = QtGui.QAction("Settings", self)
+        self.actionSettings = QtGui.QAction("设置", self)
         menu.addAction(self.actionSettings)
 
         menu.addSeparator()
 
-        self.actionReconnect = QtGui.QAction("Reconnect", self)
+        self.actionReconnect = QtGui.QAction("重新连接", self)
         menu.addAction(self.actionReconnect)
 
         menu.addSeparator()
 
-        self.actionQuit = QtGui.QAction("Quit", self)
+        self.actionQuit = QtGui.QAction("退出", self)
         menu.addAction(self.actionQuit)
 
         self.setContextMenu(menu)

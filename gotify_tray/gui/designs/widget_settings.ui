@@ -31,19 +31,19 @@
      </property>
      <widget class="QWidget" name="tab_general">
       <attribute name="title">
-       <string>General</string>
+       <string>通用</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
         <widget class="QGroupBox" name="groupBox_notifications">
          <property name="title">
-          <string>Notifications</string>
+          <string>通知</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
           <item row="1" column="0">
            <widget class="QLabel" name="label_notification_duration">
             <property name="text">
-             <string>Notification duration:</string>
+            <string>通知持续时间:</string>
             </property>
            </widget>
           </item>
@@ -63,7 +63,7 @@
           <item row="3" column="0" colspan="3">
            <widget class="QCheckBox" name="cb_notification_click">
             <property name="text">
-             <string>Clicking the notification pop-up opens the main window</string>
+            <string>点击通知弹出窗口打开主窗口</string>
             </property>
            </widget>
           </item>
@@ -90,7 +90,7 @@
           <item row="2" column="0" colspan="3">
            <widget class="QCheckBox" name="cb_notify">
             <property name="text">
-             <string>Show a notification for missed messages after reconnecting</string>
+            <string>重新连接后显示未读消息通知</string>
             </property>
            </widget>
           </item>
@@ -110,14 +110,14 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_notification_priority">
             <property name="text">
-             <string>Minimum priority to show notifications:</string>
+            <string>显示通知的最低优先级:</string>
             </property>
            </widget>
           </item>
           <item row="4" column="0" colspan="3">
            <widget class="QCheckBox" name="cb_tray_icon_unread">
             <property name="text">
-             <string>Change the tray icon color when there are unread notifications</string>
+            <string>当有未读通知时更改托盘图标颜色</string>
             </property>
            </widget>
           </item>
@@ -127,7 +127,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
-          <string>Interface</string>
+          <string>界面</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
@@ -137,28 +137,28 @@
 8..10 -&gt; high</string>
             </property>
             <property name="text">
-             <string>Show message priority colors</string>
+            <string>显示消息优先级颜色</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="cb_image_urls">
             <property name="text">
-             <string>Show image urls as images</string>
+            <string>将图片URL显示为图片</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="cb_locale">
             <property name="text">
-             <string>Display date in the system locale format</string>
+            <string>以系统区域设置格式显示日期</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="cb_sort_applications">
             <property name="text">
-             <string>Sort the application list alphabetically (requires restart)</string>
+            <string>按字母顺序排列应用程序列表（需要重启）</string>
             </property>
            </widget>
           </item>
@@ -168,13 +168,13 @@
        <item>
         <widget class="QGroupBox" name="groupBox_server_info">
          <property name="title">
-          <string>Server info</string>
+          <string>服务器信息</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="0">
            <widget class="QPushButton" name="pb_change_server_info">
             <property name="text">
-             <string>Change server info</string>
+            <string>更改服务器信息</string>
             </property>
            </widget>
           </item>
@@ -211,7 +211,7 @@
      </widget>
      <widget class="QWidget" name="tab_fonts">
       <attribute name="title">
-       <string>Fonts</string>
+       <string>字体</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
@@ -219,7 +219,7 @@
          <item>
           <widget class="QPushButton" name="pb_reset_fonts">
            <property name="text">
-            <string>Reset all fonts</string>
+           <string>重置所有字体</string>
            </property>
           </widget>
          </item>
@@ -228,7 +228,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_fonts_message">
          <property name="title">
-          <string>Message</string>
+         <string>消息</string>
          </property>
          <layout class="QVBoxLayout" name="layout_fonts_message">
           <property name="spacing">
@@ -251,21 +251,21 @@
             <item>
              <widget class="QPushButton" name="pb_font_message_title">
               <property name="text">
-               <string>Title</string>
+              <string>标题</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="pb_font_message_date">
               <property name="text">
-               <string>Date</string>
+              <string>日期</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="pb_font_message_content">
               <property name="text">
-               <string>Message</string>
+              <string>消息内容</string>
               </property>
              </widget>
             </item>
@@ -291,33 +291,33 @@
      </widget>
      <widget class="QWidget" name="tab_advanced">
       <attribute name="title">
-       <string>Advanced</string>
+       <string>高级</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
-          <string>Settings</string>
+          <string>设置</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <widget class="QPushButton" name="pb_reset">
             <property name="text">
-             <string>Reset</string>
+            <string>重置</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="pb_import">
             <property name="text">
-             <string>Import</string>
+            <string>导入</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="pb_export">
             <property name="text">
-             <string>Export</string>
+            <string>导出</string>
             </property>
            </widget>
           </item>
@@ -327,7 +327,7 @@
        <item>
         <widget class="QGroupBox" name="groupbox_image_popup">
          <property name="title">
-          <string>Image pop-up for URLs</string>
+          <string>URL图片弹出窗口</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -341,7 +341,7 @@
                <string>Maximum pop-up width</string>
               </property>
               <property name="text">
-               <string>Width</string>
+              <string>宽度</string>
               </property>
              </widget>
             </item>
@@ -367,7 +367,7 @@
                <string>Maximum pop-up height</string>
               </property>
               <property name="text">
-               <string>Height</string>
+              <string>高度</string>
               </property>
              </widget>
             </item>
@@ -408,7 +408,7 @@
        <item>
         <widget class="QGroupBox" name="groupbox_watchdog">
          <property name="title">
-          <string>Server watchdog thread (requires restart)</string>
+          <string>服务器监控线程（需要重启）</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -419,7 +419,7 @@
             <item>
              <widget class="QLabel" name="label_watchdog_interval">
               <property name="text">
-               <string>Interval:</string>
+            <string>间隔:</string>
               </property>
              </widget>
             </item>
@@ -461,20 +461,20 @@
        <item>
         <widget class="QGroupBox" name="groupBox_cache">
          <property name="title">
-          <string>Cache</string>
+          <string>缓存</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
            <widget class="QPushButton" name="pb_clear_cache">
             <property name="text">
-             <string>Clear</string>
+            <string>清除</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="pb_open_cache_dir">
             <property name="text">
-             <string>Open</string>
+            <string>打开</string>
             </property>
            </widget>
           </item>
@@ -504,7 +504,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_logging">
          <property name="title">
-          <string>Logging</string>
+          <string>日志</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_6">
           <item row="0" column="1">
@@ -542,7 +542,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_logging">
             <property name="text">
-             <string>Level</string>
+            <string>级别</string>
             </property>
            </widget>
           </item>

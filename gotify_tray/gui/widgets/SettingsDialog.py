@@ -90,6 +90,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         tags = settings.value("tag_filter/tags", [])
         for tag in tags:
             self.listWidget_tags.addItem(tag)
+        self.cb_tag_filter_enabled.setChecked(settings.value("tag_filter/enabled", False, type=bool))
         self.compute_cache_size()
         self.groupbox_watchdog.setChecked(settings.value("watchdog/enabled", type=bool))
         self.spin_watchdog_interval.setValue(settings.value("watchdog/interval/s", type=int))

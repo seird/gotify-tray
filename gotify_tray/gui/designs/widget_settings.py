@@ -51,7 +51,7 @@ class Ui_Dialog(object):
         self.cb_notify.setObjectName("cb_notify")
         self.gridLayout_4.addWidget(self.cb_notify, 2, 0, 1, 3)
         self.spin_priority = QtWidgets.QSpinBox(parent=self.groupBox_notifications)
-        self.spin_priority.setMinimum(1)
+        self.spin_priority.setMinimum(0)
         self.spin_priority.setMaximum(10)
         self.spin_priority.setProperty("value", 5)
         self.spin_priority.setObjectName("spin_priority")

@@ -69,6 +69,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.link_callbacks()
 
+        # set refresh shortcut (usually ctrl-r)
+        # unfortunately this cannot be done with designer
+        self.pb_refresh.setShortcut(QtGui.QKeySequence(QtGui.QKeySequence.StandardKey.Refresh))
+
     def set_icons(self):
         # Set button icons
         self.pb_refresh.setIcon(QtGui.QIcon(get_theme_file("refresh.svg")))

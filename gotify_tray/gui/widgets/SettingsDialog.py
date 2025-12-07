@@ -59,6 +59,9 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
 
         self.cb_tray_icon_unread.setChecked(settings.value("tray/icon/unread", type=bool))
 
+        self.groupBox_sound.setChecked(settings.value("sound/enabled", type=bool))
+        self.line_sound.setText(settings.value("sound/path"))
+
         # Interface
         self.cb_priority_colors.setChecked(settings.value("MessageWidget/priority_color", type=bool))
         self.cb_image_urls.setChecked(settings.value("MessageWidget/image_urls", type=bool))
@@ -201,6 +204,11 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.clear_cache_task.start()
         self.label_cache.setText("0 MB")
 
+    def select_sound_callback(self):
+        fname = QtWidgets.QFileDialog.getOpenFileName(self, "Open Image", os.path.expanduser("~"), "Audio Files (*.wav *.oga *.mp3)")[0]
+        if fname and os.path.exists(fname):
+            self.line_sound.setText(fname)
+        
     def link_callbacks(self):
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Apply).clicked.connect(self.apply_settings)
 
@@ -210,6 +218,9 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.connect_signal(self.cb_notify.stateChanged, self.cb_notify)
         self.connect_signal(self.cb_notification_click.stateChanged, self.cb_notification_click)
         self.connect_signal(self.cb_tray_icon_unread.stateChanged, self.cb_tray_icon_unread)
+        self.connect_signal(self.groupBox_sound.toggled, self.groupBox_sound)
+        self.connect_signal(self.line_sound.textChanged, self.line_sound)
+        self.pb_sound.clicked.connect(self.select_sound_callback)
 
         # Interface
         self.connect_signal(self.cb_priority_colors.stateChanged, self.cb_priority_colors)
@@ -250,6 +261,8 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.set_value("message/check_missed/notify", self.cb_notify.isChecked(), self.cb_notify)
         self.set_value("tray/notifications/click", self.cb_notification_click.isChecked(), self.cb_notification_click)
         self.set_value("tray/icon/unread", self.cb_tray_icon_unread.isChecked(), self.cb_tray_icon_unread)
+        self.set_value("sound/enabled", self.groupBox_sound.isChecked(), self.groupBox_sound)
+        self.set_value("sound/path", self.line_sound.text(), self.line_sound)
 
         # Interface
         self.set_value("MessageWidget/priority_color", self.cb_priority_colors.isChecked(), self.cb_priority_colors)

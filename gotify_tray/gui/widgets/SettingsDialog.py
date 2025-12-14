@@ -60,7 +60,9 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.cb_tray_icon_unread.setChecked(settings.value("tray/icon/unread", type=bool))
 
         self.groupBox_sound.setChecked(settings.value("sound/enabled", type=bool))
-        self.line_sound.setText(settings.value("sound/path"))
+        if sound_path := settings.value("sound/path"):
+            self.line_sound.setText(sound_path)
+        self.line_sound.setToolTip("Optionally, choose a custom sound file")
 
         # Interface
         self.cb_priority_colors.setChecked(settings.value("MessageWidget/priority_color", type=bool))
@@ -205,7 +207,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.label_cache.setText("0 MB")
 
     def select_sound_callback(self):
-        fname = QtWidgets.QFileDialog.getOpenFileName(self, "Open Image", os.path.expanduser("~"), "Audio Files (*.wav *.oga *.mp3)")[0]
+        fname = QtWidgets.QFileDialog.getOpenFileName(self, "Optionally, choose a custom sound file", os.path.expanduser("~"), "Audio Files (*.wav *.oga *.mp3 *.aac *.flac)")[0]
         if fname and os.path.exists(fname):
             self.line_sound.setText(fname)
         

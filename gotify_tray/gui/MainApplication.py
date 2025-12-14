@@ -6,6 +6,7 @@ import sys
 import tempfile
 
 from gotify_tray import gotify
+from gotify_tray import utils
 from gotify_tray.__version__ import __title__
 from gotify_tray.database import Downloader, Settings
 from gotify_tray.tasks import (
@@ -68,7 +69,8 @@ class MainApplication(QtWidgets.QApplication):
         self.audio = QtMultimedia.QMediaPlayer()
         self.audio_output = QtMultimedia.QAudioOutput()
         self.audio.setAudioOutput(self.audio_output)
-        self.audio.setSource(QtCore.QUrl.fromLocalFile(settings.value("sound/path")))
+        sound_path = settings.value("sound/path") or utils.get_abs_path("gotify_tray/gui/sounds/sound-theme-freedesktop/message.oga")
+        self.audio.setSource(QtCore.QUrl.fromLocalFile(sound_path))
 
         self.messages_model = MessagesModel()
         self.application_model = ApplicationModel()

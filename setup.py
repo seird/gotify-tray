@@ -67,6 +67,7 @@ setup(
         'gotify_tray.gui.themes': ['*.qss'],
         'gotify_tray.gui.themes.dark': ['*.qss', '*.svg', '*.png'],
         'gotify_tray.gui.themes.light': ['*.qss', '*.svg', '*.png'],
+        'gotify_tray.gui.sounds.sound-theme-freedesktop': ['*.oga', 'CREDITS'],
     },
     data_files = [
     ],

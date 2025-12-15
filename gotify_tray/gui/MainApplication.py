@@ -6,6 +6,7 @@ import sys
 import tempfile
 
 from gotify_tray import gotify
+from gotify_tray import utils
 from gotify_tray.__version__ import __title__
 from gotify_tray.database import Downloader, Settings
 from gotify_tray.tasks import (
@@ -21,7 +22,7 @@ from gotify_tray.tasks import (
 )
 from gotify_tray.gui.themes import set_theme
 from gotify_tray.utils import get_icon, verify_server
-from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets, QtMultimedia
 
 from ..__version__ import __title__
 from .models import (
@@ -64,6 +65,12 @@ class MainApplication(QtWidgets.QApplication):
         )
 
         self.downloader = Downloader()
+        
+        self.audio = QtMultimedia.QMediaPlayer()
+        self.audio_output = QtMultimedia.QAudioOutput()
+        self.audio.setAudioOutput(self.audio_output)
+        sound_path = settings.value("sound/path") or utils.get_abs_path("gotify_tray/gui/sounds/sound-theme-freedesktop/message.oga")
+        self.audio.setSource(QtCore.QUrl.fromLocalFile(sound_path))
 
         self.messages_model = MessagesModel()
         self.application_model = ApplicationModel()
@@ -245,6 +252,9 @@ class MainApplication(QtWidgets.QApplication):
         else:
             icon = QtWidgets.QSystemTrayIcon.MessageIcon.Information
 
+        if settings.value("sound/enabled"):
+            self.audio.play()
+            
         self.tray.showMessage(
             message.title,
             message.message,
@@ -309,6 +319,7 @@ class MainApplication(QtWidgets.QApplication):
 
         if accepted and settings_dialog.settings_changed:
             settings_dialog.apply_settings()
+            self.audio.setSource(QtCore.QUrl.fromLocalFile(settings.value("sound/path")))
 
         if settings_dialog.server_changed:
             # Update the server parameters and trigger a listener restart

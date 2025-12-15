@@ -315,6 +315,7 @@ class MainApplication(QtWidgets.QApplication):
     def settings_callback(self):
         settings_dialog = SettingsDialog()
         settings_dialog.quit_requested.connect(self.quit)
+        settings_dialog.style_changed.connect(self.set_theme)
         accepted = settings_dialog.exec()
 
         if accepted and settings_dialog.settings_changed:
@@ -402,7 +403,6 @@ def start_gui():
     app.setDesktopFileName("gotifytray.desktop")
     app.setQuitOnLastWindowClosed(False)
     app.setWindowIcon(QtGui.QIcon(get_icon("gotify-small")))
-    app.setStyle("fusion")
     app.set_theme()
 
     init_logger(logger)

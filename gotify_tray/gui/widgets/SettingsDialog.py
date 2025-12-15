@@ -26,6 +26,7 @@ settings = Settings("gotify-tray")
 
 class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
     quit_requested = QtCore.pyqtSignal()
+    style_changed = QtCore.pyqtSignal()
 
     def __init__(self):
         super(SettingsDialog, self).__init__()
@@ -65,6 +66,11 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.line_sound.setToolTip("Optionally, choose a custom sound file")
 
         # Interface
+        self.combo_style.addItem("Default")
+        self.combo_style.addItems(QtWidgets.QStyleFactory.keys())
+        style_override = settings.value("StyleOverride", type=str) or "Default"
+        self.combo_style.setCurrentText(style_override)
+        
         self.cb_priority_colors.setChecked(settings.value("MessageWidget/priority_color", type=bool))
         self.cb_image_urls.setChecked(settings.value("MessageWidget/image_urls", type=bool))
         self.cb_locale.setChecked(settings.value("locale", type=bool))
@@ -229,6 +235,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.connect_signal(self.cb_image_urls.stateChanged, self.cb_image_urls)
         self.connect_signal(self.cb_locale.stateChanged, self.cb_locale)
         self.connect_signal(self.cb_sort_applications.stateChanged, self.cb_sort_applications)
+        self.connect_signal(self.combo_style.currentTextChanged, self.combo_style)
 
         # Server info
         self.pb_change_server_info.clicked.connect(self.change_server_info_callback)
@@ -271,6 +278,10 @@ class SettingsDialog(QtWidgets.QDialog, Ui_Dialog):
         self.set_value("MessageWidget/image_urls", self.cb_image_urls.isChecked(), self.cb_image_urls)
         self.set_value("locale", self.cb_locale.isChecked(), self.cb_locale)
         self.set_value("ApplicationModel/sort", self.cb_sort_applications.isChecked(), self.cb_sort_applications)
+        selected_style = self.combo_style.currentText().replace("Default", "")
+        if selected_style != settings.value("StyleOverride", type=str):
+            self.set_value("StyleOverride", selected_style, self.combo_style)
+            self.style_changed.emit()
 
         # Logging
         selected_level = self.combo_logging.currentText()

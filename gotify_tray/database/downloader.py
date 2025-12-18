@@ -1,5 +1,5 @@
 import logging
-
+import os
 import requests
 
 from .cache import Cache
@@ -14,6 +14,9 @@ class Downloader(object):
     def __init__(self):
         self.cache = Cache()
         self.session = requests.Session()
+        certfile = settings.value("Server/certPath", type=str)
+        if os.path.exists(certfile):
+            self.session.verify = certfile
 
     def get(self, url: str) -> requests.Response:
         """

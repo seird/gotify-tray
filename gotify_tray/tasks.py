@@ -175,15 +175,15 @@ class VerifyServerInfoTask(BaseTask):
     incorrect_token = pyqtSignal()
     incorrect_url = pyqtSignal()
 
-    def __init__(self, url: str, client_token: str):
+    def __init__(self, url: str, client_token: str, certPath: str | None = None):
         super(VerifyServerInfoTask, self).__init__()
         self.url = url
         self.client_token = client_token
+        self.certPath = certPath
 
     def task(self):
         try:
-            gotify_client = gotify.GotifyClient(self.url, self.client_token)
-
+            gotify_client = gotify.GotifyClient(self.url, self.client_token, self.certPath)
             result = gotify_client.get_messages(limit=1)
 
             if isinstance(result, gotify.GotifyPagedMessagesModel):

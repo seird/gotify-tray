@@ -90,6 +90,7 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         else:
             self.label_status.hide()
             self.pb_certificate.hide()
+            self.certPath = ""
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(True)
         update_widget_property(self.pb_test, "state", "")
 

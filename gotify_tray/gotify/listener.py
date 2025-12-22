@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 
 from PyQt6 import QtCore
 from PyQt6 import QtNetwork, QtWebSockets
@@ -27,11 +28,18 @@ class Listener(QtWebSockets.QWebSocket):
 
         self.reset_wait_time()
 
-    def update_auth(self, url: str, client_token: str):
-        self.qurl = QtCore.QUrl(url.rstrip("/") + "/")
-        self.qurl.setScheme("wss" if self.qurl.scheme() == "https" else "ws")
-        self.qurl.setPath(self.qurl.path() + "stream")
-        self.qurl.setQuery(f"token={client_token}")
+    def update_auth(self, url: str | None = None, client_token: str | None = None, certPath: str | None = None):
+        if url:
+            self.qurl = QtCore.QUrl(url.rstrip("/") + "/")
+            self.qurl.setScheme("wss" if self.qurl.scheme() == "https" else "ws")
+            self.qurl.setPath(self.qurl.path() + "stream")
+        if client_token:
+            self.qurl.setQuery(f"token={client_token}")
+        if certPath and os.path.exists(certPath):
+            if certificate := QtNetwork.QSslCertificate.fromPath(certPath):
+                self.ignoreSslErrors([QtNetwork.QSslError(QtNetwork.QSslError.SslError.SelfSignedCertificate, certificate[0])])
+            else:
+                logger.error(f"{__class__}: tried to ignore ssl errors, but no valid certificate supplied")
 
     def start(self):
         logger.debug("Opening connection.")

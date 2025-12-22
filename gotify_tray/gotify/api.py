@@ -1,5 +1,5 @@
 import logging
-
+import os
 import requests
 
 from PyQt6 import QtCore
@@ -19,17 +19,20 @@ logger = logging.getLogger("gotify-tray")
 
 
 class GotifySession(QtCore.QObject):
-    def __init__(self, url: str, token: str):
+    def __init__(self, url: str, token: str, certPath: str | None = None):
         super(GotifySession, self).__init__()
         self.session = requests.Session()
-        self.update_auth(url.rstrip("/"), token)
+        self.update_auth(url.rstrip("/"), token, certPath)
 
-    def update_auth(self, url: str | None = None, token: str | None = None):
+    def update_auth(self, url: str | None = None, token: str | None = None, certPath: str | None = None):
         if url:
             self.url = url
         if token:
             self.token = token
             self.session.headers.update({"X-Gotify-Key": token})
+        
+        if certPath and os.path.exists(certPath):
+            self.session.verify = certPath
 
     def _get(self, endpoint: str = "/", **kwargs) -> requests.Response:
         return self.session.get(self.url + endpoint, **kwargs)
@@ -75,18 +78,18 @@ class GotifyClient(GotifySession):
     opened = QtCore.pyqtSignal()
     closed = QtCore.pyqtSignal()
 
-    def __init__(self, url: str, client_token: str):
+    def __init__(self, url: str, client_token: str, certPath: str | None = None):
         self.listener = Listener(url, client_token)
 
-        super(GotifyClient, self).__init__(url, client_token)
+        super(GotifyClient, self).__init__(url, client_token, certPath)
 
         self.listener.opened.connect(self.opened.emit)
         self.listener.closed.connect(self.closed.emit)
         self.listener.new_message.connect(self.new_message.emit)
 
-    def update_auth(self, url: str | None = None, token: str | None = None):
-        super().update_auth(url, token)
-        self.listener.update_auth(url, token)
+    def update_auth(self, url: str | None = None, token: str | None = None, certPath: str | None = None):
+        super().update_auth(url, token, certPath)
+        self.listener.update_auth(url, token, certPath)
 
 
     """

@@ -62,6 +62,7 @@ class MainApplication(QtWidgets.QApplication):
         self.gotify_client = gotify.GotifyClient(
             settings.value("Server/url", type=str),
             settings.value("Server/client_token", type=str),
+            settings.value("Server/certPath", type=str)
         )
 
         self.downloader = Downloader()
@@ -327,6 +328,7 @@ class MainApplication(QtWidgets.QApplication):
             self.gotify_client.update_auth(
                 settings.value("Server/url", type=str),
                 settings.value("Server/client_token", type=str),
+                settings.value("Server/certPath", type=str),
             )
             self.gotify_client.stop()
 

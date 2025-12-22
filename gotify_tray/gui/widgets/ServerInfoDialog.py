@@ -4,7 +4,7 @@ from gotify_tray.database import Settings
 from gotify_tray.gotify.models import GotifyVersionModel
 from gotify_tray.tasks import ImportSettingsTask, VerifyServerInfoTask
 from gotify_tray.utils import update_widget_property
-from PyQt6 import QtWidgets
+from PyQt6 import QtWidgets, QtNetwork
 
 from ..designs.widget_server import Ui_Dialog
 
@@ -18,16 +18,21 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         self.setupUi(self)
         self.setWindowTitle("Server info")
         self.line_url.setPlaceholderText("https://gotify.example.com")
-        self.line_url.setText(url)
         self.line_token.setText(token)
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(True)
         self.pb_import.setVisible(enable_import)
+        self.certPath = settings.value("Server/certPath", type=str)
+        self.pb_certificate.hide()
+        self.label_status.setText(f"Certificate path: {self.certPath}")
+        self.label_status.hide()
         self.link_callbacks()
+        self.line_url.setText(url)
 
     def test_server_info(self):
         update_widget_property(self.pb_test, "state", "")
         update_widget_property(self.line_url, "state", "")
         update_widget_property(self.line_token, "state", "")
+        update_widget_property(self.pb_certificate, "state", "")
         self.label_server_info.clear()
 
         url = self.line_url.text()
@@ -38,7 +43,7 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         self.pb_test.setDisabled(True)
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(True)
 
-        self.task = VerifyServerInfoTask(url, client_token)
+        self.task = VerifyServerInfoTask(url, client_token, self.certPath)
         self.task.success.connect(self.server_info_success)
         self.task.incorrect_token.connect(self.incorrect_token_callback)
         self.task.incorrect_url.connect(self.incorrect_url_callback)
@@ -49,6 +54,7 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         update_widget_property(self.pb_test, "state", "success")
         update_widget_property(self.line_token, "state", "success")
         update_widget_property(self.line_url, "state", "success")
+        update_widget_property(self.pb_certificate, "state", "")
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setEnabled(True)
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setFocus()
 
@@ -57,6 +63,7 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         update_widget_property(self.pb_test, "state", "failed")
         update_widget_property(self.line_token, "state", "failed")
         update_widget_property(self.line_url, "state", "success")
+        update_widget_property(self.pb_certificate, "state", "")
         self.line_token.setFocus()
 
     def incorrect_url_callback(self):
@@ -65,15 +72,33 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         update_widget_property(self.pb_test, "state", "failed")
         update_widget_property(self.line_token, "state", "success")
         update_widget_property(self.line_url, "state", "failed")
+        update_widget_property(self.pb_certificate, "state", "")
+        self.line_url.setFocus()
+
+    def incorrect_cert_callback(self):
+        self.pb_test.setEnabled(True)
+        self.label_server_info.clear()
+        update_widget_property(self.pb_test, "state", "failed")
+        update_widget_property(self.line_token, "state", "success")
+        update_widget_property(self.line_url, "state", "success")
+        update_widget_property(self.pb_certificate, "state", "failed")
         self.line_url.setFocus()
 
     def input_changed_callback(self):
+        if self.line_url.text().startswith("https"):
+            self.label_status.show()
+            self.pb_certificate.show()
+        else:
+            self.label_status.hide()
+            self.pb_certificate.hide()
+            self.certPath = ""
         self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.Ok).setDisabled(True)
         update_widget_property(self.pb_test, "state", "")
 
     def import_success_callback(self):
         self.line_url.setText(settings.value("Server/url", type=str))
         self.line_token.setText(settings.value("Server/client_token"))
+        self.certPath = settings.value("Server/certPath", type=str)
 
     def import_callback(self):
         fname = QtWidgets.QFileDialog.getOpenFileName(
@@ -84,8 +109,27 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
             self.import_settings_task.success.connect(self.import_success_callback)
             self.import_settings_task.start()
 
+    def certificate_callback(self):
+        fname = QtWidgets.QFileDialog.getOpenFileName(
+            self, "Import self-signed server certificate", os.path.expanduser("~"), "Certificates (*.pem *.crt);;*",
+        )[0]
+        if fname and os.path.exists(fname):
+            # Verify the certificate
+            if certificate := QtNetwork.QSslCertificate.fromPath(fname):
+                self.certPath = fname
+                self.label_status.setText(f"Certificate path: {self.certPath}")
+            else:
+                self.label_status.setText("The supplied certificate is invalid")
+                self.certPath = ""
+        else:
+            self.label_status.setText("No certificate selected")
+            self.certPath = ""
+            
+        self.input_changed_callback()
+        
     def link_callbacks(self):
         self.pb_test.clicked.connect(self.test_server_info)
         self.line_url.textChanged.connect(self.input_changed_callback)
         self.line_token.textChanged.connect(self.input_changed_callback)
         self.pb_import.clicked.connect(self.import_callback)
+        self.pb_certificate.clicked.connect(self.certificate_callback)

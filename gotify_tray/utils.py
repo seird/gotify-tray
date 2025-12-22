@@ -25,6 +25,7 @@ def verify_server(force_new: bool = False, enable_import: bool = True) -> bool:
         if dialog.exec():
             settings.setValue("Server/url", dialog.line_url.text())
             settings.setValue("Server/client_token", dialog.line_token.text())
+            settings.setValue("Server/certPath", dialog.certPath)
             return True
         else:
             return False

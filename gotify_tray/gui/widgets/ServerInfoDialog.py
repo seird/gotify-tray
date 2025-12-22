@@ -24,6 +24,7 @@ class ServerInfoDialog(QtWidgets.QDialog, Ui_Dialog):
         self.certPath = settings.value("Server/certPath", type=str)
         self.pb_certificate.hide()
         self.label_status.setText(f"Certificate path: {self.certPath}")
+        self.label_status.hide()
         self.link_callbacks()
         self.line_url.setText(url)
 

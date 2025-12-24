@@ -6,7 +6,7 @@ from ..models.MessagesModel import MessageItemDataRole, MessagesModelItem
 from ..designs.widget_message import Ui_Form
 from gotify_tray.database import Downloader
 from gotify_tray.database import Settings
-from gotify_tray.utils import convert_links, extract_image, update_widget_property
+from gotify_tray.utils import convert_links, extract_image, update_widget_property, violates_width
 from gotify_tray.gui.themes import get_theme_file
 from gotify_tray.gotify.models import GotifyMessageModel
 
@@ -37,7 +37,9 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
         self.set_priority_color(message.priority)
 
         # Display message contents
-        self.label_title.setText(message.title)
+
+        # Insert zero-width spaces into the title to avoid overflow when there are no spaces
+        self.label_title.setText("\u200B".join(message.title))
 
         if settings.value("locale", type=bool):
             date_str = QtCore.QLocale.system().toString(message.date, QtCore.QLocale.FormatType.ShortFormat)
@@ -45,7 +47,7 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
             date_str = message.date.toString("yyyy-MM-dd, hh:mm")
         self.label_date.setText(date_str)
 
-        if message.get("extras", {}).get("client::display", {}).get("contentType") == "text/markdown":
+        if markdown := message.get("extras", {}).get("client::display", {}).get("contentType") == "text/markdown":
             self.label_message.setTextFormat(QtCore.Qt.TextFormat.MarkdownText)
 
         # If the message is only an image URL, then instead of showing the message,
@@ -56,7 +58,17 @@ class MessageWidget(QtWidgets.QWidget, Ui_Form):
             filename = downloader.get_filename(image_url)
             self.set_message_image(filename)
         else:
-            self.label_message.setText(convert_links(message.message))
+            # If a message violates the allowed width of the widget, then display it in a QTextBrowser widget instead (which does have proper wrapping)
+            allowed_width = self.parent().width() - self.label_image.width() + 10
+            if violates_width(message.message, self.label_message.font(), allowed_width):
+                self.label_message.hide()
+                if markdown:
+                    self.browser_message.setMarkdown(message.message)
+                else:
+                    self.browser_message.setText(message.message)
+            else:
+                self.browser_message.hide()
+                self.label_message.setText(convert_links(message.message))
 
         # Show the application icon
         if icon:
